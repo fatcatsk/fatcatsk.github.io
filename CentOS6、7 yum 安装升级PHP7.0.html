@@ -1,0 +1,151 @@
+<!DOCTYPE html><html><head><title>CentOS6、7 yum 安装升级PHP7.0</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="centos67-yum-安装升级php70">CentOS6、7 yum 安装升级PHP7.0</h1>
+
+<blockquote>
+  <h1 id="前言"><strong>前言：</strong></h1>
+  
+  <pre class="prettyprint hljs-dark"><code class="hljs css"><div class="hljs-line"> 由于<span class="hljs-selector-tag">centos</span>追求稳定，很多软件使用稳定的旧版，比如<span class="hljs-selector-tag">php</span>，<span class="hljs-selector-tag">centos</span>官方源默认为5<span class="hljs-selector-class">.4</span>，而<span class="hljs-selector-tag">php</span>已经发展到了7<span class="hljs-selector-class">.1</span>版，很多应用对<span class="hljs-selector-tag">php</span>的要求已经高于5<span class="hljs-selector-class">.4</span>
+</div></code></pre>
+</blockquote>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#centos67-yum-安装升级php70">CentOS6、7 yum 安装升级PHP7.0</a></li>
+<li><a href="#前言">前言：</a></li>
+<li><a href="#一删除自带的php54">一、删除自带的php5.4</a><ul>
+<li><a href="#1查看已有组件">1、查看已有组件</a></li>
+<li><a href="#2清除所有组件">2、清除所有组件</a></li>
+</ul>
+</li>
+<li><a href="#二添加官方源">二、添加官方源</a></li>
+<li><a href="#三安装php70">三、安装php7.0</a></li>
+<li><a href="#四测试配置php">四、测试配置php</a><ul>
+<li><a href="#1查看php版本">1、查看php版本</a></li>
+<li><a href="#2查看php详细信息">2、查看php详细信息</a></li>
+<li><a href="#3重启httpd">3、重启httpd</a></li>
+<li><a href="#4访问测试">4、访问测试</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<h1 id="一删除自带的php54">一、删除自带的php5.4</h1>
+
+<h2 id="1查看已有组件">1、查看已有组件</h2>
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">[root@localhost lcr]# &lt;span style=<span class="hljs-string">"font-size:14px;"</span>&gt;rpm -qa | grep php&lt;/span&gt;  
+</div><div class="hljs-line">php-cli<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php-pear<span class="hljs-number">-1.9</span><span class="hljs-number">.4</span><span class="hljs-number">-21.</span>el7.noarch  
+</div><div class="hljs-line">php-xml<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php-common<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php-process<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php-gd<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64  
+</div><div class="hljs-line">php-pdo<span class="hljs-number">-5.4</span><span class="hljs-number">.16</span><span class="hljs-number">-42.</span>el7.x86_64
+</div></code></pre>
+
+
+
+<h2 id="2清除所有组件">2、清除所有组件</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs autoit"><div class="hljs-line">[root<span class="hljs-symbol">@centos</span><span class="hljs-number">-2</span> lcr]<span class="hljs-meta"># yum remove php-common  </span>
+</div></code></pre>
+
+
+
+<h1 id="二添加官方源">二、添加官方源</h1>
+
+<blockquote>
+  <p><strong>CentOS/RHEL 7.x：</strong></p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="hljs crystal"><div class="hljs-line">rpm -Uvh <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/dl.fedoraproject.org/pub</span><span class="hljs-regexp">/epel/epel</span>-release-latest-<span class="hljs-number">7</span>.noarch.rpm  
+</div><div class="hljs-line">rpm -Uvh <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/mirror.webtatic.com/yum</span><span class="hljs-regexp">/el7/webtatic</span>-release.rpm  
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <p>CentOS/RHEL 6.x:</p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="hljs crystal"><div class="hljs-line">rpm -Uvh <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/dl.fedoraproject.org/pub</span><span class="hljs-regexp">/epel/epel</span>-release-latest-<span class="hljs-number">6</span>.noarch.rpm
+</div><div class="hljs-line">rpm -Uvh <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/mirror.webtatic.com/yum</span><span class="hljs-regexp">/el6/latest</span>.rpm
+</div></code></pre>
+
+
+
+<h1 id="三安装php70">三、安装php7.0</h1>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs smali"><div class="hljs-line">yum install -y php70w php70w-pecl-apcu php70w-xml php70w-mcrypt php70w-gd php70w-devel php70w-mysql php70w-intl php70w-mbstring  
+</div></code></pre>
+
+
+
+<h1 id="四测试配置php">四、测试配置php</h1>
+
+
+
+<h2 id="1查看php版本">1、查看php版本</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs scheme"><div class="hljs-line">[<span class="hljs-name">root@localhost</span> ~]# php -v  
+</div><div class="hljs-line">PHP <span class="hljs-number">7.0</span>.22 (<span class="hljs-name">cli</span>) (<span class="hljs-name">built:</span> Aug  <span class="hljs-number">9</span> <span class="hljs-number">2017</span> <span class="hljs-number">18</span>:23:24) ( NTS )  
+</div><div class="hljs-line">Copyright (<span class="hljs-name">c</span>) <span class="hljs-number">1997</span><span class="hljs-number">-2017</span> The PHP Group  
+</div><div class="hljs-line">Zend Engine v3.0.0, Copyright (<span class="hljs-name">c</span>) <span class="hljs-number">1998</span><span class="hljs-number">-2017</span> Zend Technologies  
+</div></code></pre>
+
+
+
+<h2 id="2查看php详细信息">2、查看php详细信息</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs awk"><div class="hljs-line">vi  <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/i</span>nfo.php 
+</div></code></pre>
+
+<blockquote>
+  <p>输入以下内容</p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="language-php hljs"><div class="hljs-line">    <span class="hljs-meta">&lt;?php</span>  
+</div><div class="hljs-line">    phpinfo()  
+</div><div class="hljs-line">    <span class="hljs-meta">?&gt;</span>  
+</div></code></pre>
+
+
+
+<h2 id="3重启httpd">3、重启httpd</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs maxima"><div class="hljs-line">service httpd <span class="hljs-built_in">restart</span>  
+</div><div class="hljs-line"><span class="hljs-keyword">or</span>  
+</div><div class="hljs-line">systemctl httpd <span class="hljs-built_in">restart</span> 
+</div></code></pre>
+
+
+
+<h2 id="4访问测试">4、访问测试</h2>
+
+<blockquote>
+  <p>浏览器访问：local_IP/info.php</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p><strong>至此，安装完成</strong></p>
+</blockquote></div></body></html>
