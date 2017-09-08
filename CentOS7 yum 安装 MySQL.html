@@ -1,0 +1,368 @@
+
+<!DOCTYPE html><html><head><title>CentOS7 yum 安装 MySQL</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content , .note-content  div {font-size: 16px;}
+
+.note-content h1 {color: #0077bb;}
+.note-content h2 {color: #0077bb;}
+.note-content h3 {color: #0077bb;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="centos7-yum-安装-mysql">CentOS7 yum 安装 MySQL</h1>
+
+<p><p class="note-tags "><code class="notebook">关键词</code> <code><strong>CentOS7</strong></code> <code><strong>MySQL</strong></code> <code><strong>yum</strong></code> </p></p>
+
+<blockquote>
+  <h1 id="前言"><strong>前言：</strong></h1>
+  
+  <blockquote>
+    <p>由于centos7开始，默认的数据库软件已经变为了mariadb，并且移除了mysql安装源</p>
+  </blockquote>
+</blockquote>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#centos7-yum-安装-mysql">CentOS7 yum 安装 MySQL</a></li>
+<li><a href="#前言">前言：</a></li>
+<li><a href="#一清理系统自带的mariadb">一、清理系统自带的mariadb</a></li>
+<li><a href="#二下载并安装mysql官方源">二、下载并安装MySQL官方源</a></li>
+<li><a href="#三查看源安装状态">三、查看源安装状态</a></li>
+<li><a href="#四选择要安装的mysql版本">四、选择要安装的MySQL版本</a></li>
+<li><a href="#五安装mysql">五、安装MySQL</a><ul>
+<li><a href="#1安装">1、安装：</a></li>
+<li><a href="#2查看安装情况">2、查看安装情况</a></li>
+</ul>
+</li>
+<li><a href="#六启动并设置开机启动">六、启动并设置开机启动</a><ul>
+<li><a href="#1启动mysql">1、启动mysql</a></li>
+<li><a href="#2查看mysql启动情况">2、查看mysql启动情况</a></li>
+<li><a href="#3设置开机启动">3、设置开机启动</a></li>
+</ul>
+</li>
+<li><a href="#七找到mysql配置的初始化密码并修改密码">七、找到mysql配置的初始化密码并修改密码：</a><ul>
+<li><a href="#1查找初始化密码">1、查找初始化密码</a></li>
+<li><a href="#2修改初始化密码">2、修改初始化密码</a></li>
+</ul>
+</li>
+<li><a href="#八配置mysql">八、配置mysql</a></li>
+<li><a href="#至此centos7下mysql安装完毕点击回到fatcat的主页">至此，centos7下，MySQL安装完毕点击回到fatcat的主页</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<h1 id="一清理系统自带的mariadb">一、清理系统自带的mariadb</h1>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# rpm -qa | grep mariadb
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[lcr@localhost ~]$ rpm -qa | grep mariadb
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>mariadb<span class="hljs-number">-5.5</span><span class="hljs-number">.52</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>mariadb-libs<span class="hljs-number">-5.5</span><span class="hljs-number">.52</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>mariadb-devel<span class="hljs-number">-5.5</span><span class="hljs-number">.52</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>mariadb-server<span class="hljs-number">-5.5</span><span class="hljs-number">.52</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>[root@localhost lcr]# yum remove mariadb-libs.x86_64
+</div></code></pre>
+
+
+
+<h1 id="二下载并安装mysql官方源">二、下载并安装MySQL官方源</h1>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cpp"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># yum localinstall  http:<span class="hljs-comment">//dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</span></span>
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <p><strong>官方源可能速度太慢了，可以更换<code>中科大镜像源</code></strong></p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cpp"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># yum localinstall  http:<span class="hljs-comment">//mirrors.ustc.edu.cn/mysql-repo/mysql57-community-release-el7-11.noarch.rpm</span></span>
+</div></code></pre>
+
+
+
+<h1 id="三查看源安装状态">三、查看源安装状态</h1>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs 1c"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum repolist enabled <span class="hljs-string">| grep "</span>mysql.*-community.*<span class="hljs-string">"</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs llvm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-title">@localhost</span> ~]# yum repolist enabled | grep <span class="hljs-string">"mysql.*-community.*"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>mysql-connectors-community/<span class="hljs-keyword">x</span><span class="hljs-number">86</span>_<span class="hljs-number">64</span>    MySQL Connectors Community <span class="hljs-number">42</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>mysql-tools-community/<span class="hljs-keyword">x</span><span class="hljs-number">86</span>_<span class="hljs-number">64</span>    MySQL Tools Community <span class="hljs-number">51</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>mysql<span class="hljs-number">57</span>-community/<span class="hljs-keyword">x</span><span class="hljs-number">86</span>_<span class="hljs-number">64</span>    MySQL <span class="hljs-number">5.7</span> Community Server <span class="hljs-number">207</span>
+</div></code></pre>
+
+
+
+<h1 id="四选择要安装的mysql版本">四、选择要安装的MySQL版本</h1>
+
+<blockquote>
+  <p><strong>vim /etc/yum.repos.d/mysql-community.repo</strong></p>
+  
+  <blockquote>
+    <p><strong>选择要安装的community版本，将：<code>enabled=0</code>改为<code>enabled=1</code>，其余改为<code>enabled=0</code></strong></p>
+  </blockquote>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ini"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-section">[root@localhost ~]</span><span class="hljs-comment"># vim /etc/yum.repos.d/mysql-community.repo</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-section">[mysql-connectors-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-attr">name</span>=MySQL Connectors Community
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-connectors-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-attr">gpgkey</span>=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-section">[mysql-tools-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-attr">name</span>=MySQL Tools Community
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-tools-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-attr">gpgkey</span>=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-comment"># Enable to use MySQL 5.5</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-section">[mysql55-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-attr">name</span>=MySQL <span class="hljs-number">5.5</span> Community Server
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-<span class="hljs-number">5.5</span>-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-attr">gpgkey</span>=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-comment"># Enable to use MySQL 5.6</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-section">[mysql56-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span><span class="hljs-attr">name</span>=MySQL <span class="hljs-number">5.6</span> Community Server
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-<span class="hljs-number">5.6</span>-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span><span class="hljs-attr">gpgkey</span>=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span><span class="hljs-section">[mysql57-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span><span class="hljs-attr">name</span>=MySQL <span class="hljs-number">5.7</span> Community Server
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-<span class="hljs-number">5.7</span>-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span><span class="hljs-attr">gpgkey</span>=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span><span class="hljs-section">[mysql80-community]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span><span class="hljs-attr">name</span>=MySQL <span class="hljs-number">8.0</span> Community Server
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span><span class="hljs-attr">baseurl</span>=http://repo.mysql.com/yum/mysql-<span class="hljs-number">8.0</span>-community/el/<span class="hljs-number">7</span>/<span class="hljs-variable">$basearch</span>/
+</div></code></pre>
+
+
+
+<h1 id="五安装mysql">五、安装MySQL</h1>
+
+
+
+<h2 id="1安装">1、安装：</h2>
+
+<blockquote>
+  <p><strong>yum install mysql-community-server</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> ~]<span class="hljs-meta"># yum install mysql-community-server</span>
+</div></code></pre>
+
+<hr>
+
+
+
+<h2 id="2查看安装情况">2、查看安装情况</h2>
+
+<blockquote>
+  <p><strong>rpm -qa |grep mysql</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centOS ~]# rpm -qa |grep mysql
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>mysql-community-client<span class="hljs-number">-5.7</span><span class="hljs-number">.19</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>mysql57-community-release-el7<span class="hljs-number">-11.</span>noarch
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>mysql-community-server<span class="hljs-number">-5.7</span><span class="hljs-number">.19</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>mysql-community-common<span class="hljs-number">-5.7</span><span class="hljs-number">.19</span><span class="hljs-number">-1.</span>el7.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>mysql-community-libs<span class="hljs-number">-5.7</span><span class="hljs-number">.19</span><span class="hljs-number">-1.</span>el7.x86_64
+</div></code></pre>
+
+
+
+<h1 id="六启动并设置开机启动">六、启动并设置开机启动</h1>
+
+
+
+<h2 id="1启动mysql">1、启动mysql</h2>
+
+<blockquote>
+  <p><strong>systemctl start mysqld</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> ~]<span class="hljs-meta"># systemctl start mysqld</span>
+</div></code></pre>
+
+
+
+<h2 id="2查看mysql启动情况">2、查看mysql启动情况</h2>
+
+<blockquote>
+  <p><strong>systemctl status mysqld</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost ~]# systemctl status mysqld
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>● mysqld.service - MySQL Community Server
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Active: active (running) since 四 2017-08-31 14:31:18 CST; 29s ago
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>Process: 14957 ExecStartPost=/usr/bin/mysql-systemd-<span class="hljs-keyword">start</span> post (code=exited, <span class="hljs-keyword">status</span>=<span class="hljs-number">0</span>/<span class="hljs-keyword">SUCCESS</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>Process: <span class="hljs-number">14936</span> ExecStartPre=/usr/<span class="hljs-keyword">bin</span>/mysql-systemd-<span class="hljs-keyword">start</span> pre (code=exited, <span class="hljs-keyword">status</span>=<span class="hljs-number">0</span>/<span class="hljs-keyword">SUCCESS</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-keyword">Main</span> PID: <span class="hljs-number">14955</span> (mysqld_safe)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>CGroup: /system.slice/mysqld.service
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>├─<span class="hljs-number">14955</span> /<span class="hljs-keyword">bin</span>/sh /usr/<span class="hljs-keyword">bin</span>/mysqld_safe <span class="hljs-comment">--basedir=/usr</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>└─<span class="hljs-number">15121</span> /usr/sbin/mysqld <span class="hljs-comment">--basedir=/usr --datadir=/var/lib/mysql --plugin-dir...</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">8</span>月 <span class="hljs-number">31</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">15</span> localhost.localdomain systemd[<span class="hljs-number">1</span>]: <span class="hljs-keyword">Starting</span> MySQL Community Server...
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">8</span>月 <span class="hljs-number">31</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">16</span> localhost.localdomain mysqld_safe[<span class="hljs-number">14955</span>]: <span class="hljs-number">170831</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">16</span> mysqld_safe ....
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">8</span>月 <span class="hljs-number">31</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">16</span> localhost.localdomain mysqld_safe[<span class="hljs-number">14955</span>]: <span class="hljs-number">170831</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">16</span> mysqld_safe ...l
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">8</span>月 <span class="hljs-number">31</span> <span class="hljs-number">14</span>:<span class="hljs-number">31</span>:<span class="hljs-number">18</span> localhost.localdomain systemd[<span class="hljs-number">1</span>]: Started MySQL Community Server.
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>Hint: <span class="hljs-keyword">Some</span> <span class="hljs-keyword">lines</span> were ellipsized, <span class="hljs-keyword">use</span> -l <span class="hljs-keyword">to</span> <span class="hljs-keyword">show</span> <span class="hljs-keyword">in</span> full.
+</div></code></pre>
+
+
+
+<h2 id="3设置开机启动">3、设置开机启动</h2>
+
+<blockquote>
+  <p><strong>systemctl enable mysqld</strong> <br>
+  <strong>systemctl daemon-reload</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@centOS</span> ~]<span class="hljs-meta"># systemctl enable mysqld</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root<span class="hljs-symbol">@centOS</span> ~]<span class="hljs-meta"># systemctl daemon-reload</span>
+</div></code></pre>
+
+
+
+<h1 id="七找到mysql配置的初始化密码并修改密码">七、找到mysql配置的初始化密码并修改密码：</h1>
+
+
+
+<h2 id="1查找初始化密码">1、查找初始化密码</h2>
+
+<blockquote>
+  <p><strong>nano /var/log/mysqld.log</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vhdl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centOS ~]# nano /var/log/mysqld.log
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">12.326998</span>Z <span class="hljs-number">0</span> [<span class="hljs-literal">Warning</span>] TIMESTAMP <span class="hljs-keyword">with</span> implicit <span class="hljs-keyword">DEFAULT</span> value <span class="hljs-keyword">is</span> deprecated. Please <span class="hljs-keyword">use</span> <span class="hljs-comment">--explicit_defaults_for_timestamp server option (see documentation for more details).</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">14.118974</span>Z <span class="hljs-number">0</span> [<span class="hljs-literal">Warning</span>] InnoDB: <span class="hljs-keyword">New</span> log files created, LSN=<span class="hljs-number">45790</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">14.210958</span>Z <span class="hljs-number">0</span> [<span class="hljs-literal">Warning</span>] InnoDB: Creating foreign key constraint system tables.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">14.270194</span>Z <span class="hljs-number">0</span> [<span class="hljs-literal">Warning</span>] No existing UUID has been found, so we <span class="hljs-keyword">assume</span> that this <span class="hljs-keyword">is</span> the first <span class="hljs-built_in">time</span> that this server has been started. Generating a <span class="hljs-keyword">new</span> UUID: <span class="hljs-number">90</span>dced13-<span class="hljs-number">8e3</span>b-<span class="hljs-number">11e7</span>-a3f5-<span class="hljs-number">000</span>c2$
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">14.271751</span>Z <span class="hljs-number">0</span> [<span class="hljs-literal">Warning</span>] Gtid table <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> ready <span class="hljs-keyword">to</span> be used. Table <span class="hljs-symbol">'mysql</span>.gtid_executed' cannot be opened.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">2017</span>-<span class="hljs-number">08</span>-<span class="hljs-number">31</span>T11:<span class="hljs-number">00</span>:<span class="hljs-number">14.272562</span>Z <span class="hljs-number">1</span> [<span class="hljs-literal">Note</span>] A temporary password <span class="hljs-keyword">is</span> generated <span class="hljs-keyword">for</span> root@localhost: kl&lt;T=kws0;<span class="hljs-number">3</span>x
+</div></code></pre>
+
+<blockquote>
+  <ul><li><strong>A temporary password is generated for root@localhost: <code>kl&lt;T=kws0;3x</code>这就是初始密码</strong></li>
+  <li><strong>注意：如果此日志为空，可以先运行：mysql -uroot -p,然后随意输入错误的密码，再运行上面的步骤</strong></li>
+  </ul>
+</blockquote>
+
+
+
+<h2 id="2修改初始化密码">2、修改初始化密码</h2>
+
+<blockquote>
+  <p><strong>mysql -uroot -p</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centOS <span class="hljs-built_in">log</span>]<span class="hljs-comment"># mysql -uroot -p</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Enter password:                                         &lt;<span class="hljs-comment">------输入上面的初始化密码</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>Welcome to the MySQL monitor. Commands <span class="hljs-keyword">end</span> <span class="hljs-keyword">with</span> ; or \g.
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Your MySQL connection id is 7
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>Server version: 5.7.19
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>Oracle is a registered trademark of Oracle Corporation and/or its
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>affiliates. Other names may be trademarks of their respective
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>owners.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Type '<span class="hljs-keyword">help</span>;' or '\h' for help. <span class="hljs-keyword">Type</span> <span class="hljs-string">'\c'</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">clear</span> the <span class="hljs-keyword">current</span> <span class="hljs-keyword">input</span> statement.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>mysql&gt; <span class="hljs-keyword">set</span> <span class="hljs-keyword">password</span> <span class="hljs-keyword">for</span> <span class="hljs-string">'root'</span>@<span class="hljs-string">'localhost'</span>=<span class="hljs-keyword">password</span>(<span class="hljs-string">'775120Zhxxxxxx'</span>);
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>mysql&gt; <span class="hljs-keyword">set</span> <span class="hljs-keyword">password</span> <span class="hljs-keyword">for</span> <span class="hljs-string">'root'</span>@<span class="hljs-string">'localhost'</span>=<span class="hljs-keyword">password</span>(<span class="hljs-string">'775120@Zhxxxxxxx'</span>);
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>Query OK, 0 rows affected, 1 warning (0.00 sec)
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>mysql&gt; exit
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Bye
+</div></code></pre>
+
+<blockquote>
+  <p><strong>注意：<code>5.7</code>版本开始的，增加了密码强壮度度检测模块，要求密码包含<code>数字</code>，<code>大小写字母</code>，<code>字符</code></strong></p>
+</blockquote>
+
+<h1 id="八配置mysql">八、配置mysql</h1>
+
+<blockquote>
+  <p><strong>mysql_secure_installation</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centOS ~]<span class="hljs-comment"># mysql_secure_installation</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Securing <span class="hljs-keyword">the</span> MySQL server deployment.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>Enter password <span class="hljs-keyword">for</span> user root:
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>The 'validate_password' plugin <span class="hljs-keyword">is</span> installed <span class="hljs-keyword">on</span> <span class="hljs-keyword">the</span> server.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>The subsequent steps will <span class="hljs-built_in">run</span> <span class="hljs-keyword">with</span> <span class="hljs-keyword">the</span> existing configuration
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-keyword">of</span> <span class="hljs-keyword">the</span> plugin.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>Using existing password <span class="hljs-keyword">for</span> root.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Estimated strength <span class="hljs-keyword">of</span> <span class="hljs-keyword">the</span> password: <span class="hljs-number">100</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>Change <span class="hljs-keyword">the</span> password <span class="hljs-keyword">for</span> root ? ((Press y|Y <span class="hljs-keyword">for</span> Yes, any other key <span class="hljs-keyword">for</span> No) :              &lt;<span class="hljs-comment">--------是否修改密码</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>... skipping.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>By default, a MySQL installation has an anonymous user,
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>allowing anyone <span class="hljs-keyword">to</span> <span class="hljs-built_in">log</span> <span class="hljs-keyword">into</span> MySQL <span class="hljs-keyword">without</span> having <span class="hljs-keyword">to</span> have
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>a user account created <span class="hljs-keyword">for</span> them. This <span class="hljs-keyword">is</span> intended only <span class="hljs-keyword">for</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>testing, <span class="hljs-keyword">and</span> <span class="hljs-keyword">to</span> make <span class="hljs-keyword">the</span> installation go a bit smoother.
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>You should remove them <span class="hljs-keyword">before</span> moving <span class="hljs-keyword">into</span> a production
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>environment.
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>Remove anonymous users? (Press y|Y <span class="hljs-keyword">for</span> Yes, any other key <span class="hljs-keyword">for</span> No) : y              &lt;<span class="hljs-comment">------------是否删除匿名账户</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>Success.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>Normally, root should only be allowed <span class="hljs-keyword">to</span> connect <span class="hljs-keyword">from</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>'localhost'. This ensures <span class="hljs-keyword">that</span> someone cannot guess <span class="hljs-keyword">at</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-keyword">the</span> root password <span class="hljs-keyword">from</span> <span class="hljs-keyword">the</span> network.
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>Disallow root login remotely? (Press y|Y <span class="hljs-keyword">for</span> Yes, any other key <span class="hljs-keyword">for</span> No) : y              &lt;<span class="hljs-comment">----------禁止远程登录</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>Success.
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>By default, MySQL comes <span class="hljs-keyword">with</span> a database named 'test' <span class="hljs-keyword">that</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>anyone can access. This <span class="hljs-keyword">is</span> also intended only <span class="hljs-keyword">for</span> testing,
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span><span class="hljs-keyword">and</span> should be removed <span class="hljs-keyword">before</span> moving <span class="hljs-keyword">into</span> a production
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>environment.
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>Remove test database <span class="hljs-keyword">and</span> access <span class="hljs-keyword">to</span> <span class="hljs-keyword">it</span>? (Press y|Y <span class="hljs-keyword">for</span> Yes, any other key <span class="hljs-keyword">for</span> No) : y             &lt;<span class="hljs-comment">----------删除测试数据</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span>- Dropping test database...
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span>Success.
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span>- Removing privileges <span class="hljs-keyword">on</span> test database...
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span>Success.
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span>Reloading <span class="hljs-keyword">the</span> privilege tables will ensure <span class="hljs-keyword">that</span> all changes
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span>made so far will take effect immediately.
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span>Reload privilege tables now? (Press y|Y <span class="hljs-keyword">for</span> Yes, any other key <span class="hljs-keyword">for</span> No) : y              &lt;<span class="hljs-comment">--------重新加载权限表</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span>Success.
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span>All done!
+</div></code></pre>
+
+<blockquote>
+  <h1 id="至此centos7下mysql安装完毕点击回到fatcat的主页">至此，centos7下，MySQL安装完毕<strong><a href="https://fatcatsk.github.io/" target="_blank"><code>点击回到fatcat的主页</code></a></strong></h1>
+</blockquote></div></body></html>
