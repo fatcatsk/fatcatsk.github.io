@@ -1,0 +1,288 @@
+
+<!DOCTYPE html><html><head><title>CentOS 升级 Python3.6</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content , .note-content  div {font-size: 16px;}
+
+.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="centos-升级-python36">CentOS 升级 Python3.6</h1>
+
+<p><p class="note-tags "><code class="notebook"><strong>关键词</strong></code> <code><strong>CentOS</strong></code> <code><strong>升级</strong></code> <code><strong>Python3</strong></code> </p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#centos-升级-python36">CentOS 升级 Python3.6</a></li>
+<li><a href="#一安装python36可能使用的依赖">一、安装python3.6可能使用的依赖</a></li>
+<li><a href="#二下载python36编译安装">二、下载python3.6编译安装</a><ul>
+<li><a href="#1python官网下载httpswwwpythonorg">1、python官网下载https://www.python.org</a></li>
+<li><a href="#2解压缩">2、解压缩</a></li>
+<li><a href="#3进入解压目录">3、进入解压目录</a></li>
+<li><a href="#4把python36安装到-usrlocal-目录">4、把Python3.6安装到 /usr/local 目录</a></li>
+<li><a href="#5编译安装">5、编译安装</a></li>
+</ul>
+</li>
+<li><a href="#三更改usrbinpython链接">三、更改/usr/bin/python链接</a></li>
+<li><a href="#四更改软件依赖配置">四、更改软件依赖配置</a><ul>
+<li><a href="#1yum脚本的python依赖">1、yum脚本的python依赖</a></li>
+<li><a href="#2修改gnome-tweak-tool配置文件">2、修改gnome-tweak-tool配置文件</a></li>
+<li><a href="#3修改urlgrabber配置文件">3、修改urlgrabber配置文件</a></li>
+</ul>
+</li>
+<li><a href="#五查看python版本">五、查看python版本</a></li>
+<li><a href="#至此centos-升级python3完毕点击回到fatcat的主页">至此，centos 升级Python3完毕点击回到fatcat的主页</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<h1 id="一安装python36可能使用的依赖">一、安装python3.6可能使用的依赖</h1>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs mipsasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum <span class="hljs-keyword">install </span>openssl-devel <span class="hljs-keyword">bzip2-devel </span>expat-devel gdbm-devel readline-devel sqlite-devel
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs subunit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centos<span class="hljs-string">-0</span> lcr]# yum install openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>已加载插件：fastestmirror, langpacks
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>base                                                           | 3.6 kB  00:00:00     
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>extras                                                         | 3.4 kB  00:00:00     
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>updates                                                        | 3.4 kB  00:00:00     
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>Loading mirror speeds from cached hostfile
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span> * base: mirrors.btte.net
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span> * extras: ftp.sjtu.edu.cn
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span> * updates: mirrors.btte.net
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>软件包 1:openssl-devel<span class="hljs-string">-1</span>.0.1e<span class="hljs-string">-60</span>.el7_3.1.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>软件包 bzip2-devel<span class="hljs-string">-1</span>.0.6<span class="hljs-string">-13</span>.el7.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>软件包 expat-devel<span class="hljs-string">-2</span>.1.0<span class="hljs-string">-10</span>.el7_3.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>软件包 gdbm-devel<span class="hljs-string">-1</span>.10<span class="hljs-string">-8</span>.el7.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>软件包 readline-devel<span class="hljs-string">-6</span>.2<span class="hljs-string">-9</span>.el7.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>软件包 sqlite-devel<span class="hljs-string">-3</span>.7.17<span class="hljs-string">-8</span>.el7.x86_64 已安装并且是最新版本
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>无须任何处理
+</div></code></pre>
+
+
+
+<h1 id="二下载python36编译安装">二、下载python3.6编译安装</h1>
+
+<blockquote>
+  <h2 id="1python官网下载httpswwwpythonorg"><strong>1、python官网下载<a href="https://www.python.org" target="_blank">https://www.python.org</a></strong></h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs awk"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>wget https:<span class="hljs-regexp">//</span>www.python.org<span class="hljs-regexp">/ftp/</span>python<span class="hljs-regexp">/3.6.0/</span>Python-<span class="hljs-number">3.6</span>.<span class="hljs-number">0</span>.tgz
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs less"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-attr">[root@centos-0 lcr]</span># <span class="hljs-selector-tag">wget</span> <span class="hljs-selector-tag">https</span>:<span class="hljs-comment">//www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">--2017-09-09</span> <span class="hljs-selector-tag">23</span><span class="hljs-selector-pseudo">:39</span><span class="hljs-selector-pseudo">:29--</span>  <span class="hljs-selector-tag">https</span>:<span class="hljs-comment">//www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>正在解析主机 <span class="hljs-selector-tag">www</span><span class="hljs-selector-class">.python</span><span class="hljs-selector-class">.org</span> (www.python.org)... <span class="hljs-selector-tag">151</span><span class="hljs-selector-class">.101</span><span class="hljs-selector-class">.72</span><span class="hljs-selector-class">.223</span>, <span class="hljs-selector-tag">2a04</span><span class="hljs-selector-pseudo">:4e42</span><span class="hljs-selector-pseudo">:11</span><span class="hljs-selector-pseudo">::223</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>正在连接 <span class="hljs-selector-tag">www</span><span class="hljs-selector-class">.python</span><span class="hljs-selector-class">.org</span> (www.python.org)|<span class="hljs-selector-tag">151</span><span class="hljs-selector-class">.101</span><span class="hljs-selector-class">.72</span><span class="hljs-selector-class">.223</span>|<span class="hljs-selector-pseudo">:443...</span> 已连接。
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>已发出 <span class="hljs-selector-tag">HTTP</span> 请求，正在等待回应... <span class="hljs-selector-tag">200</span> <span class="hljs-selector-tag">OK</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>长度：<span class="hljs-selector-tag">22256403</span> (<span class="hljs-number">21</span>M) <span class="hljs-selector-attr">[application/octet-stream]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>正在保存至: “<span class="hljs-selector-tag">Python-3</span><span class="hljs-selector-class">.6</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.tgz</span>”
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-selector-tag">100%</span><span class="hljs-selector-attr">[============================================&gt;]</span> <span class="hljs-selector-tag">22</span>,<span class="hljs-selector-tag">256</span>,<span class="hljs-selector-tag">403</span>   <span class="hljs-selector-tag">423KB</span>/<span class="hljs-selector-tag">s</span> 用时 <span class="hljs-selector-tag">1m</span> <span class="hljs-selector-tag">48s</span> 
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-selector-tag">2017-09-09</span> <span class="hljs-selector-tag">23</span><span class="hljs-selector-pseudo">:41</span><span class="hljs-selector-pseudo">:18</span> (<span class="hljs-number">201</span> KB/s) <span class="hljs-selector-tag">-</span> 已保存 “<span class="hljs-selector-tag">Python-3</span><span class="hljs-selector-class">.6</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.tgz</span>” <span class="hljs-selector-attr">[22256403/22256403]</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2解压缩">2、解压缩</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>tar -xzvf Python<span class="hljs-number">-3.6</span><span class="hljs-number">.0</span>.tgz -C  /tmp
+</div></code></pre>
+
+<blockquote>
+  <h2 id="3进入解压目录">3、进入解压目录</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>cd  /tmp/Python<span class="hljs-number">-3.6</span><span class="hljs-number">.0</span>/
+</div></code></pre>
+
+<blockquote>
+  <h2 id="4把python36安装到-usrlocal-目录">4、把Python3.6安装到 /usr/local 目录</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs maxima"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>./configure --<span class="hljs-built_in">prefix</span>=/usr/<span class="hljs-built_in">local</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vhdl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-keyword">If</span> you want a <span class="hljs-keyword">release</span> build <span class="hljs-keyword">with</span> <span class="hljs-keyword">all</span> optimizations active (LTO, PGO, etc),please run ./configure <span class="hljs-comment">--enable-optimizations</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="5编译安装">5、编译安装</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs gauss"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-built_in">make</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-built_in">make</span> altinstall
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs bash"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-comment"># Substitution happens here, as the completely-expanded BINDIR</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-comment"># is not available in configure</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>sed <span class="hljs-_">-e</span> <span class="hljs-string">"s,@EXENAME@,/usr/local/bin/python3.6m,"</span> &lt; ./Misc/python-config.in &gt;python-config.py
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-comment"># Replace makefile compat. variable references with shell script compat. ones;  -&gt; </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>LC_ALL=C sed <span class="hljs-_">-e</span> <span class="hljs-string">'s,\$(\([A-Za-z0-9_]*\)),\$\{\1\},g'</span> &lt; Misc/python-config.sh &gt;python-config
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-comment"># On Darwin, always use the python version of the script, the shell</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-comment"># version doesn't use the compiler customizations that are provided</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-comment"># in python (_osx_support.py).</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-keyword">if</span> <span class="hljs-built_in">test</span> `uname <span class="hljs-_">-s</span>` = Darwin; <span class="hljs-keyword">then</span> \
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>    cp python-config.py python-config; \
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-keyword">fi</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs crystal"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>rm /usr/local/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">python3</span>.6/<span class="hljs-title">lib</span>-<span class="hljs-title">dynload</span>/<span class="hljs-title">_sysconfigdata_m_linux_x86_64</span>-<span class="hljs-title">linux</span>-<span class="hljs-title">gnu</span>.<span class="hljs-title">py</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>rm -r /usr/local/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">python3</span>.6/<span class="hljs-title">lib</span>-<span class="hljs-title">dynload</span>/<span class="hljs-title">__pycache__</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>/usr/bin/install -c -m <span class="hljs-number">644</span> ./Misc/python.man \
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>    /usr/local/share/man/man1/python3.<span class="hljs-number">6.1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-keyword">if</span> test <span class="hljs-string">"xupgrade"</span> != <span class="hljs-string">"xno"</span>  ; <span class="hljs-keyword">then</span> \
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>    <span class="hljs-keyword">case</span> upgrade in \
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>        upgrade) ensurepip=<span class="hljs-string">"--altinstall --upgrade"</span> ;; \
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>        install|*) ensurepip=<span class="hljs-string">"--altinstall"</span> ;; \
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>    esac; \
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>     ./python -E -m ensurepip \
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>        $ensurepip --root=<span class="hljs-regexp">/ ; \
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>fi
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>Collecting setuptools
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Collecting pip
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>Installing collected packages: setuptools, pip
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>Successfully installed pip-9.0.1 setuptools-28.8.0
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <ul><li>python3.6程序的执行文件：/usr/local/bin/python3.6</li>
+  <li>python3.6应用程序目录：/usr/local/lib/python3.6</li>
+  <li>pip3的执行文件：/usr/local/bin/pip3.6</li>
+  <li>pyenv3的执行文件：/usr/local/bin/pyenv-3.6</li>
+  </ul>
+</blockquote>
+
+
+
+<h1 id="三更改usrbinpython链接">三、更改/usr/bin/python链接</h1>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-keyword">cd</span> /usr/bin
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>mv <span class="hljs-keyword">python</span> <span class="hljs-keyword">python</span>.backup
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>#备份旧的<span class="hljs-keyword">python</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-keyword">ln</span> -s /usr/local/bin/<span class="hljs-keyword">python3</span>.<span class="hljs-number">6</span> /usr/bin/<span class="hljs-keyword">python</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-keyword">ln</span> -s /usr/local/bin/<span class="hljs-keyword">python3</span>.<span class="hljs-number">6</span> /usr/bin/<span class="hljs-keyword">python3</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs mel"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centos<span class="hljs-number">-0</span> Python<span class="hljs-number">-3.6</span><span class="hljs-number">.0</span>]# cd /usr/bin/
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root@centos<span class="hljs-number">-0</span> bin]# <span class="hljs-keyword">ls</span> <span class="hljs-keyword">python</span>*
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>python2  python2<span class="hljs-number">.7</span>  python2<span class="hljs-number">.7</span>-config  python2-config  <span class="hljs-keyword">python</span>.backup  <span class="hljs-keyword">python</span>-config
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>[root@centos<span class="hljs-number">-0</span> bin]# mv <span class="hljs-keyword">python</span> <span class="hljs-keyword">python</span>.backup
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>[root@centos<span class="hljs-number">-0</span> bin]# ln -s /usr/local/bin/python3<span class="hljs-number">.6</span> /usr/bin/<span class="hljs-keyword">python</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>[root@centos<span class="hljs-number">-0</span> bin]# ln -s /usr/local/bin/python3<span class="hljs-number">.6</span> /usr/bin/python3
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>[root@centos<span class="hljs-number">-0</span> bin]# 
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div></code></pre>
+
+
+
+<h1 id="四更改软件依赖配置">四、更改软件依赖配置</h1>
+
+
+
+<h2 id="1yum脚本的python依赖">1、yum脚本的python依赖</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vala"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-meta"># cd /usr/bin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-meta"># ls yum*</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs mipsasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum yum-<span class="hljs-built_in">config</span>-manager yum-<span class="hljs-built_in">debug</span>-restore yum-groups-manager
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>yum-<span class="hljs-keyword">builddep </span>yum-<span class="hljs-built_in">debug</span>-dump yumdownloader
+</div></code></pre>
+
+<blockquote>
+  <p><strong>更改以上文件头为</strong></p>
+  
+  <blockquote>
+    <p><strong><code>#!/usr/bin/python</code></strong> 改为 <strong><code>#!/usr/bin/python2</code></strong></p>
+  </blockquote>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs mipsasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centos-0 <span class="hljs-keyword">bin]# </span>ls yum*
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>yum           yum-<span class="hljs-built_in">config</span>-manager  yum-<span class="hljs-built_in">debug</span>-restore  yum-groups-manager
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>yum-<span class="hljs-keyword">builddep </span> yum-<span class="hljs-built_in">debug</span>-dump      yumdownloader
+</div></code></pre>
+
+<hr>
+
+<h2 id="2修改gnome-tweak-tool配置文件">2、修改gnome-tweak-tool配置文件</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs awk"><div class="hljs-line"><span class="hljs-comment line-number">1.</span> vi <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/gnome-tweak-tool</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong><code>#!/usr/bin/python</code></strong> 改为 <strong><code>#!/usr/bin/python2</code></strong></p>
+</blockquote>
+
+<hr>
+
+
+
+<h2 id="3修改urlgrabber配置文件">3、修改urlgrabber配置文件</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs awk"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>vi <span class="hljs-regexp">/usr/</span>libexec<span class="hljs-regexp">/urlgrabber-ext-down</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong><code>#!/usr/bin/python</code></strong> 改为 <strong><code>#!/usr/bin/python2</code></strong></p>
+</blockquote>
+
+<hr>
+
+
+
+<h1 id="五查看python版本">五、查看python版本</h1>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs coffeescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@centos<span class="hljs-number">-0</span> bin]<span class="hljs-comment"># python -V</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Python <span class="hljs-number">3.6</span><span class="hljs-number">.0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>[root@centos<span class="hljs-number">-0</span> bin]<span class="hljs-comment"># python</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Python <span class="hljs-number">3.6</span><span class="hljs-number">.0</span> (<span class="hljs-keyword">default</span>, Sep  <span class="hljs-number">9</span> <span class="hljs-number">2017</span>, <span class="hljs-number">23</span>:<span class="hljs-number">54</span>:<span class="hljs-number">25</span>) 
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>[GCC <span class="hljs-number">4.8</span><span class="hljs-number">.5</span> <span class="hljs-number">20150623</span> (Red Hat <span class="hljs-number">4.8</span><span class="hljs-number">.5</span><span class="hljs-number">-11</span>)] <span class="hljs-literal">on</span> linux
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>Type <span class="hljs-string">"help"</span>, <span class="hljs-string">"copyright"</span>, <span class="hljs-string">"credits"</span> <span class="hljs-keyword">or</span> <span class="hljs-string">"license"</span> <span class="hljs-keyword">for</span> more information.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>&gt;&gt;&gt;
+</div></code></pre>
+
+<blockquote>
+  <h1 id="至此centos-升级python3完毕点击回到fatcat的主页">至此，centos 升级Python3完毕<strong><a href="https://fatcatsk.github.io/" target="_blank"><code>点击回到fatcat的主页</code></a></strong></h1>
+</blockquote></div></body></html>
