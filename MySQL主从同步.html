@@ -1,0 +1,338 @@
+
+<!DOCTYPE html><html><head><title>MySQL主从同步</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content , .note-content  div {font-size: 16px;}
+
+.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+<blockquote>
+  <h1 id="mysql主从同步">MySQL主从同步</h1>
+</blockquote>
+
+<p><p class="note-tags "><code class="notebook">关键字</code> <code><strong>MySQL</strong></code><strong> <code>主从同步</code></strong> </p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#mysql主从同步">MySQL主从同步</a></li>
+<li><a href="#一安装mysql">一、安装mysql</a></li>
+<li><a href="#二配置主从服务器">二、配置主从服务器</a><ul>
+<li><a href="#1配置主从服务器配置文件">1、配置主从服务器配置文件</a></li>
+<li><a href="#2为slave配置数据库账号">2、为slave配置数据库账号</a></li>
+<li><a href="#3查看master参数">3、查看master参数</a></li>
+<li><a href="#4从服务器上配置">4、从服务器上配置</a></li>
+<li><a href="#5配置slave上的mysql">5、配置slave上的mysql</a></li>
+<li><a href="#6启动slave">6、启动slave</a></li>
+<li><a href="#7查看slave的状态">7、查看slave的状态</a></li>
+</ul>
+</li>
+<li><a href="#三测试">三、测试</a><ul>
+<li><a href="#1在master上创建新的数据库schllo">1、在master上创建新的数据库schllo</a></li>
+<li><a href="#2master上删除数据库schllo">2、master上删除数据库schllo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <p><strong>实验环境：CentOS_7，MySQL_5.7</strong></p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h1 id="一安装mysql">一、安装mysql</h1>
+</blockquote>
+
+<p>参考前篇：<a href="https://fatcatsk.github.io/CentOS7%20yum%20%E5%AE%89%E8%A3%85%20MySQL.html" target="_blank">CentOS7 yum 安装 MySQL</a></p>
+
+<hr>
+
+<blockquote>
+  <h1 id="二配置主从服务器">二、配置主从服务器</h1>
+</blockquote>
+
+<h2 id="1配置主从服务器配置文件">1、配置主从服务器配置文件</h2>
+
+<blockquote>
+  <p>主服务器配置</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs awk"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>vi <span class="hljs-regexp">/etc/my</span>cnf
+</div></code></pre>
+
+<p><strong>修改参数如下</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ini"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-attr">log_bin</span>=mysql_bin         开启二进制人间
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-attr">server_id</span>=<span class="hljs-number">1</span>               设置服务器ID
+</div></code></pre>
+
+<p><strong>重启master</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ebnf"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-attribute">systemctl  restart mysqld</span>
+</div></code></pre>
+
+
+
+<h2 id="2为slave配置数据库账号">2、为slave配置数据库账号</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">mysql</span>&gt; <span class="hljs-selector-tag">create</span> <span class="hljs-selector-tag">user</span> <span class="hljs-selector-tag">backup</span>@'<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">121</span>.<span class="hljs-keyword">22</span>' identified by <span class="hljs-string">'775120@Lai'</span>;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">mysql</span>&gt; <span class="hljs-selector-tag">grant</span> <span class="hljs-selector-tag">replication</span> <span class="hljs-selector-tag">slave</span> <span class="hljs-selector-tag">on</span> *.* <span class="hljs-selector-tag">to</span> <span class="hljs-selector-tag">backup</span>@'<span class="hljs-keyword">192</span>.<span class="hljs-keyword">168</span>.<span class="hljs-keyword">121</span>.<span class="hljs-keyword">22</span>';
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-selector-tag">mysql</span>&gt; <span class="hljs-selector-tag">flush</span> <span class="hljs-selector-tag">privileges</span>;   (这一步是必须的）
+</div></code></pre>
+
+<p><em>* 查看配置状况*</em></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">grants</span> <span class="hljs-keyword">for</span> <span class="hljs-keyword">backup</span>@<span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.22</span>;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>+<span class="hljs-comment">-------------------------------------------------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>| Grants for <span class="hljs-keyword">backup</span>@<span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.22</span>                            |
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>+<span class="hljs-comment">-------------------------------------------------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>| <span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">REPLICATION</span> <span class="hljs-keyword">SLAVE</span> <span class="hljs-keyword">ON</span> *.* <span class="hljs-keyword">TO</span> <span class="hljs-string">'backup'</span>@<span class="hljs-string">'192.168.121.22'</span> |
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>+<span class="hljs-comment">-------------------------------------------------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">1</span> <span class="hljs-keyword">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+
+
+<h2 id="3查看master参数">3、查看master参数</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs sql"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-keyword">show</span> msater <span class="hljs-keyword">status</span>;
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">master</span> <span class="hljs-keyword">status</span>;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>+<span class="hljs-comment">------------------+----------+--------------+------------------+-------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>+<span class="hljs-comment">------------------+----------+--------------+------------------+-------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>| mysql-bin.000006 |      154 |              |                  |                   |
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>+<span class="hljs-comment">------------------+----------+--------------+------------------+-------------------+</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+<ul><li>至此暂停master上的操作，防止修改参数：mysql-bin.000006</li>
+</ul>
+
+
+
+<h2 id="4从服务器上配置">4、从服务器上配置</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs awk"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>vim <span class="hljs-regexp">/etc/my</span>cnf
+</div></code></pre>
+
+<p><strong>修改如下参数</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ini"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-attr">log_bin</span>=mysql-bin
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-attr">server-id</span>=<span class="hljs-number">2</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-attr">relay_log</span>=mysql-relay-bin           中继日志
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-attr">log_slave_updates</span>=<span class="hljs-number">1</span>                 将复制事件写进自己的二进制日志
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-attr">read_only</span>=<span class="hljs-number">1</span>                         只读
+</div></code></pre>
+
+<p><strong>说明：</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs crmsh"><div class="hljs-line"><span class="hljs-comment line-number">1.</span> <span class="hljs-literal">slave</span>没有必要开启二进制日志，但是在一些情况下，必须设置，例如，如果<span class="hljs-literal">slave</span>为其它<span class="hljs-literal">slave</span>的<span class="hljs-literal">master</span>，必须设置bin_log
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span> 开启了<span class="hljs-literal">slave</span>的二进制日志，却没有设置log_slave_updates，然后查看<span class="hljs-literal">slave</span>的数据是否改变，这是一种错误的配置
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span> read_only，它防止改变数据(除了特殊的线程)
+</div></code></pre>
+
+<p>重启slave</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ebnf"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-attribute">systemctl  restart mysqld</span>
+</div></code></pre>
+
+
+
+<h2 id="5配置slave上的mysql">5、配置slave上的mysql</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs haml"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; change master to master_host='192.168.121.21',
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>    -<span class="ruby">&gt; master_user=<span class="hljs-string">'backup'</span>,
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>    -<span class="ruby">&gt; master_password=<span class="hljs-string">'775120@Lai'</span>,
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>    -<span class="ruby">&gt; master_log_file=<span class="hljs-string">'mysql-bin.000006'</span>,
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>    -<span class="ruby">&gt; master_log_pos=<span class="hljs-number">0</span>;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>Query OK, 0 rows affected, 2 warnings (0.01 sec)
+</div></code></pre>
+
+<blockquote>
+  <p><strong>注意：</strong>MASTER_LOG_POS的值为0，因为它是日志的开始位置。</p>
+</blockquote>
+
+
+
+<h2 id="6启动slave">6、启动slave</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-` hljs crmsh"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; <span class="hljs-literal">start</span> <span class="hljs-literal">slave</span>;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Query OK, <span class="hljs-number">0</span> rows affected (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+
+
+<h2 id="7查看slave的状态">7、查看slave的状态</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">slave</span> <span class="hljs-keyword">status</span>\G;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>*************************** 1. row ***************************
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>               Slave_IO_State: Connecting to master
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>                  Master_Host: 192.168.121.21
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>                  Master_User: <span class="hljs-keyword">backup</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>                  Master_Port: <span class="hljs-number">3306</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>                Connect_Retry: <span class="hljs-number">60</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>              Master_Log_File: mysql-<span class="hljs-keyword">bin</span><span class="hljs-number">.000006</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>          Read_Master_Log_Pos: <span class="hljs-number">4</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>               Relay_Log_File: mysql-relay-<span class="hljs-keyword">bin</span><span class="hljs-number">.000001</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>                Relay_Log_Pos: <span class="hljs-number">4</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>        Relay_Master_Log_File: mysql-<span class="hljs-keyword">bin</span><span class="hljs-number">.000006</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>             Slave_IO_Running: Connecting
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>            Slave_SQL_Running: Yes
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>              Replicate_Do_DB:
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>          Replicate_Ignore_DB:
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>           Replicate_Do_Table:
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>       Replicate_Ignore_Table:
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>      Replicate_Wild_Do_Table:
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>  Replicate_Wild_Ignore_Table:
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>                   Last_Errno: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>                   Last_Error:
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>                 Skip_Counter: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>          Exec_Master_Log_Pos: <span class="hljs-number">4</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>              Relay_Log_Space: <span class="hljs-number">154</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>              Until_Condition: <span class="hljs-keyword">None</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>               Until_Log_File:
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>                Until_Log_Pos: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span>           Master_SSL_Allowed: <span class="hljs-keyword">No</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span>           Master_SSL_CA_File:
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span>           Master_SSL_CA_Path:
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span>              Master_SSL_Cert:
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span>            Master_SSL_Cipher:
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span>               Master_SSL_Key:
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span>        Seconds_Behind_Master: <span class="hljs-literal">NULL</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span>Master_SSL_Verify_Server_Cert: <span class="hljs-keyword">No</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span>                Last_IO_Errno: <span class="hljs-number">2003</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span>                Last_IO_Error: <span class="hljs-keyword">error</span> connecting <span class="hljs-keyword">to</span> <span class="hljs-keyword">master</span> <span class="hljs-string">'backup@192.168.121.21:3306'</span> - retry-<span class="hljs-keyword">time</span>: <span class="hljs-number">60</span>  retries: <span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span>               Last_SQL_Errno: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span>               Last_SQL_Error:
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span>  Replicate_Ignore_Server_Ids:
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span>             Master_Server_Id: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span>                  Master_UUID:
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span>             Master_Info_File: /<span class="hljs-keyword">var</span>/lib/mysql/master.info
+</div><div class="hljs-line"><span class="hljs-comment line-number">45.</span>                    SQL_Delay: <span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">46.</span>          SQL_Remaining_Delay: <span class="hljs-literal">NULL</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">47.</span>      Slave_SQL_Running_State: <span class="hljs-keyword">Slave</span> has <span class="hljs-keyword">read</span> all relay <span class="hljs-keyword">log</span>; waiting for more updates
+</div><div class="hljs-line"><span class="hljs-comment line-number">48.</span>           Master_Retry_Count: 86400
+</div><div class="hljs-line"><span class="hljs-comment line-number">49.</span>                  Master_Bind:
+</div><div class="hljs-line"><span class="hljs-comment line-number">50.</span>      Last_IO_Error_Timestamp: 170904 11:22:33
+</div><div class="hljs-line"><span class="hljs-comment line-number">51.</span>     Last_SQL_Error_Timestamp:
+</div><div class="hljs-line"><span class="hljs-comment line-number">52.</span>               Master_SSL_Crl:
+</div><div class="hljs-line"><span class="hljs-comment line-number">53.</span>           Master_SSL_Crlpath:
+</div><div class="hljs-line"><span class="hljs-comment line-number">54.</span>           Retrieved_Gtid_Set:
+</div><div class="hljs-line"><span class="hljs-comment line-number">55.</span>            Executed_Gtid_Set:
+</div><div class="hljs-line"><span class="hljs-comment line-number">56.</span>                Auto_Position: 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">57.</span>         Replicate_Rewrite_DB:
+</div><div class="hljs-line"><span class="hljs-comment line-number">58.</span>                 Channel_Name:
+</div><div class="hljs-line"><span class="hljs-comment line-number">59.</span>           Master_TLS_Version:
+</div><div class="hljs-line"><span class="hljs-comment line-number">60.</span>1 row in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs avrasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-symbol">Slave_IO_Running:</span> Connecting
+</div></code></pre>
+
+<p><strong>此处显示连不上master</strong> <br>
+排除账号，密码问题，应该是<code>网络问题</code></p>
+
+<blockquote>
+  <p>设置iptables,开放局域网访问权限</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>iptables -I INPUT -s <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span>  -j ACCEPT
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>iptables -I OUTPUT -d <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> -j ACCEPT
+</div></code></pre>
+
+<p>其中192.168.121.0/24，这个是子网的表达方式，后期会更多的说明</p>
+
+<p><strong>再查看slave状态</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">slave</span> <span class="hljs-keyword">status</span>\G;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>*************************** 1. row ***************************
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>               Slave_IO_State: Waiting for master to send event
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>                  Master_Host: 192.168.121.21
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>                  Master_User: <span class="hljs-keyword">backup</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>                  Master_Port: <span class="hljs-number">3306</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>                Connect_Retry: <span class="hljs-number">60</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>              Master_Log_File: mysql-<span class="hljs-keyword">bin</span><span class="hljs-number">.000006</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>          Read_Master_Log_Pos: <span class="hljs-number">154</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>               Relay_Log_File: mysql-relay-<span class="hljs-keyword">bin</span><span class="hljs-number">.000002</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>                Relay_Log_Pos: <span class="hljs-number">367</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>        Relay_Master_Log_File: mysql-<span class="hljs-keyword">bin</span><span class="hljs-number">.000006</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>             Slave_IO_Running: Yes
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>            Slave_SQL_Running: Yes
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs avrasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-symbol">Slave_IO_Running:</span> Yes
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-symbol">Slave_SQL_Running:</span> Yes
+</div></code></pre>
+
+<blockquote>
+  <p>表明配置成功</p>
+  
+  <h1 id="三测试">三、测试</h1>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h2 id="1在master上创建新的数据库schllo">1、在master上创建新的数据库<code>schllo</code></h2>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs excel"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; create database schllo;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Query OK, <span class="hljs-number">1</span> <span class="hljs-built_in">row</span> affected (<span class="hljs-number">0.00</span> <span class="hljs-built_in">sec</span>)
+</div></code></pre>
+
+<p><strong>slave上查看数据库状况</strong></p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs asciidoc"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-section">mysql&gt; show databases;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-section">| Database           |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>| information<span class="hljs-emphasis">_schema |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>| mysql              |
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>| performance_schema |
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>| schllo             |
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-section">| sys                |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>5 rows in set (0.01 sec)
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2master上删除数据库schllo">2、master上删除数据库<code>schllo</code></h2>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs excel"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>mysql&gt; drop database schllo;
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Query OK, <span class="hljs-number">0</span> <span class="hljs-built_in">rows</span> affected (<span class="hljs-number">0.00</span> <span class="hljs-built_in">sec</span>)
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs asciidoc"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>slave上查看数据库状况
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-section">mysql&gt; show databases;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-section">| Database           |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>| information<span class="hljs-emphasis">_schema |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>| mysql              |
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>| performance_schema |
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-section">| sys                |
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>+--------------------+
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>4 rows in set (0.00 sec)
+</div></code></pre></div></body></html>
