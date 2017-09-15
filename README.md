@@ -12,3 +12,4 @@
 <p><a href="https://fatcatsk.github.io/[%E8%BD%AC%E8%BD%BD]Ansible%20%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%E5%92%8CIT%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7.html" target="_blank"><strong>[转载]Ansible ：一个配置管理和IT自动化工具</strong></a>
 <p><a href="https://fatcatsk.github.io/ansible%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5.html" target="_blank"><strong>ansible操作实践</strong></a>
 <p><a href="https://fatcatsk.github.io/Ansible%E4%B8%AD%E6%96%87%E6%89%8B%E5%86%8C.html" target="_blank"><strong>ansible中文手册</strong></a>
+<p><a href="https://fatcatsk.github.io/MySQL%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5.html" target="_blank"><strong>MySQL主从同步</strong></a>
