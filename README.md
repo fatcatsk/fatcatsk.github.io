@@ -13,4 +13,4 @@
 <p><a href="https://fatcatsk.github.io/ansible%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5.html" target="_blank"><strong>ansible操作实践</strong></a>
 <p><a href="https://fatcatsk.github.io/Ansible%E4%B8%AD%E6%96%87%E6%89%8B%E5%86%8C.html" target="_blank"><strong>ansible中文手册</strong></a>
 <p><a href="https://fatcatsk.github.io/MySQL%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5.html" target="_blank"><strong>MySQL主从同步</strong></a>
-<p><a href="https://fatcatsk.github.io/Create%20CentOS%20LNMP%20mediawiki.html" target="_blank"><strong>CentOS LNMP mediawiki</strong></a>
+<p><a href="https://fatcatsk.github.io/CentOS7_LNMP_mediawiki.html" target="_blank"><strong>CentOS7之LNMP环境搭建及mediawiki安装</strong></a>
