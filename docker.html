@@ -1,0 +1,1338 @@
+
+<!DOCTYPE html><html><head><title>docker</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+
+.note-content , .note-content  div {font-size: 16px;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="docker">docker</h1>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#docker">docker</a></li>
+<li><a href="#简介">简介：</a></li>
+<li><a href="#一docker安装">一、docker安装</a><ul>
+<li><a href="#1系统版本检查">1、系统版本检查:</a></li>
+<li><a href="#2安装">2、安装</a><ul>
+<li><a href="#1脚本安装">1、脚本安装</a></li>
+<li><a href="#2库安装">2、库安装</a></li>
+</ul>
+</li>
+<li><a href="#3启动docker">3、启动docker</a></li>
+<li><a href="#4设置开机启动">4、设置开机启动</a></li>
+<li><a href="#5尝试运行">5、尝试运行</a></li>
+</ul>
+</li>
+<li><a href="#二创建docker用户组">二、创建docker用户组</a><ul>
+<li><a href="#usermod指令">usermod指令</a><ul>
+<li><a href="#语法">语法</a></li>
+<li><a href="#选项">选项</a></li>
+<li><a href="#参数">参数</a></li>
+<li><a href="#实例">实例</a></li>
+</ul>
+</li>
+<li><a href="#创建docker用户组">创建docker用户组</a><ul>
+<li><a href="#创建用户组">创建用户组</a><ul>
+<li><a href="#关于groupadd指令">关于groupadd指令</a></li>
+</ul>
+</li>
+<li><a href="#添加用户">添加用户</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#三删除docker">三、删除docker</a><ul>
+<li><a href="#1查找docker安装包">1、查找docker安装包</a></li>
+<li><a href="#2删除docker">2、删除docker</a></li>
+</ul>
+</li>
+<li><a href="#package-架构-版本-源-大小"> Package            架构            版本                             源                        大小</a></li>
+<li><a href="#事务概要">事务概要</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <h1 id="简介">简介：</h1>
+  
+  <p>Docker是一个开源的引擎，可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。开发者在笔记本上编译测试通过的容器可以批量地在生产环境中部署，包括VMs（虚拟机）、bare metal、OpenStack 集群和其他的基础应用平台。</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p><strong>Docker通常用于如下场景：</strong></p>
+  
+  <blockquote>
+    <ul><li>web应用的自动化打包和发布；</li>
+    <li>自动化测试和持续集成、发布；</li>
+    <li>在服务型环境中部署和调整数据库或其他的后台应用；</li>
+    <li>从头编译或者扩展现有的OpenShift或Cloud Foundry平台来搭建自己的PaaS环境。</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p><strong>Docker系统有两个程序：docker服务端和docker客户端。</strong></p>
+  
+  <blockquote>
+    <ul><li>docker服务端是一个服务进程，管理着所有的容器。</li>
+    <li>docker客户端则扮演着docker服务端的远程控制器，可以用来控制docker的服务端进程。</li>
+    <li>大部分情况下，docker服务端和客户端运行在一台机器上。</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+
+
+<h1 id="一docker安装">一、docker安装</h1>
+
+<blockquote>
+  <h2 id="1系统版本检查">1、系统版本检查:</h2>
+  
+  <p>Docker需要一个64位系统的红帽系统，内核的版本必须大于3.10</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">uname</span> <span class="hljs-selector-tag">-r</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>3<span class="hljs-selector-class">.10</span><span class="hljs-selector-class">.0-514</span><span class="hljs-selector-class">.26</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.el7</span><span class="hljs-selector-class">.x86_64</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2安装">2、安装</h2>
+</blockquote>
+
+
+
+<h3 id="1脚本安装">1、脚本安装</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cmake"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum <span class="hljs-keyword">install</span> -y docker
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# docker <span class="hljs-keyword">version</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Clien<span class="hljs-variable">t:</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span> Version:      <span class="hljs-number">17.07</span>.<span class="hljs-number">0</span>-<span class="hljs-keyword">ce</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span> API <span class="hljs-keyword">version</span>:  <span class="hljs-number">1.31</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span> Go <span class="hljs-keyword">version</span>:   go1.<span class="hljs-number">8.3</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span> Git commi<span class="hljs-variable">t:</span>   <span class="hljs-number">8784753</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span> Buil<span class="hljs-variable">t:</span>        Tue Aug <span class="hljs-number">29</span> <span class="hljs-number">17</span>:<span class="hljs-number">42</span>:<span class="hljs-number">01</span> <span class="hljs-number">2017</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span> OS/Arch:      linux/amd64
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>Cannot connect <span class="hljs-keyword">to</span> the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+</div></code></pre>
+
+
+
+<h3 id="2库安装">2、库安装</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cmake"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum <span class="hljs-keyword">install</span> -y docker
+</div></code></pre>
+
+<blockquote>
+  <h2 id="3启动docker">3、启动docker</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs crmsh"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>service docker <span class="hljs-literal">start</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="4设置开机启动">4、设置开机启动</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>chkconfig docker <span class="hljs-keyword">on</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="5尝试运行">5、尝试运行</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs sqf"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># docker run hello-world</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Unable <span class="hljs-keyword">to</span> <span class="hljs-built_in">find</span> <span class="hljs-built_in">image</span> <span class="hljs-string">'hello-world:latest'</span> locally
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>latest: Pulling <span class="hljs-keyword">from</span> library/hello-world
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">5</span>b0f327be733: Pull complete 
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>Digest: sha256:<span class="hljs-number">1</span>f19634d26995c320618d94e6f29c09c6589d5df3c063287a00e6de8458f8242
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>Status: Downloaded newer <span class="hljs-built_in">image</span> <span class="hljs-keyword">for</span> hello-world:latest
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Hello <span class="hljs-keyword">from</span> Docker!
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>This message shows that your installation appears <span class="hljs-keyword">to</span> be working correctly.
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-keyword">To</span> generate this message, Docker took the following steps:
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span> <span class="hljs-number">1</span>. The Docker client contacted the Docker daemon.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span> <span class="hljs-number">2</span>. The Docker daemon pulled the <span class="hljs-string">"hello-world"</span> <span class="hljs-built_in">image</span> <span class="hljs-keyword">from</span> the Docker Hub.
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span> <span class="hljs-number">3</span>. The Docker daemon created a new container <span class="hljs-keyword">from</span> that <span class="hljs-built_in">image</span> which runs the
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>    executable that produces the output you are currently reading.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span> <span class="hljs-number">4</span>. The Docker daemon streamed that output <span class="hljs-keyword">to</span> the Docker client, which sent it
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>    <span class="hljs-keyword">to</span> your terminal.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-keyword">To</span> <span class="hljs-keyword">try</span> something more ambitious, you can run an Ubuntu container <span class="hljs-keyword">with</span>:
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span> $ docker run -it ubuntu bash
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>Share images, automate workflows, <span class="hljs-built_in">and</span> more <span class="hljs-keyword">with</span> a free Docker ID:
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span> https:<span class="hljs-comment">//cloud.docker.com/</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span><span class="hljs-keyword">For</span> more examples <span class="hljs-built_in">and</span> ideas, visit:
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span> https:<span class="hljs-comment">//docs.docker.com/engine/userguide/</span>
+</div></code></pre>
+
+
+
+<h1 id="二创建docker用户组">二、创建docker用户组</h1>
+
+<blockquote>
+  <h2 id="usermod指令"><strong>usermod指令</strong></h2>
+  
+  <ul><li>usermod命令用于修改用户的基本信息。</li>
+  <li>usermod命令不允许你改变正在线上的使用者帐号名称。</li>
+  <li>当usermod命令用来改变user id，必须确认这名user没在电脑上执行任何程序。</li>
+  <li>你需手动更改使用者的crontab档。也需手动更改使用者的at工作档。</li>
+  <li>采用NIS server须在server上更动相关的NIS设定。 </li>
+  </ul>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h3 id="语法">语法</h3>
+  
+  <p>usermod(选项)(参数) </p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h3 id="选项">选项</h3>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>选项名</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>-c&lt;备注&gt;</td>
+  <td>修改用户帐号的备注文字；</td>
+</tr>
+<tr>
+  <td>-d&lt;登入目录&gt;</td>
+  <td>修改用户登入时的目录；</td>
+</tr>
+<tr>
+  <td>-e&lt;有效期限&gt;</td>
+  <td>修改帐号的有效期限；</td>
+</tr>
+<tr>
+  <td>-f&lt;缓冲天数&gt;</td>
+  <td>修改在密码过期后多少天即关闭该帐号；</td>
+</tr>
+<tr>
+  <td>-g&lt;群组&gt;</td>
+  <td>修改用户所属的群组；</td>
+</tr>
+<tr>
+  <td>-G&lt;群组&gt;</td>
+  <td>修改用户所属的附加群组；</td>
+</tr>
+<tr>
+  <td>-l&lt;帐号名称&gt;</td>
+  <td>修改用户帐号名称；</td>
+</tr>
+<tr>
+  <td>-L</td>
+  <td>锁定用户密码，使密码无效；</td>
+</tr>
+<tr>
+  <td>-s</td>
+  <td>修改用户登入后所使用的shell；</td>
+</tr>
+<tr>
+  <td>-u</td>
+  <td>修改用户ID；</td>
+</tr>
+<tr>
+  <td>-U</td>
+  <td>解除密码锁定。</td>
+</tr>
+</tbody></table>
+
+
+<blockquote>
+  <h3 id="参数">参数</h3>
+  
+  <p>登录名：指定要修改信息的用户登录名。 </p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h3 id="实例">实例</h3>
+</blockquote>
+
+<ul><li>将newuser2添加到组staff中：</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs haxe"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>usermod -G staff <span class="hljs-keyword">new</span><span class="hljs-type">user2</span> 
+</div></code></pre>
+
+<ul><li>修改newuser的用户名为newuser1： </li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs haxe"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>usermod -l <span class="hljs-keyword">new</span><span class="hljs-type">user1</span> <span class="hljs-keyword">new</span><span class="hljs-type">user</span> 
+</div></code></pre>
+
+<ul><li>锁定账号newuser1： </li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs haxe"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>usermod -L <span class="hljs-keyword">new</span><span class="hljs-type">user1</span> 
+</div></code></pre>
+
+<ul><li>解除对newuser1的锁定： </li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs gcode"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>usermod -U <span class="hljs-symbol">newuser1</span>
+</div></code></pre>
+
+
+
+<h2 id="创建docker用户组">创建docker用户组</h2>
+
+
+
+<h3 id="创建用户组">创建用户组</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>groupadd -g <span class="hljs-number">122</span> docker
+</div></code></pre>
+
+<blockquote>
+  <h4 id="关于groupadd指令">关于groupadd指令</h4>
+  
+  <ul><li>groupadd命令用户和工作组管理 </li>
+  <li>groupadd命令用于创建一个新的工作组，新工作组的信息将被添加到系统文件中。 </li>
+  </ul>
+</blockquote>
+
+<ul><li><p>语法  <br>
+groupadd(选项)(参数) </p></li>
+<li><p>选项</p></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>选项</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>-g</td>
+  <td>指定新建工作组的id</td>
+</tr>
+<tr>
+  <td>-r</td>
+  <td>创建系统工作组，系统工作组的组ID小于500</td>
+</tr>
+<tr>
+  <td>-K</td>
+  <td>覆盖配置文件“/ect/login.defs”</td>
+</tr>
+<tr>
+  <td>-o</td>
+  <td>允许添加组ID号不唯一的工作组</td>
+</tr>
+</tbody></table>
+
+
+<ul><li>参数  <br>
+组名：指定新建工作组的组名。 </li>
+</ul>
+
+<hr>
+
+<ul><li>实例  <br>
+建立一个新组，并设置组ID加入系统： </li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>groupadd -g <span class="hljs-number">344</span> linuxde 
+</div></code></pre>
+
+<p><strong>此时在/etc/passwd文件中产生一个组ID（GID）是344的项目</strong></p>
+
+
+
+<h3 id="添加用户">添加用户</h3>
+
+<p>使用root权限将用户添加到用户组</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs bash"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>usermod <span class="hljs-_">-a</span>G docker your_username
+</div></code></pre>
+
+<p>实践</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@centos</span><span class="hljs-number">-1</span> lcr]<span class="hljs-meta"># usermod -aG docker lcr</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong>重新登录系统，让权限生效</strong> <br>
+  以<code>普通用户</code>运行<code>docker</code></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[lcr@centos-1 ~]$ docker run hello-world
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Unable <span class="hljs-keyword">to</span> find image <span class="hljs-string">'hello-world:latest'</span> locally
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>Trying <span class="hljs-keyword">to</span> pull repository docker.io/library/hello-world ... 
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>latest: Pulling <span class="hljs-keyword">from</span> docker.io/library/hello-world
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5b</span>0f327be733: Pull complete 
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>Digest: sha256:<span class="hljs-number">1f</span>19634d26995c320618d94e6f29c09c6589d5df3c063287a00e6de8458f8242
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>Hello <span class="hljs-keyword">from</span> Docker!
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>This message shows <span class="hljs-literal">that</span> your installation appears <span class="hljs-keyword">to</span> be working correctly.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>To generate <span class="hljs-keyword">this</span> message, Docker took the following steps:
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span> <span class="hljs-number">1.</span> The Docker client contacted the Docker daemon.
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span> <span class="hljs-number">2.</span> The Docker daemon pulled the <span class="hljs-string">"hello-world"</span> image <span class="hljs-keyword">from</span> the Docker Hub.
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span> <span class="hljs-number">3.</span> The Docker daemon created a <span class="hljs-keyword">new</span> container <span class="hljs-keyword">from</span> <span class="hljs-literal">that</span> image which runs the
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>    executable <span class="hljs-literal">that</span> produces the output you are currently reading.
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span> <span class="hljs-number">4.</span> The Docker daemon streamed <span class="hljs-literal">that</span> output <span class="hljs-keyword">to</span> the Docker client, which sent <span class="hljs-literal">it</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>    <span class="hljs-keyword">to</span> your terminal.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>To <span class="hljs-keyword">try</span> something more ambitious, you can run an Ubuntu container with:
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span> $ docker run -<span class="hljs-literal">it</span> ubuntu bash
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>Share images, automate workflows, <span class="hljs-keyword">and</span> more <span class="hljs-keyword">with</span> a free Docker ID:
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span> https:<span class="hljs-regexp">//cloud.docker.com/
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>For more examples and ideas, visit:
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span> https://docs.docker.com<span class="hljs-regexp">/engine/userguide/</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong>对比未添加用户组的</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> lcr]<span class="hljs-meta"># exit</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-keyword">exit</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>[lcr<span class="hljs-symbol">@localhost</span> ~]$ docker <span class="hljs-built_in">run</span> hello-world
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>docker: Got permission denied <span class="hljs-keyword">while</span> trying <span class="hljs-keyword">to</span> connect <span class="hljs-keyword">to</span> the Docker daemon socket at unix:///var/<span class="hljs-built_in">run</span>/docker.sock: Post http://%<span class="hljs-number">2</span>Fvar%<span class="hljs-number">2</span>Frun%<span class="hljs-number">2</span>Fdocker.sock/v1<span class="hljs-number">.31</span>/containers/create: dial unix /var/<span class="hljs-built_in">run</span>/docker.sock: connect: permission denied.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>See <span class="hljs-string">'docker run --help'</span>.
+</div></code></pre>
+
+
+
+<h1 id="三删除docker">三、删除docker</h1>
+
+<blockquote>
+  <h2 id="1查找docker安装包">1、查找docker安装包</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum <span class="hljs-keyword">list</span> installed | <span class="hljs-keyword">grep</span> docker
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[lcr@localhost ~]$ yum <span class="hljs-keyword">list</span> installed | <span class="hljs-keyword">grep</span> docker
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>docker-<span class="hljs-keyword">ce</span>.x86_64                       <span class="hljs-number">17.07</span>.<span class="hljs-number">0</span>.<span class="hljs-keyword">ce</span>-<span class="hljs-number">1</span>.el7.centos         @docker-<span class="hljs-keyword">ce</span>-edge
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2删除docker">2、删除docker</h2>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs clean"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum -y remove docker-engine.x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>````
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>&gt;###<span class="hljs-number">3</span>、清除镜像和容器文件
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>前两步操作不会删除镜像和容器文件
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>&lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/div&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div></code></pre>
+
+<p>rm -rf /var/lib/docker</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs javascript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>&gt;实践操作
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div></code></pre>
+
+<p>[root@localhost lcr]# yum list installed |grep docker <br>
+docker-ce.x86_64                       17.07.0.ce-1.el7.centos         @docker-ce-edge <br>
+[root@localhost lcr]# yum -y remove docker-ce.x86_64  <br>
+已加载插件：fastestmirror, langpacks <br>
+正在解决依赖关系 <br>
+–&gt; 正在检查事务 <br>
+—&gt; 软件包 docker-ce.x86_64.0.17.07.0.ce-1.el7.centos 将被 删除 <br>
+–&gt; 解决依赖关系完成</p>
+
+<p>依赖关系解决</p>
+
+<p>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>=<mark>=</mark>====</p>
+
+<h1 id="package-架构-版本-源-大小"> Package            架构            版本                             源                        大小</h1>
+
+<p>正在删除: <br>
+ docker-ce          x86_64          17.07.0.ce-1.el7.centos          @docker-ce-edge           75 M</p>
+
+<h1 id="事务概要">事务概要</h1>
+
+<p>移除  1 软件包</p>
+
+<p>安装大小：75 M <br>
+Downloading packages: <br>
+Running transaction check <br>
+Running transaction test <br>
+Transaction test succeeded <br>
+Running transaction <br>
+  正在删除    : docker-ce-17.07.0.ce-1.el7.centos.x86_64                                        1/1  <br>
+  验证中      : docker-ce-17.07.0.ce-1.el7.centos.x86_64                                        1/1 </p>
+
+<p>删除: <br>
+  docker-ce.x86_64 0:17.07.0.ce-1.el7.centos                                                        </p>
+
+<p>完毕！</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="applescript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-comment">#四、搜索镜像</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker search tutorial <br>
+INDEX       NAME                                              DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED <br>
+docker.io   docker.io/learn/tutorial                                                                          29 <br>
+docker.io   docker.io/georgeyord/reactjs-tutorial             This is the backend of the React comment b…   4                    [OK] <br>
+docker.io   docker.io/chris24walsh/flask-aws-tutorial         Runs a simple flask webapp demo, with the …   1                    [OK] <br>
+docker.io   docker.io/mhausenblas/kairosdb-tutorial           GitHub fetcher for KairosDB tutorial            1                    [OK] <br>
+docker.io   docker.io/abarkai/aws-lambda-ecs-tutorial                                                         0 <br>
+docker.io   docker.io/activeeon/par-connector-tutorial        Do the par-connector tutorial with R. The …   0                    [OK] <br>
+docker.io   docker.io/camphor/python-tutorial                 camphor-/python-tutorial                        0                    [OK] <br>
+docker.io   docker.io/cloudboost/tutorial                                                                     0 <br>
+docker.io   docker.io/emooti/tutorial2build                   Tutorial2 Build                                 0 <br>
+docker.io   docker.io/fiware/tutorials.tourguide-app          FIWARE Tour Guide App sample application        0                    [OK] <br>
+docker.io   docker.io/imiell/git-101-tutorial                                                                 0 <br>
+docker.io   docker.io/imiell/git-rebase-tutorial                                                              0 <br>
+docker.io   docker.io/jbalexandre/docker-tutorial                                                             0 <br>
+docker.io   docker.io/kidikarus/concourse-tutorial-47-tasks                                                   0 <br>
+docker.io   docker.io/kobe25/docker-tutorial                  Docker Tutorial                                 0                    [OK] <br>
+docker.io   docker.io/krishnatest/docker-nodejs-tutorialkk    docker-nodejs-tutorialkk                        0 <br>
+docker.io   docker.io/lukasheinrich/quickana-tutorial         Image for the analysis code built from htt…   0 <br>
+docker.io   docker.io/microsoft/aci-tutorial-sidecar                                                          0 <br>
+docker.io   docker.io/muli/gluon-tutorials-zh                 <a href="https://github.com/mli/gluon-tutorials-zh" target="_blank">https://github.com/mli/gluon-tutorials-zh</a>       0                    [OK] <br>
+docker.io   docker.io/onekit/rest-tutorial                    REST API server-side tutorial. How to do i…   0                    [OK] <br>
+docker.io   docker.io/paddledev/paddle-tutorial               images that paddle tutorials use.               0 <br>
+docker.io   docker.io/paulcos11/docker-tutorial               docker tutorial                                 0                    [OK] <br>
+docker.io   docker.io/schwamster/docker-tutorial                                                              0 <br>
+docker.io   docker.io/starkandwayne/concourse-tutorial                                                        0 <br>
+docker.io   docker.io/starkandwayne/concourse-tutorial-ci                                                     0                    </p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="applescript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>![Alt <span class="hljs-built_in">text</span>](./<span class="hljs-number">1506154324133.</span>png)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-comment">#五、下载镜像</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker pull learn/tutorial <br>
+Using default tag: latest <br>
+Trying to pull repository docker.io/learn/tutorial …  <br>
+latest: Pulling from docker.io/learn/tutorial <br>
+271134aeb542: Pull complete  <br>
+Digest: sha256:2933b82e7c2a72ad8ea89d58af5d1472e35dacd5b7233577483f58ff8f9338bd</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="applescript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-comment">#六、运行容器</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>&gt;docker容器可以理解为在沙盒中运行的进程。
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>这个沙盒包含了该进程运行所必须的资源，包括文件系统、系统类库、shell 环境等等。
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>但这个沙盒默认是不会运行任何程序的。
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>你需要在沙盒中运行一个进程来启动某一个容器。
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>这个进程是该容器的唯一进程，所以当该进程结束的时候，容器也会完全的停止。
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>**`docker <span class="hljs-built_in">run</span>`命令有两个参数:**
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>- 一个是镜像名，
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>- 一个是要在镜像中运行的命令。
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]<span class="MathJax_Preview"></span><span class="MathJax_SVG" id="MathJax-Element-6-Frame" role="textbox" aria-readonly="true" style="font-size: 100%; display: inline-block;"><span><img type="image/png" width="576" height="18" longdesc="__SVG__undefined" src="data:image/png;base64,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" style="margin-top:0;margin-bottom:0;"></span></span> </p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="applescript">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-comment">#七、容器中安装新的程序</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>tutorial镜像是基于ubuntu
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>在执行apt-<span class="hljs-keyword">get</span> 命令的时候，要带上-y参数。如果不指定-y参数的话，apt-<span class="hljs-keyword">get</span>命令会进入交互模式，需要用户输入命令来进行确认，但在docker环境中是无法响应这种交互的。
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>&gt;**实践**
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>- 安装apache
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker run learn/tutorial apt-get -y install apache2 <br>
+Reading package lists… <br>
+Building dependency tree… <br>
+The following extra packages will be installed: <br>
+  apache2-mpm-worker apache2-utils apache2.2-bin apache2.2-common file libapr1 <br>
+  libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libasn1-8-heimdal <br>
+  libcap2 libclass-isa-perl libexpat1 libgcrypt11 libgdbm3 libgnutls26 <br>
+  libgpg-error0 libgssapi3-heimdal libhcrypto4-heimdal libheimbase1-heimdal <br>
+  libheimntlm0-heimdal libhx509-5-heimdal libkrb5-26-heimdal libldap-2.4-2 <br>
+  libmagic1 libp11-kit0 libroken18-heimdal libsasl2-2 libsasl2-modules <br>
+  libsqlite3-0 libswitch-perl libtasn1-3 libwind0-heimdal mime-support netbase <br>
+  openssl perl perl-modules ssl-cert <br>
+Suggested packages: <br>
+  www-browser apache2-doc apache2-suexec apache2-suexec-custom ufw rng-tools <br>
+  gnutls-bin libsasl2-modules-otp libsasl2-modules-ldap libsasl2-modules-sql <br>
+  libsasl2-modules-gssapi-mit libsasl2-modules-gssapi-heimdal ca-certificates <br>
+  perl-doc libterm-readline-gnu-perl libterm-readline-perl-perl make <br>
+  libpod-plainer-perl openssl-blacklist <br>
+The following NEW packages will be installed: <br>
+  apache2 apache2-mpm-worker apache2-utils apache2.2-bin apache2.2-common file <br>
+  libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap <br>
+  libasn1-8-heimdal libcap2 libclass-isa-perl libexpat1 libgcrypt11 libgdbm3 <br>
+  libgnutls26 libgpg-error0 libgssapi3-heimdal libhcrypto4-heimdal <br>
+  libheimbase1-heimdal libheimntlm0-heimdal libhx509-5-heimdal <br>
+  libkrb5-26-heimdal libldap-2.4-2 libmagic1 libp11-kit0 libroken18-heimdal <br>
+  libsasl2-2 libsasl2-modules libsqlite3-0 libswitch-perl libtasn1-3 <br>
+  libwind0-heimdal mime-support netbase openssl perl perl-modules ssl-cert <br>
+0 upgraded, 40 newly installed, 0 to remove and 0 not upgraded. <br>
+Need to get 13.1 MB of archives. <br>
+After this operation, 49.0 MB of additional disk space will be used. <br>
+Get:1 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libexpat1 amd64 2.0.1-7.2ubuntu1 [131 kB] <br>
+Get:2 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libsqlite3-0 amd64 3.7.9-2ubuntu1 [348 kB] <br>
+Get:3 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libroken18-heimdal amd64 1.6~git20120311.dfsg.1-2 [46.0 kB] <br>
+Get:4 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libasn1-8-heimdal amd64 1.6~git20120311.dfsg.1-2 [220 kB] <br>
+Get:5 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libgpg-error0 amd64 1.10-2ubuntu1 [14.5 kB] <br>
+Get:6 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libgcrypt11 amd64 1.5.0-3 [280 kB] <br>
+Get:7 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libgdbm3 amd64 1.8.3-10 [35.3 kB] <br>
+Get:8 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libp11-kit0 amd64 0.12-2ubuntu1 [34.3 kB] <br>
+Get:9 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libtasn1-3 amd64 2.10-1ubuntu1 [43.1 kB] <br>
+Get:10 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libgnutls26 amd64 2.12.14-5ubuntu3 [459 kB] <br>
+Get:11 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libhcrypto4-heimdal amd64 1.6~git20120311.dfsg.1-2 [103 kB] <br>
+Get:12 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libheimbase1-heimdal amd64 1.6~git20120311.dfsg.1-2 [33.0 kB] <br>
+Get:13 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libwind0-heimdal amd64 1.6~git20120311.dfsg.1-2 [77.8 kB] <br>
+Get:14 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libhx509-5-heimdal amd64 1.6~git20120311.dfsg.1-2 [125 kB] <br>
+Get:15 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libkrb5-26-heimdal amd64 1.6~git20120311.dfsg.1-2 [234 kB] <br>
+Get:16 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libheimntlm0-heimdal amd64 1.6~git20120311.dfsg.1-2 [16.0 kB] <br>
+Get:17 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libgssapi3-heimdal amd64 1.6~git20120311.dfsg.1-2 [108 kB] <br>
+Get:18 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libsasl2-2 amd64 2.1.25.dfsg1-3 [69.8 kB] <br>
+Get:19 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libldap-2.4-2 amd64 2.4.28-1.1ubuntu4 [186 kB] <br>
+Get:20 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libcap2 amd64 1:2.22-1ubuntu3 [12.0 kB] <br>
+Get:21 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libmagic1 amd64 5.09-2 [217 kB] <br>
+Get:22 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main file amd64 5.09-2 [19.7 kB] <br>
+Get:23 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main mime-support all 3.51-1ubuntu1 [30.7 kB] <br>
+Get:24 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main netbase all 4.47ubuntu1 [15.0 kB] <br>
+Get:25 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libsasl2-modules amd64 2.1.25.dfsg1-3 [63.4 kB] <br>
+Get:26 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main openssl amd64 1.0.1-4ubuntu3 [523 kB] <br>
+Get:27 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libapr1 amd64 1.4.6-1 [89.6 kB] <br>
+Get:28 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libaprutil1 amd64 1.3.12+dfsg-3 [74.6 kB] <br>
+Get:29 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libaprutil1-dbd-sqlite3 amd64 1.3.12+dfsg-3 [10.4 kB] <br>
+Get:30 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libaprutil1-ldap amd64 1.3.12+dfsg-3 [8044 B] <br>
+Get:31 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main apache2.2-bin amd64 2.2.22-1ubuntu1 [1337 kB]</p>
+
+<p>Message from syslogd@centos-1 at Sep 23 16:32:39 … <br>
+ kernel:unregister_netdevice: waiting for lo to become free. Usage count = 0 <br>
+Get:32 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main apache2-utils amd64 2.2.22-1ubuntu1 [91.0 kB] <br>
+Get:33 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libswitch-perl all 2.16-2 [19.2 kB] <br>
+Get:34 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main libclass-isa-perl all 0.36-3 [11.9 kB] <br>
+Get:35 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main perl-modules all 5.14.2-6ubuntu2 [3369 kB] <br>
+Get:36 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main perl amd64 5.14.2-6ubuntu2 [4417 kB] <br>
+Get:37 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main apache2.2-common amd64 2.2.22-1ubuntu1 [228 kB] <br>
+Get:38 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main apache2-mpm-worker amd64 2.2.22-1ubuntu1 [2294 B] <br>
+Get:39 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main apache2 amd64 2.2.22-1ubuntu1 [1484 B] <br>
+Get:40 <a href="http://archive.ubuntu.com/ubuntu/" target="_blank">http://archive.ubuntu.com/ubuntu/</a> precise/main ssl-cert all 1.0.28 [12.2 kB] <br>
+debconf: delaying package configuration, since apt-utils is not installed <br>
+Fetched 13.1 MB in 1min 25s (153 kB/s) <br>
+Selecting previously unselected package libexpat1. <br>
+(Reading database … 7545 files and directories currently installed.) <br>
+Unpacking libexpat1 (from …/libexpat1_2.0.1-7.2ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libsqlite3-0. <br>
+Unpacking libsqlite3-0 (from …/libsqlite3-0_3.7.9-2ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libroken18-heimdal. <br>
+Unpacking libroken18-heimdal (from …/libroken18-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libasn1-8-heimdal. <br>
+Unpacking libasn1-8-heimdal (from …/libasn1-8-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libgpg-error0. <br>
+Unpacking libgpg-error0 (from …/libgpg-error0_1.10-2ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libgcrypt11. <br>
+Unpacking libgcrypt11 (from …/libgcrypt11_1.5.0-3_amd64.deb) … <br>
+Selecting previously unselected package libgdbm3. <br>
+Unpacking libgdbm3 (from …/libgdbm3_1.8.3-10_amd64.deb) … <br>
+Selecting previously unselected package libp11-kit0. <br>
+Unpacking libp11-kit0 (from …/libp11-kit0_0.12-2ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libtasn1-3. <br>
+Unpacking libtasn1-3 (from …/libtasn1-3_2.10-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libgnutls26. <br>
+Unpacking libgnutls26 (from …/libgnutls26_2.12.14-5ubuntu3_amd64.deb) … <br>
+Selecting previously unselected package libhcrypto4-heimdal. <br>
+Unpacking libhcrypto4-heimdal (from …/libhcrypto4-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libheimbase1-heimdal. <br>
+Unpacking libheimbase1-heimdal (from …/libheimbase1-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libwind0-heimdal. <br>
+Unpacking libwind0-heimdal (from …/libwind0-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libhx509-5-heimdal. <br>
+Unpacking libhx509-5-heimdal (from …/libhx509-5-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libkrb5-26-heimdal. <br>
+Unpacking libkrb5-26-heimdal (from …/libkrb5-26-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libheimntlm0-heimdal. <br>
+Unpacking libheimntlm0-heimdal (from …/libheimntlm0-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libgssapi3-heimdal. <br>
+Unpacking libgssapi3-heimdal (from …/libgssapi3-heimdal_1.6~git20120311.dfsg.1-2_amd64.deb) … <br>
+Selecting previously unselected package libsasl2-2. <br>
+Unpacking libsasl2-2 (from …/libsasl2-2_2.1.25.dfsg1-3_amd64.deb) … <br>
+Selecting previously unselected package libldap-2.4-2. <br>
+Unpacking libldap-2.4-2 (from …/libldap-2.4-2_2.4.28-1.1ubuntu4_amd64.deb) … <br>
+Selecting previously unselected package libcap2. <br>
+Unpacking libcap2 (from …/libcap2_1%3a2.22-1ubuntu3_amd64.deb) … <br>
+Selecting previously unselected package libmagic1. <br>
+Unpacking libmagic1 (from …/libmagic1_5.09-2_amd64.deb) … <br>
+Selecting previously unselected package file. <br>
+Unpacking file (from …/archives/file_5.09-2_amd64.deb) … <br>
+Selecting previously unselected package mime-support. <br>
+Unpacking mime-support (from …/mime-support_3.51-1ubuntu1_all.deb) … <br>
+Selecting previously unselected package netbase. <br>
+Unpacking netbase (from …/netbase_4.47ubuntu1_all.deb) … <br>
+Selecting previously unselected package libsasl2-modules. <br>
+Unpacking libsasl2-modules (from …/libsasl2-modules_2.1.25.dfsg1-3_amd64.deb) … <br>
+Selecting previously unselected package openssl. <br>
+Unpacking openssl (from …/openssl_1.0.1-4ubuntu3_amd64.deb) … <br>
+Selecting previously unselected package libapr1. <br>
+Unpacking libapr1 (from …/libapr1_1.4.6-1_amd64.deb) … <br>
+Selecting previously unselected package libaprutil1. <br>
+Unpacking libaprutil1 (from …/libaprutil1_1.3.12+dfsg-3_amd64.deb) … <br>
+Selecting previously unselected package libaprutil1-dbd-sqlite3. <br>
+Unpacking libaprutil1-dbd-sqlite3 (from …/libaprutil1-dbd-sqlite3_1.3.12+dfsg-3_amd64.deb) … <br>
+Selecting previously unselected package libaprutil1-ldap. <br>
+Unpacking libaprutil1-ldap (from …/libaprutil1-ldap_1.3.12+dfsg-3_amd64.deb) … <br>
+Selecting previously unselected package apache2.2-bin. <br>
+Unpacking apache2.2-bin (from …/apache2.2-bin_2.2.22-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package apache2-utils. <br>
+Unpacking apache2-utils (from …/apache2-utils_2.2.22-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package libswitch-perl. <br>
+Unpacking libswitch-perl (from …/libswitch-perl_2.16-2_all.deb) … <br>
+Selecting previously unselected package libclass-isa-perl. <br>
+Unpacking libclass-isa-perl (from …/libclass-isa-perl_0.36-3_all.deb) … <br>
+Selecting previously unselected package perl-modules. <br>
+Unpacking perl-modules (from …/perl-modules_5.14.2-6ubuntu2_all.deb) … <br>
+Selecting previously unselected package perl. <br>
+Unpacking perl (from …/perl_5.14.2-6ubuntu2_amd64.deb) … <br>
+Selecting previously unselected package apache2.2-common. <br>
+Unpacking apache2.2-common (from …/apache2.2-common_2.2.22-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package apache2-mpm-worker. <br>
+Unpacking apache2-mpm-worker (from …/apache2-mpm-worker_2.2.22-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package apache2. <br>
+Unpacking apache2 (from …/apache2_2.2.22-1ubuntu1_amd64.deb) … <br>
+Selecting previously unselected package ssl-cert. <br>
+Unpacking ssl-cert (from …/ssl-cert_1.0.28_all.deb) … <br>
+Setting up libexpat1 (2.0.1-7.2ubuntu1) … <br>
+Setting up libsqlite3-0 (3.7.9-2ubuntu1) … <br>
+Setting up libroken18-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libasn1-8-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libgpg-error0 (1.10-2ubuntu1) … <br>
+Setting up libgcrypt11 (1.5.0-3) … <br>
+Setting up libgdbm3 (1.8.3-10) … <br>
+Setting up libp11-kit0 (0.12-2ubuntu1) … <br>
+Setting up libtasn1-3 (2.10-1ubuntu1) … <br>
+Setting up libgnutls26 (2.12.14-5ubuntu3) … <br>
+Setting up libhcrypto4-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libheimbase1-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libwind0-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libhx509-5-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libkrb5-26-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libheimntlm0-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libgssapi3-heimdal (1.6~git20120311.dfsg.1-2) … <br>
+Setting up libsasl2-2 (2.1.25.dfsg1-3) … <br>
+Setting up libldap-2.4-2 (2.4.28-1.1ubuntu4) … <br>
+Setting up libcap2 (1:2.22-1ubuntu3) … <br>
+Setting up libmagic1 (5.09-2) … <br>
+Setting up file (5.09-2) … <br>
+Setting up mime-support (3.51-1ubuntu1) … <br>
+update-alternatives: using /usr/bin/see to provide /usr/bin/view (view) in auto mode. <br>
+Setting up netbase (4.47ubuntu1) … <br>
+Setting up libsasl2-modules (2.1.25.dfsg1-3) … <br>
+Setting up openssl (1.0.1-4ubuntu3) … <br>
+Setting up libapr1 (1.4.6-1) … <br>
+Setting up libaprutil1 (1.3.12+dfsg-3) … <br>
+Setting up libaprutil1-dbd-sqlite3 (1.3.12+dfsg-3) … <br>
+Setting up libaprutil1-ldap (1.3.12+dfsg-3) … <br>
+Setting up apache2.2-bin (2.2.22-1ubuntu1) … <br>
+Setting up apache2-utils (2.2.22-1ubuntu1) … <br>
+Setting up libclass-isa-perl (0.36-3) … <br>
+Setting up ssl-cert (1.0.28) … <br>
+debconf: unable to initialize frontend: Dialog <br>
+debconf: (TERM is not set, so the dialog frontend is not usable.) <br>
+debconf: falling back to frontend: Readline <br>
+debconf: unable to initialize frontend: Readline <br>
+debconf: (This frontend requires a controlling tty.) <br>
+debconf: falling back to frontend: Teletype <br>
+Setting up libswitch-perl (2.16-2) … <br>
+Setting up perl-modules (5.14.2-6ubuntu2) … <br>
+Setting up perl (5.14.2-6ubuntu2) … <br>
+update-alternatives: using /usr/bin/prename to provide /usr/bin/rename (rename) in auto mode. <br>
+Setting up apache2.2-common (2.2.22-1ubuntu1) … <br>
+Enabling site default. <br>
+Enabling module alias. <br>
+Enabling module autoindex. <br>
+Enabling module dir. <br>
+Enabling module env. <br>
+Enabling module mime. <br>
+Enabling module negotiation. <br>
+Enabling module setenvif. <br>
+Enabling module status. <br>
+Enabling module auth_basic. <br>
+Enabling module deflate. <br>
+Enabling module authz_default. <br>
+Enabling module authz_user. <br>
+Enabling module authz_groupfile. <br>
+Enabling module authn_file. <br>
+Enabling module authz_host. <br>
+Enabling module reqtimeout. <br>
+Setting up apache2-mpm-worker (2.2.22-1ubuntu1) …</p>
+
+<ul><li>Starting web server apache2 <br>
+apache2: Could not reliably determine the server’s fully qualified domain name, using 172.17.0.2 for ServerName <br>
+…done. <br>
+Setting up apache2 (2.2.22-1ubuntu1) … <br>
+Processing triggers for libc-bin … <br>
+ldconfig deferred processing now taking place</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="applescript">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-comment">#八、保存对容器的修改</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>当你对某一个容器做了修改之后（通过在容器中运行某一个命令），可以把对容器的修改保存下来，这样下次可以从保存后的最新状态运行该容器。
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>docker中保存状态的过程称之为committing，它保存的新旧状态之间的区别，从而产生一个新的版本。
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker commit <br>
+“docker commit” requires at least 1 and at most 2 argument(s). <br>
+See ‘docker commit –help’.</p>
+
+<p>Usage:  docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</p>
+
+<p>Create a new image from a container’s changes <br>
+[lcr@centos-1 ~]$ docker commit –help</p>
+
+<p>Usage:  docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</p>
+
+<p>Create a new image from a container’s changes</p>
+
+<p>Options: <br>
+  -a, –author string    Author (e.g., “John Hannibal Smith <a href="mailto:hannibal@a-team.com" target="_blank">hannibal@a-team.com</a>”) <br>
+  -c, –change value     Apply Dockerfile instruction to the created image (default []) <br>
+      –help             Print usage <br>
+  -m, –message string   Commit message <br>
+  -p, –pause            Pause container during commit (default true)</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs javascript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>&gt;使用<span class="hljs-string">``</span>docker ps -l<span class="hljs-string">``</span>获取当前容器的id
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker ps -l <br>
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES <br>
+d98186ab3b4b        learn/tutorial      “ls”                3 minutes ago       Exited (0) 3 minutes ago                       pensive_darwin</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="markdown"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>![<span class="hljs-string">Alt text</span>](<span class="hljs-link">./1506156345602.png</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>&gt;<span class="hljs-strong">**使用commit保存版本**</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>&gt;- 需要指定要提交保存容器的ID。(通过docker ps -l 命令获得)
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-bullet">- </span>无需拷贝完整的id，通常来讲最开始的三至四个字母即可区分
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>
+</div></code></pre>
+
+<p>docker commit id name</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="javascript">&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker commit d9818 learn/apache <br>
+sha256:6609e42ac8818a6b32e88b6ab6f76d3ef28d6d50bf97ab5b628ea1391c711169</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs javascript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>下次运行可以使用<span class="hljs-string">`learn/apache`</span>的镜像名运行
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker run learn/ping ping www.baidu.com <br>
+PING www.a.shifen.com (14.215.177.38) 56(84) bytes of data. <br>
+64 bytes from 14.215.177.38: icmp_req=1 ttl=53 time=4.52 ms <br>
+64 bytes from 14.215.177.38: icmp_req=2 ttl=53 time=167 ms <br>
+64 bytes from 14.215.177.38: icmp_req=3 ttl=53 time=5.08 ms <br>
+64 bytes from 14.215.177.38: icmp_req=4 ttl=53 time=88.8 ms <br>
+64 bytes from 14.215.177.38: icmp_req=5 ttl=53 time=267 ms <br>
+64 bytes from 14.215.177.38: icmp_req=6 ttl=53 time=340 ms <br>
+64 bytes from 14.215.177.38: icmp_req=7 ttl=53 time=5.15 ms <br>
+64 bytes from 14.215.177.38: icmp_req=8 ttl=53 time=4.78 ms <br>
+64 bytes from 14.215.177.38: icmp_req=9 ttl=53 time=4.76 ms <br>
+64 bytes from 14.215.177.38: icmp_req=10 ttl=53 time=95.7 ms <br>
+64 bytes from 14.215.177.38: icmp_req=11 ttl=53 time=167 ms <br>
+64 bytes from 14.215.177.38: icmp_req=12 ttl=53 time=78.2 ms <br>
+64 bytes from 14.215.177.38: icmp_req=13 ttl=53 time=103 ms <br>
+64 bytes from 14.215.177.38: icmp_req=14 ttl=53 time=79.2 ms <br>
+64 bytes from 14.215.177.38: icmp_req=15 ttl=53 time=5.15 ms <br>
+64 bytes from 14.215.177.38: icmp_req=16 ttl=53 time=5.72 ms <br>
+^C <br>
+— www.a.shifen.com ping statistics — <br>
+16 packets transmitted, 16 received, 0% packet loss, time 15019ms <br>
+rtt min/avg/max/mdev = 4.523/88.953/340.158/99.041 ms</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="applescript">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-comment">#九、检查运行中的镜像</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div></code></pre>
+
+<p>docker inspect ID</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="javascript">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div></code></pre>
+
+<p>[root@centos-1 image]# docker ps <br>
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES <br>
+642ce9a6d782        learn/ping          “ping www.baidu.com”   10 seconds ago      Up 9 seconds                            silly_snyder</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="markdown"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>![<span class="hljs-string">Alt text</span>](<span class="hljs-link">./1506157339151.png</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div></code></pre>
+
+<p>[root@centos-1 image]# docker ps <br>
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES <br>
+642ce9a6d782        learn/ping          “ping www.baidu.com”   2 minutes ago       Up 2 minutes                            silly_snyder <br>
+[root@centos-1 image]# docker inspect 642ce <br>
+[ <br>
+    { <br>
+        “Id”: “642ce9a6d7820c50af87e82a59d37d63195a36e9f1df13527f3773cc81e34c5f”, <br>
+        “Created”: “2017-09-23T09:01:52.682497441Z”, <br>
+        “Path”: “ping”, <br>
+        “Args”: [ <br>
+            “www.baidu.com” <br>
+        ], <br>
+        “State”: { <br>
+            “Status”: “running”, <br>
+            “Running”: true, <br>
+            “Paused”: false, <br>
+            “Restarting”: false, <br>
+            “OOMKilled”: false, <br>
+            “Dead”: false, <br>
+            “Pid”: 9750, <br>
+            “ExitCode”: 0, <br>
+            “Error”: “”, <br>
+            “StartedAt”: “2017-09-23T09:01:53.106452825Z”, <br>
+            “FinishedAt”: “0001-01-01T00:00:00Z” <br>
+        }, <br>
+        “Image”: “sha256:7356f5f12f390c4d076e455a52e971f591c8fba20c87f0670f505252d13aff9f”, <br>
+        “ResolvConfPath”: “/var/lib/docker/containers/642ce9a6d7820c50af87e82a59d37d63195a36e9f1df13527f3773cc81e34c5f/resolv.conf”, <br>
+        “HostnamePath”: “/var/lib/docker/containers/642ce9a6d7820c50af87e82a59d37d63195a36e9f1df13527f3773cc81e34c5f/hostname”, <br>
+        “HostsPath”: “/var/lib/docker/containers/642ce9a6d7820c50af87e82a59d37d63195a36e9f1df13527f3773cc81e34c5f/hosts”, <br>
+        “LogPath”: “”, <br>
+        “Name”: “/silly_snyder”, <br>
+        “RestartCount”: 0, <br>
+        “Driver”: “devicemapper”, <br>
+        “MountLabel”: “”, <br>
+        “ProcessLabel”: “”, <br>
+        “AppArmorProfile”: “”, <br>
+        “ExecIDs”: null, <br>
+        “HostConfig”: { <br>
+            “Binds”: null, <br>
+            “ContainerIDFile”: “”, <br>
+            “LogConfig”: { <br>
+                “Type”: “journald”, <br>
+                “Config”: {} <br>
+            }, <br>
+            “NetworkMode”: “default”, <br>
+            “PortBindings”: {}, <br>
+            “RestartPolicy”: { <br>
+                “Name”: “no”, <br>
+                “MaximumRetryCount”: 0 <br>
+            }, <br>
+            “AutoRemove”: false, <br>
+            “VolumeDriver”: “”, <br>
+            “VolumesFrom”: null, <br>
+            “CapAdd”: null, <br>
+            “CapDrop”: null, <br>
+            “Dns”: [], <br>
+            “DnsOptions”: [], <br>
+            “DnsSearch”: [], <br>
+            “ExtraHosts”: null, <br>
+            “GroupAdd”: null, <br>
+            “IpcMode”: “”, <br>
+            “Cgroup”: “”, <br>
+            “Links”: null, <br>
+            “OomScoreAdj”: 0, <br>
+            “PidMode”: “”, <br>
+            “Privileged”: false, <br>
+            “PublishAllPorts”: false, <br>
+            “ReadonlyRootfs”: false, <br>
+            “SecurityOpt”: null, <br>
+            “UTSMode”: “”, <br>
+            “UsernsMode”: “”, <br>
+            “ShmSize”: 67108864, <br>
+            “Runtime”: “docker-runc”, <br>
+            “ConsoleSize”: [ <br>
+                0, <br>
+                0 <br>
+            ], <br>
+            “Isolation”: “”, <br>
+            “CpuShares”: 0, <br>
+            “Memory”: 0, <br>
+            “CgroupParent”: “”, <br>
+            “BlkioWeight”: 0, <br>
+            “BlkioWeightDevice”: null, <br>
+            “BlkioDeviceReadBps”: null, <br>
+            “BlkioDeviceWriteBps”: null, <br>
+            “BlkioDeviceReadIOps”: null, <br>
+            “BlkioDeviceWriteIOps”: null, <br>
+            “CpuPeriod”: 0, <br>
+            “CpuQuota”: 0, <br>
+            “CpusetCpus”: “”, <br>
+            “CpusetMems”: “”, <br>
+            “Devices”: [], <br>
+            “DiskQuota”: 0, <br>
+            “KernelMemory”: 0, <br>
+            “MemoryReservation”: 0, <br>
+            “MemorySwap”: 0, <br>
+            “MemorySwappiness”: -1, <br>
+            “OomKillDisable”: false, <br>
+            “PidsLimit”: 0, <br>
+            “Ulimits”: null, <br>
+            “CpuCount”: 0, <br>
+            “CpuPercent”: 0, <br>
+            “IOMaximumIOps”: 0, <br>
+            “IOMaximumBandwidth”: 0 <br>
+        }, <br>
+        “GraphDriver”: { <br>
+            “Name”: “devicemapper”, <br>
+            “Data”: { <br>
+                “DeviceId”: “31”, <br>
+                “DeviceName”: “docker-253:0-67572828-dcd6157869fc6caf1c636ad741fa0b2a1c6f99b59c69c007a4a45309cd370616”, <br>
+                “DeviceSize”: “10737418240” <br>
+            } <br>
+        }, <br>
+        “Mounts”: [], <br>
+        “Config”: { <br>
+            “Hostname”: “642ce9a6d782”, <br>
+            “Domainname”: “”, <br>
+            “User”: “”, <br>
+            “AttachStdin”: false, <br>
+            “AttachStdout”: true, <br>
+            “AttachStderr”: true, <br>
+            “Tty”: false, <br>
+            “OpenStdin”: false, <br>
+            “StdinOnce”: false, <br>
+            “Env”: [], <br>
+            “Cmd”: [ <br>
+                “ping”, <br>
+                “www.baidu.com” <br>
+            ], <br>
+            “Image”: “learn/ping”, <br>
+            “Volumes”: {}, <br>
+            “WorkingDir”: “”, <br>
+            “Entrypoint”: null, <br>
+            “OnBuild”: null, <br>
+            “Labels”: {} <br>
+        }, <br>
+        “NetworkSettings”: { <br>
+            “Bridge”: “”, <br>
+            “SandboxID”: “a0d1b0c579eba53edf5c65af332d36df2580f54d5ec38ba88c2ce5a56f7d392d”, <br>
+            “HairpinMode”: false, <br>
+            “LinkLocalIPv6Address”: “”, <br>
+            “LinkLocalIPv6PrefixLen”: 0, <br>
+            “Ports”: {}, <br>
+            “SandboxKey”: “/var/run/docker/netns/a0d1b0c579eb”, <br>
+            “SecondaryIPAddresses”: null, <br>
+            “SecondaryIPv6Addresses”: null, <br>
+            “EndpointID”: “2ac1139a6fb90a5c4ba98918ca32f6b9b81b6744c6be088dfe5d787b715b6322”, <br>
+            “Gateway”: “172.17.0.1”, <br>
+            “GlobalIPv6Address”: “”, <br>
+            “GlobalIPv6PrefixLen”: 0, <br>
+            “IPAddress”: “172.17.0.2”, <br>
+            “IPPrefixLen”: 16, <br>
+            “IPv6Gateway”: “”, <br>
+            “MacAddress”: “02:42:ac:11:00:02”, <br>
+            “Networks”: { <br>
+                “bridge”: { <br>
+                    “IPAMConfig”: null, <br>
+                    “Links”: null, <br>
+                    “Aliases”: null, <br>
+                    “NetworkID”: “a7999d70ee83b876d0a6c575f977d1cebba9aa225e5e56296a416952c381be1b”, <br>
+                    “EndpointID”: “2ac1139a6fb90a5c4ba98918ca32f6b9b81b6744c6be088dfe5d787b715b6322”, <br>
+                    “Gateway”: “172.17.0.1”, <br>
+                    “IPAddress”: “172.17.0.2”, <br>
+                    “IPPrefixLen”: 16, <br>
+                    “IPv6Gateway”: “”, <br>
+                    “GlobalIPv6Address”: “”, <br>
+                    “GlobalIPv6PrefixLen”: 0, <br>
+                    “MacAddress”: “02:42:ac:11:00:02” <br>
+                } <br>
+            } <br>
+        } <br>
+    } <br>
+] <br>
+[root@centos-1 image]# </p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-` hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="applescript">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-comment">#10、使用带LAMP的镜像</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div></code></pre>
+
+<p>[lcr@centos-1 ~]$ docker search -s 10 lamp <br>
+Flag –stars has been deprecated, use –filter=stars=3 instead <br>
+INDEX       NAME                              DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED <br>
+docker.io   docker.io/linode/lamp             LAMP on Ubuntu 14.04.1 LTS Container            111 <br>
+docker.io   docker.io/tutum/lamp              Out-of-the-box LAMP image (PHP+MySQL)           64 <br>
+docker.io   docker.io/greyltc/lamp            a super secure, up-to-date and lightweight…   58                   [OK] <br>
+docker.io   docker.io/reinblau/lamp           [Deprecated]Dockerfile for PHP-Projects wi…   28                   [OK] <br>
+docker.io   docker.io/nickistre/ubuntu-lamp   LAMP server on Ubuntu                           20                   [OK] <br>
+docker.io   docker.io/janes/alpine-lamp       lamp base on alpine linux                       19                   [OK] <br>
+docker.io   docker.io/fauria/lamp             Modern, developer friendly LAMP stack. Inc…   18                   [OK] <br>
+docker.io   docker.io/nickistre/centos-lamp   LAMP on centos setup                            16                   [OK]</p>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs http"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="http">
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="markdown"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>![<span class="hljs-string">Alt text</span>](<span class="hljs-link">./1506176685758.png</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>![<span class="hljs-string">Alt text</span>](<span class="hljs-link">./1506176734307.png</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>----------------------------------------------------
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>![<span class="hljs-string">Alt text</span>](<span class="hljs-link">./1506176582291.png</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"se-preview-section-delimiter"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span>
+</div></code></pre>
+
+<p>[root@localhost lcr]# docker pull tutum/lamp <br>
+Using default tag: latest <br>
+Trying to pull repository docker.io/tutum/lamp …  <br>
+latest: Pulling from docker.io/tutum/lamp <br>
+8387d9ff0016: Downloading 2.162 MB/65.68 MB <br>
+3b52deaaf0ed: Download complete  <br>
+4bd501fad6de: Download complete  <br>
+a3ed95caeb02: Download complete  <br>
+790f0e8363b9: Downloading 11.86 MB/83.82 MB <br>
+11f87572ad81: Download complete  <br>
+341e06373981: Download complete  <br>
+709079cecfb8: Download complete  <br>
+55bf9bbb788a: Download complete  <br>
+b41f3cfd3d47: Download complete  <br>
+70789ae370c5: Waiting  <br>
+43f2fd9a6779: Waiting  <br>
+6a0b3a1558bd: Waiting  <br>
+934438c9af31: Waiting  <br>
+1cfba20318ab: Waiting  <br>
+de7f3e54c21c: Waiting  <br>
+596da16c3b16: Waiting  <br>
+e94007c4319f: Waiting  <br>
+3c013e645156: Waiting  <br>
+```</p></div></body></html>
