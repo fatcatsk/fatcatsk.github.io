@@ -1,0 +1,887 @@
+<!DOCTYPE html><html><head><title>Redis</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content , .note-content  div {font-size: 16px;}
+
+.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="redis">Redis</h1>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#redis">Redis</a></li>
+<li><a href="#前言">前言：</a></li>
+<li><a href="#一安装">一、安装</a><ul>
+<li><a href="#1yum安装">1、yum安装</a></li>
+<li><a href="#2安装包安装">2、安装包安装</a></li>
+</ul>
+</li>
+<li><a href="#二-运行">二 、运行</a></li>
+<li><a href="#三redis配置">三、Redis配置</a><ul>
+<li><a href="#1查看配置">1、查看配置</a></li>
+<li><a href="#2编辑配置">2、编辑配置</a></li>
+<li><a href="#3参数说明">3、参数说明</a></li>
+</ul>
+</li>
+<li><a href="#四redis指令">四、Redis指令</a><ul>
+<li><a href="#1服务器相关指令">1、服务器相关指令</a><ul>
+<li><a href="#dbsize">dbsize</a></li>
+<li><a href="#ping">ping</a></li>
+<li><a href="#1info">1、info</a></li>
+</ul>
+</li>
+<li><a href="#2redis-键key">2、Redis 键(key)</a></li>
+<li><a href="#3redis-字符串string">3、Redis 字符串(String)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <h1 id="前言">前言：</h1>
+  
+  <p>Redis 与其他 key - value 缓存产品有以下三个特点：</p>
+  
+  <ul><li>Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。</li>
+  <li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
+  <li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
+  </ul>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p>Redis 优势</p>
+  
+  <ul><li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
+  <li>丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
+  <li>原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。</li>
+  <li>丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。</li>
+  </ul>
+</blockquote>
+
+
+
+<h1 id="一安装">一、安装</h1>
+
+
+
+<h2 id="1yum安装">1、yum安装</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cmake"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>yum <span class="hljs-keyword">install</span> -y redis
+</div></code></pre>
+
+
+
+<h2 id="2安装包安装">2、安装包安装</h2>
+
+<blockquote>
+  <p>官方链接：<a href="https://redis.io/download" target="_blank">https://redis.io/download</a></p>
+</blockquote>
+
+<ul><li>官方安装说明</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livecodeserver"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>Download, extract <span class="hljs-keyword">and</span> compile Redis <span class="hljs-keyword">with</span>:
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>$ wget <span class="hljs-keyword">http</span>://download.redis.io/releases/redis<span class="hljs-number">-4.0</span><span class="hljs-number">.2</span>.tar.gz
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>$ tar xzf redis<span class="hljs-number">-4.0</span><span class="hljs-number">.2</span>.tar.gz
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>$ cd redis<span class="hljs-number">-4.0</span><span class="hljs-number">.2</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>$ make
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>The binaries that are now compiled are available <span class="hljs-keyword">in</span> <span class="hljs-keyword">the</span> src <span class="hljs-built_in">directory</span>. Run Redis <span class="hljs-keyword">with</span>:
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>$ src/redis-server
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>You can interact <span class="hljs-keyword">with</span> Redis <span class="hljs-keyword">using</span> <span class="hljs-keyword">the</span> built-<span class="hljs-keyword">in</span> client:
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>$ src/redis-cli
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>redis&gt; <span class="hljs-built_in">set</span> foo bar
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>OK
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>redis&gt; <span class="hljs-built_in">get</span> foo
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-string">"bar"</span>
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs less"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">wget</span> <span class="hljs-selector-tag">http</span>:<span class="hljs-comment">//download.redis.io/releases/redis-4.0.2.tar.gz</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">--2017-09-25</span> <span class="hljs-selector-tag">22</span><span class="hljs-selector-pseudo">:28</span><span class="hljs-selector-pseudo">:51--</span>  <span class="hljs-selector-tag">http</span>:<span class="hljs-comment">//download.redis.io/releases/redis-4.0.2.tar.gz</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>正在解析主机 <span class="hljs-selector-tag">download</span><span class="hljs-selector-class">.redis</span><span class="hljs-selector-class">.io</span> (download.redis.io)... <span class="hljs-selector-tag">109</span><span class="hljs-selector-class">.74</span><span class="hljs-selector-class">.203</span><span class="hljs-selector-class">.151</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>正在连接 <span class="hljs-selector-tag">download</span><span class="hljs-selector-class">.redis</span><span class="hljs-selector-class">.io</span> (download.redis.io)|<span class="hljs-selector-tag">109</span><span class="hljs-selector-class">.74</span><span class="hljs-selector-class">.203</span><span class="hljs-selector-class">.151</span>|<span class="hljs-selector-pseudo">:80...</span> 已连接。
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>已发出 <span class="hljs-selector-tag">HTTP</span> 请求，正在等待回应... <span class="hljs-selector-tag">200</span> <span class="hljs-selector-tag">OK</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>长度：<span class="hljs-selector-tag">1713990</span> (<span class="hljs-number">1.6</span>M) <span class="hljs-selector-attr">[application/x-gzip]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>正在保存至: “<span class="hljs-selector-tag">redis-4</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span>”
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-selector-tag">100%</span><span class="hljs-selector-attr">[======================================&gt;]</span> <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">713</span>,<span class="hljs-selector-tag">990</span>    <span class="hljs-selector-tag">131KB</span>/<span class="hljs-selector-tag">s</span> 用时 <span class="hljs-selector-tag">13s</span>    
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-selector-tag">2017-09-25</span> <span class="hljs-selector-tag">22</span><span class="hljs-selector-pseudo">:29</span><span class="hljs-selector-pseudo">:06</span> (<span class="hljs-number">128</span> KB/s) <span class="hljs-selector-tag">-</span> 已保存 “<span class="hljs-selector-tag">redis-4</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span>” <span class="hljs-selector-attr">[1713990/1713990]</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">tar</span> <span class="hljs-selector-tag">-zxf</span> <span class="hljs-selector-tag">redis-4</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.2</span><span class="hljs-selector-class">.tar</span><span class="hljs-selector-class">.gz</span> 
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">mv</span> <span class="hljs-selector-tag">redis-4</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.2</span> /<span class="hljs-selector-tag">usr</span>/<span class="hljs-selector-tag">local</span>/<span class="hljs-selector-tag">redis</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">cd</span> /<span class="hljs-selector-tag">usr</span>/<span class="hljs-selector-tag">local</span>/<span class="hljs-selector-tag">redis</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-selector-attr">[root@localhost redis]</span># <span class="hljs-selector-tag">make</span>
+</div></code></pre>
+
+
+
+<h1 id="二-运行">二 、运行</h1>
+
+<ul><li>启动redis</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs tcl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost src]# ./redis-server 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">92689</span>:C <span class="hljs-number">25</span> Sep <span class="hljs-number">22</span>:<span class="hljs-number">40</span>:<span class="hljs-number">33.756</span> # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">92689</span>:C <span class="hljs-number">25</span> Sep <span class="hljs-number">22</span>:<span class="hljs-number">40</span>:<span class="hljs-number">33.756</span> # Redis version=<span class="hljs-number">4.0</span><span class="hljs-number">.2</span>, bits=<span class="hljs-number">64</span>, commit=<span class="hljs-number">00000000</span>, modified=<span class="hljs-number">0</span>, <span class="hljs-keyword">pid</span>=<span class="hljs-number">92689</span>, just started
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">92689</span>:C <span class="hljs-number">25</span> Sep <span class="hljs-number">22</span>:<span class="hljs-number">40</span>:<span class="hljs-number">33.756</span> # Warning: no config <span class="hljs-keyword">file</span> specified, using the default config. In order to specify a config <span class="hljs-keyword">file</span> use ./redis-server /path/to/redis.conf
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">92689</span>:M <span class="hljs-number">25</span> Sep <span class="hljs-number">22</span>:<span class="hljs-number">40</span>:<span class="hljs-number">33.757</span> * Increased maximum number of <span class="hljs-keyword">open</span> files to <span class="hljs-number">10032</span> (it was originally <span class="hljs-keyword">set</span> to <span class="hljs-number">1024</span>).
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>                _._                                                  
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>           _.-``__ <span class="hljs-string">''</span>-._                                             
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>      _.-``    `.  `_.  <span class="hljs-string">''</span>-._           Redis <span class="hljs-number">4.0</span><span class="hljs-number">.2</span> (<span class="hljs-number">00000000</span>/<span class="hljs-number">0</span>) <span class="hljs-number">64</span> bit
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>  .-`` .-```.  ```\/    _.,_ <span class="hljs-string">''</span>-._                                   
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span> (    <span class="hljs-string">'      ,       .-`  | `,    )     Running in standalone mode
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">11.</span> |`-._`-...-` __...-.``-._|'` _.-<span class="hljs-string">'|     Port: 6379
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">12.</span> |    `-._   `._    /     _.-'    |     PID: <span class="hljs-number">92689</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>  `-._    `-._  `-./  _.-<span class="hljs-string">'    _.-'</span>                                   
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span> |`-._`-._    `-.__.-<span class="hljs-string">'    _.-'</span>_.-<span class="hljs-string">'|                                  
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">15.</span> |    `-._`-._        _.-'_.-<span class="hljs-string">'    |           http://redis.io        
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>  `-._    `-._`-.__.-'_.-<span class="hljs-string">'    _.-'</span>                                   
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span> |`-._`-._    `-.__.-<span class="hljs-string">'    _.-'</span>_.-<span class="hljs-string">'|                                  
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">18.</span> |    `-._`-._        _.-'_.-<span class="hljs-string">'    |                                  
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>  `-._    `-._`-.__.-'_.-<span class="hljs-string">'    _.-'</span>                                   
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>      `-._    `-.__.-<span class="hljs-string">'    _.-'</span>                                       
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>          `-._        _.-<span class="hljs-string">'                                           
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>              `-.__.-'                                               
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span><span class="hljs-number">92689</span>:M <span class="hljs-number">25</span> Sep <span class="hljs-number">22</span>:<span class="hljs-number">40</span>:<span class="hljs-number">33.765</span> # WARNING: The TCP backlog setting of <span class="hljs-number">511</span> cannot be enforced because /<span class="hljs-keyword">proc</span>/sys/net/core/somaxconn<span class="hljs-title"> is</span> set<span class="hljs-title"> to</span> the<span class="hljs-title"> lower</span> value<span class="hljs-title"> of</span> 128.
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>92689:M 25<span class="hljs-title"> Sep</span> 22:40:33.765 #<span class="hljs-title"> Server</span> initialized
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>92689:M 25<span class="hljs-title"> Sep</span> 22:40:33.765 #<span class="hljs-title"> WARNING</span> overcommit_memory<span class="hljs-title"> is</span> set<span class="hljs-title"> to</span> 0!<span class="hljs-title"> Background</span> save<span class="hljs-title"> may</span> fail<span class="hljs-title"> under</span> low<span class="hljs-title"> memory</span> condition.<span class="hljs-title"> To</span> fix<span class="hljs-title"> this</span> issue<span class="hljs-title"> add</span> 'vm.overcommit_memory = 1'<span class="hljs-title"> to</span> /etc/sysctl.conf<span class="hljs-title"> and</span> then<span class="hljs-title"> reboot</span> or<span class="hljs-title"> run</span> the<span class="hljs-title"> command</span> 'sysctl<span class="hljs-title"> vm.overcommit_memory=1'</span> for<span class="hljs-title"> this</span> to<span class="hljs-title"> take</span> effect.
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>92689:M 25<span class="hljs-title"> Sep</span> 22:40:33.765 #<span class="hljs-title"> WARNING</span> you<span class="hljs-title"> have</span> Transparent<span class="hljs-title"> Huge</span> Pages (THP)<span class="hljs-title"> support</span> enabled<span class="hljs-title"> in</span> your<span class="hljs-title"> kernel.</span> This<span class="hljs-title"> will</span> create<span class="hljs-title"> latency</span> and<span class="hljs-title"> memory</span> usage<span class="hljs-title"> issues</span> with<span class="hljs-title"> Redis.</span> To<span class="hljs-title"> fix</span> this<span class="hljs-title"> issue</span> run<span class="hljs-title"> the</span> command 'echo<span class="hljs-title"> never</span> &gt; /sys/kernel/mm/transparent_hugepage/enabled'<span class="hljs-title"> as</span> root,<span class="hljs-title"> and</span> add<span class="hljs-title"> it</span> to<span class="hljs-title"> your</span> /etc/rc.local<span class="hljs-title"> in</span> order<span class="hljs-title"> to</span> retain<span class="hljs-title"> the</span> setting<span class="hljs-title"> after</span> a<span class="hljs-title"> reboot.</span> Redis<span class="hljs-title"> must</span> be<span class="hljs-title"> restarted</span> after<span class="hljs-title"> THP</span> is<span class="hljs-title"> disabled.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>92689:M 25<span class="hljs-title"> Sep</span> 22:40:33.765 *<span class="hljs-title"> Ready</span> to<span class="hljs-title"> accept</span> connections
+</div></code></pre>
+
+<ul><li>启动之后另开一个终端</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ruby"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># cd /usr/local/redis/src/</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root@localhost src]<span class="hljs-comment"># ./redis-cli </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-meta">127.0.0.1:6379&gt;</span> set foo bar
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>OK
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-meta">127.0.0.1:6379&gt;</span> get foo
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-string">"bar"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-meta">127.0.0.1:6379&gt;</span> 
+</div></code></pre>
+
+
+
+<h1 id="三redis配置">三、Redis配置</h1>
+
+
+
+<h2 id="1查看配置">1、查看配置</h2>
+
+<ul><li>指令</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs armasm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-symbol">CONFIG</span> <span class="hljs-meta">GET</span> CONFIG_SETTING_NAME
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">CONFIG</span> <span class="hljs-selector-tag">GET</span> <span class="hljs-selector-tag">loglevel</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>1) "<span class="hljs-selector-tag">loglevel</span>"
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>2) "<span class="hljs-selector-tag">notice</span>"
+</div></code></pre>
+
+<ul><li>使用<code>*</code>号获取所有配置项：</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ruby"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-meta">127.0.0.1:6379&gt;</span> CONFIG GET *
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>  <span class="hljs-number">1</span>) <span class="hljs-string">"dbfilename"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>  <span class="hljs-number">2</span>) <span class="hljs-string">"dump.rdb"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>  <span class="hljs-number">3</span>) <span class="hljs-string">"requirepass"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>  <span class="hljs-number">4</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>  <span class="hljs-number">5</span>) <span class="hljs-string">"masterauth"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>  <span class="hljs-number">6</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>  <span class="hljs-number">7</span>) <span class="hljs-string">"unixsocket"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>  <span class="hljs-number">8</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>  <span class="hljs-number">9</span>) <span class="hljs-string">"logfile"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span> <span class="hljs-number">10</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span> <span class="hljs-number">11</span>) <span class="hljs-string">"pidfile"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span> <span class="hljs-number">12</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span> <span class="hljs-number">13</span>) <span class="hljs-string">"slave-announce-ip"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span> <span class="hljs-number">14</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span> <span class="hljs-number">15</span>) <span class="hljs-string">"maxmemory"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span> <span class="hljs-number">16</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span> <span class="hljs-number">17</span>) <span class="hljs-string">"maxmemory-samples"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span> <span class="hljs-number">18</span>) <span class="hljs-string">"5"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span> <span class="hljs-number">19</span>) <span class="hljs-string">"timeout"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span> <span class="hljs-number">20</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span> <span class="hljs-number">21</span>) <span class="hljs-string">"auto-aof-rewrite-percentage"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span> <span class="hljs-number">22</span>) <span class="hljs-string">"100"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span> <span class="hljs-number">23</span>) <span class="hljs-string">"auto-aof-rewrite-min-size"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span> <span class="hljs-number">24</span>) <span class="hljs-string">"67108864"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span> <span class="hljs-number">25</span>) <span class="hljs-string">"hash-max-ziplist-entries"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span> <span class="hljs-number">26</span>) <span class="hljs-string">"512"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span> <span class="hljs-number">27</span>) <span class="hljs-string">"hash-max-ziplist-value"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span> <span class="hljs-number">28</span>) <span class="hljs-string">"64"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span> <span class="hljs-number">29</span>) <span class="hljs-string">"list-max-ziplist-size"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span> <span class="hljs-number">30</span>) <span class="hljs-string">"-2"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span> <span class="hljs-number">31</span>) <span class="hljs-string">"list-compress-depth"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span> <span class="hljs-number">32</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span> <span class="hljs-number">33</span>) <span class="hljs-string">"set-max-intset-entries"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span> <span class="hljs-number">34</span>) <span class="hljs-string">"512"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span> <span class="hljs-number">35</span>) <span class="hljs-string">"zset-max-ziplist-entries"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span> <span class="hljs-number">36</span>) <span class="hljs-string">"128"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span> <span class="hljs-number">37</span>) <span class="hljs-string">"zset-max-ziplist-value"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span> <span class="hljs-number">38</span>) <span class="hljs-string">"64"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span> <span class="hljs-number">39</span>) <span class="hljs-string">"hll-sparse-max-bytes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span> <span class="hljs-number">40</span>) <span class="hljs-string">"3000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span> <span class="hljs-number">41</span>) <span class="hljs-string">"lua-time-limit"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span> <span class="hljs-number">42</span>) <span class="hljs-string">"5000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span> <span class="hljs-number">43</span>) <span class="hljs-string">"slowlog-log-slower-than"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">45.</span> <span class="hljs-number">44</span>) <span class="hljs-string">"10000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">46.</span> <span class="hljs-number">45</span>) <span class="hljs-string">"latency-monitor-threshold"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">47.</span> <span class="hljs-number">46</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">48.</span> <span class="hljs-number">47</span>) <span class="hljs-string">"slowlog-max-len"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">49.</span> <span class="hljs-number">48</span>) <span class="hljs-string">"128"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">50.</span> <span class="hljs-number">49</span>) <span class="hljs-string">"port"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">51.</span> <span class="hljs-number">50</span>) <span class="hljs-string">"6379"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">52.</span> <span class="hljs-number">51</span>) <span class="hljs-string">"tcp-backlog"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">53.</span> <span class="hljs-number">52</span>) <span class="hljs-string">"511"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">54.</span> <span class="hljs-number">53</span>) <span class="hljs-string">"databases"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">55.</span> <span class="hljs-number">54</span>) <span class="hljs-string">"16"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">56.</span> <span class="hljs-number">55</span>) <span class="hljs-string">"repl-ping-slave-period"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">57.</span> <span class="hljs-number">56</span>) <span class="hljs-string">"10"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">58.</span> <span class="hljs-number">57</span>) <span class="hljs-string">"repl-timeout"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">59.</span> <span class="hljs-number">58</span>) <span class="hljs-string">"60"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">60.</span> <span class="hljs-number">59</span>) <span class="hljs-string">"repl-backlog-size"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">61.</span> <span class="hljs-number">60</span>) <span class="hljs-string">"1048576"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">62.</span> <span class="hljs-number">61</span>) <span class="hljs-string">"repl-backlog-ttl"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">63.</span> <span class="hljs-number">62</span>) <span class="hljs-string">"3600"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">64.</span> <span class="hljs-number">63</span>) <span class="hljs-string">"maxclients"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">65.</span> <span class="hljs-number">64</span>) <span class="hljs-string">"10000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">66.</span> <span class="hljs-number">65</span>) <span class="hljs-string">"watchdog-period"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">67.</span> <span class="hljs-number">66</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">68.</span> <span class="hljs-number">67</span>) <span class="hljs-string">"slave-priority"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">69.</span> <span class="hljs-number">68</span>) <span class="hljs-string">"100"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">70.</span> <span class="hljs-number">69</span>) <span class="hljs-string">"slave-announce-port"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">71.</span> <span class="hljs-number">70</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">72.</span> <span class="hljs-number">71</span>) <span class="hljs-string">"min-slaves-to-write"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">73.</span> <span class="hljs-number">72</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">74.</span> <span class="hljs-number">73</span>) <span class="hljs-string">"min-slaves-max-lag"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">75.</span> <span class="hljs-number">74</span>) <span class="hljs-string">"10"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">76.</span> <span class="hljs-number">75</span>) <span class="hljs-string">"hz"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">77.</span> <span class="hljs-number">76</span>) <span class="hljs-string">"10"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">78.</span> <span class="hljs-number">77</span>) <span class="hljs-string">"cluster-node-timeout"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">79.</span> <span class="hljs-number">78</span>) <span class="hljs-string">"15000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">80.</span> <span class="hljs-number">79</span>) <span class="hljs-string">"cluster-migration-barrier"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">81.</span> <span class="hljs-number">80</span>) <span class="hljs-string">"1"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">82.</span> <span class="hljs-number">81</span>) <span class="hljs-string">"cluster-slave-validity-factor"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">83.</span> <span class="hljs-number">82</span>) <span class="hljs-string">"10"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">84.</span> <span class="hljs-number">83</span>) <span class="hljs-string">"repl-diskless-sync-delay"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">85.</span> <span class="hljs-number">84</span>) <span class="hljs-string">"5"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">86.</span> <span class="hljs-number">85</span>) <span class="hljs-string">"tcp-keepalive"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">87.</span> <span class="hljs-number">86</span>) <span class="hljs-string">"300"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">88.</span> <span class="hljs-number">87</span>) <span class="hljs-string">"cluster-require-full-coverage"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">89.</span> <span class="hljs-number">88</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">90.</span> <span class="hljs-number">89</span>) <span class="hljs-string">"no-appendfsync-on-rewrite"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">91.</span> <span class="hljs-number">90</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">92.</span> <span class="hljs-number">91</span>) <span class="hljs-string">"slave-serve-stale-data"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">93.</span> <span class="hljs-number">92</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">94.</span> <span class="hljs-number">93</span>) <span class="hljs-string">"slave-read-only"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">95.</span> <span class="hljs-number">94</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">96.</span> <span class="hljs-number">95</span>) <span class="hljs-string">"stop-writes-on-bgsave-error"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">97.</span> <span class="hljs-number">96</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">98.</span> <span class="hljs-number">97</span>) <span class="hljs-string">"daemonize"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">99.</span> <span class="hljs-number">98</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">100.</span> <span class="hljs-number">99</span>) <span class="hljs-string">"rdbcompression"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">101.</span><span class="hljs-number">100</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">102.</span><span class="hljs-number">101</span>) <span class="hljs-string">"rdbchecksum"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">103.</span><span class="hljs-number">102</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">104.</span><span class="hljs-number">103</span>) <span class="hljs-string">"activerehashing"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">105.</span><span class="hljs-number">104</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">106.</span><span class="hljs-number">105</span>) <span class="hljs-string">"protected-mode"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">107.</span><span class="hljs-number">106</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">108.</span><span class="hljs-number">107</span>) <span class="hljs-string">"repl-disable-tcp-nodelay"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">109.</span><span class="hljs-number">108</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">110.</span><span class="hljs-number">109</span>) <span class="hljs-string">"repl-diskless-sync"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">111.</span><span class="hljs-number">110</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">112.</span><span class="hljs-number">111</span>) <span class="hljs-string">"aof-rewrite-incremental-fsync"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">113.</span><span class="hljs-number">112</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">114.</span><span class="hljs-number">113</span>) <span class="hljs-string">"aof-load-truncated"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">115.</span><span class="hljs-number">114</span>) <span class="hljs-string">"yes"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">116.</span><span class="hljs-number">115</span>) <span class="hljs-string">"maxmemory-policy"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">117.</span><span class="hljs-number">116</span>) <span class="hljs-string">"noeviction"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">118.</span><span class="hljs-number">117</span>) <span class="hljs-string">"loglevel"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">119.</span><span class="hljs-number">118</span>) <span class="hljs-string">"notice"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">120.</span><span class="hljs-number">119</span>) <span class="hljs-string">"supervised"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">121.</span><span class="hljs-number">120</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">122.</span><span class="hljs-number">121</span>) <span class="hljs-string">"appendfsync"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">123.</span><span class="hljs-number">122</span>) <span class="hljs-string">"everysec"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">124.</span><span class="hljs-number">123</span>) <span class="hljs-string">"syslog-facility"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">125.</span><span class="hljs-number">124</span>) <span class="hljs-string">"local0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">126.</span><span class="hljs-number">125</span>) <span class="hljs-string">"appendonly"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">127.</span><span class="hljs-number">126</span>) <span class="hljs-string">"no"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">128.</span><span class="hljs-number">127</span>) <span class="hljs-string">"dir"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">129.</span><span class="hljs-number">128</span>) <span class="hljs-string">"/root"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">130.</span><span class="hljs-number">129</span>) <span class="hljs-string">"save"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">131.</span><span class="hljs-number">130</span>) <span class="hljs-string">"3600 1 300 100 60 10000"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">132.</span><span class="hljs-number">131</span>) <span class="hljs-string">"client-output-buffer-limit"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">133.</span><span class="hljs-number">132</span>) <span class="hljs-string">"normal 0 0 0 slave 268435456 67108864 60 pubsub 33554432 8388608 60"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">134.</span><span class="hljs-number">133</span>) <span class="hljs-string">"unixsocketperm"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">135.</span><span class="hljs-number">134</span>) <span class="hljs-string">"0"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">136.</span><span class="hljs-number">135</span>) <span class="hljs-string">"slaveof"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">137.</span><span class="hljs-number">136</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">138.</span><span class="hljs-number">137</span>) <span class="hljs-string">"notify-keyspace-events"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">139.</span><span class="hljs-number">138</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">140.</span><span class="hljs-number">139</span>) <span class="hljs-string">"bind"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">141.</span><span class="hljs-number">140</span>) <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">142.</span><span class="hljs-meta">127.0.0.1:6379&gt;</span> 
+</div></code></pre>
+
+<h2 id="2编辑配置">2、编辑配置</h2>
+
+<ul><li>指令</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">CONFIG</span> <span class="hljs-selector-tag">SET</span> <span class="hljs-selector-tag">CONFIG_SETTING_NAME</span> <span class="hljs-selector-tag">NEW_CONFIG_VALUE</span>
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">CONFIG</span> <span class="hljs-selector-tag">SET</span> <span class="hljs-selector-tag">loglevel</span> "<span class="hljs-selector-tag">notice</span>"
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">OK</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">CONFIG</span> <span class="hljs-selector-tag">GET</span> <span class="hljs-selector-tag">loglevel</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>1) "<span class="hljs-selector-tag">loglevel</span>"
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>2) "<span class="hljs-selector-tag">notice</span>"
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; 
+</div></code></pre>
+
+<h2 id="3参数说明">3、参数说明</h2>
+
+<blockquote>
+  <p>redis.conf 配置项说明如下：</p>
+  
+  <ol><li rel="1">Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程 <br>
+  daemonize no</li>
+  <li rel="2">当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定 <br>
+  pidfile /var/run/redis.pid</li>
+  <li rel="3">指定Redis监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字 <br>
+  port 6379</li>
+  <li rel="4">绑定的主机地址 <br>
+  bind 127.0.0.1 <br>
+  5.当 客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能 <br>
+  timeout 300</li>
+  <li rel="6">指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose <br>
+  loglevel verbose</li>
+  <li rel="7">日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null <br>
+  logfile stdout</li>
+  <li rel="8">设置数据库的数量，默认数据库为0，可以使用SELECT 命令在连接上指定数据库id <br>
+  databases 16</li>
+  <li rel="9">指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合 <br>
+  <code>save &lt;seconds&gt; &lt;changes&gt;</code> <br>
+  Redis默认配置文件中提供了三个条件： <br>
+  save 900 1 <br>
+  save 300 10 <br>
+  save 60 10000 <br>
+  分别表示900秒（15分钟）内有1个更改，300秒（5分钟）内有10个更改以及60秒内有10000个更改。</li>
+  <li rel="10">指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大 <br>
+  rdbcompression yes</li>
+  <li rel="11">指定本地数据库文件名，默认值为dump.rdb <br>
+  dbfilename dump.rdb</li>
+  <li rel="12">指定本地数据库存放目录 <br>
+  dir ./</li>
+  <li rel="13">设置当本机为slav服务时，设置master服务的IP地址及端口，在Redis启动时，它会自动从master进行数据同步 <br>
+  slaveof  </li>
+  <li rel="14">当master服务设置了密码保护时，slav服务连接master的密码 <br>
+  masterauth </li>
+  <li rel="15">设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH 命令提供密码，默认关闭 <br>
+  requirepass foobared</li>
+  <li rel="16">设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max number of clients reached错误信息 <br>
+  maxclients 128</li>
+  <li rel="17">指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，当此方法处理 后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区 <br>
+  maxmemory </li>
+  <li rel="18">指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no <br>
+  appendonly no</li>
+  <li rel="19">指定更新日志文件名，默认为appendonly.aof <br>
+   appendfilename appendonly.aof</li>
+  <li rel="20">指定更新日志条件，共有3个可选值：  <br>
+  no：表示等操作系统进行数据缓存同步到磁盘（快）  <br>
+  always：表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）  <br>
+  everysec：表示每秒同步一次（折衷，默认值） <br>
+  appendfsync everysec</li>
+  <li rel="21">指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制） <br>
+   vm-enabled no</li>
+  <li rel="22">虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享 <br>
+   vm-swap-file /tmp/redis.swap</li>
+  <li rel="23">将所有大于vm-max-memory的数据存入虚拟内存,无论vm-max-memory设置多小,所有索引数据都是内存存储的(Redis的索引数据 就是keys),也就是说,当vm-max-memory设置为0的时候,其实是所有value都存在于磁盘。默认值为0 <br>
+   vm-max-memory 0</li>
+  <li rel="24">Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的 数据大小来设定的，作者建议如果存储很多小对象，page大小最好设置为32或者64bytes；如果存储很大大对象，则可以使用更大的page，如果不 确定，就使用默认值 <br>
+   vm-page-size 32</li>
+  <li rel="25">设置swap文件中的page数量，由于页表（一种表示页面空闲或使用的bitmap）是在放在内存中的，，在磁盘上每8个pages将消耗1byte的内存。 <br>
+   vm-pages 134217728</li>
+  <li rel="26">设置访问swap文件的线程数,最好不要超过机器的核数,如果设置为0,那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟。默认值为4 <br>
+   vm-max-threads 4</li>
+  <li rel="27">设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启 <br>
+  glueoutputbuf yes</li>
+  <li rel="28">指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法 <br>
+  hash-max-zipmap-entries 64 <br>
+  hash-max-zipmap-value 512</li>
+  <li rel="29">指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍） <br>
+  activerehashing yes</li>
+  <li rel="30">指定包含其它的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件 <br>
+  include /path/to/local.conf</li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p><code>守护进程（Daemon Process）</code>，也就是通常说的 Daemon 进程（精灵进程），是 Linux 中的后台服务进程。它是一个生存期较长的进程，通常独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。 <br>
+  守护进程是个特殊的孤儿进程，这种进程脱离终端，为什么要脱离终端呢？之所以脱离于终端是为了避免进程被任何终端所产生的信息所打断，其在执行过程中的信息也不在任何终端上显示。 <br>
+  由于在 linux 中，每一个系统与用户进行交流的界面称为终端，每一个从此终端开始运行的进程都会依附于这个终端，这个终端就称为这些进程的控制终端，当控制终端被关闭时，相应的进程都会自动关闭。</p>
+</blockquote>
+
+
+
+<h1 id="四redis指令">四、Redis指令</h1>
+
+<blockquote>
+  <p>redis的常用命令主要分为两个方面：键值相关命令、服务器相关命令</p>
+  
+  <ul><li>1、键值相关命令 <br>
+    keys * 取出当前所有的key <br>
+    exists name 查看n是否有name这个key <br>
+    del name 删除key name <br>
+    expire confirm 100 设置confirm这个key100秒过期 <br>
+    ttl confirm 获取confirm 这个key的有效时长 <br>
+    select 0 选择到0数据库 redis默认的数据库是0~15一共16个数据库 <br>
+    move confirm 1 将当前数据库中的key移动到其他的数据库中，这里就是把confire这个key从当前数据库中移动到1中 <br>
+    persist confirm 移除confirm这个key的过期时间 <br>
+    randomkey 随机返回数据库里面的一个key <br>
+    rename key2 key3 重命名key2 为key3 <br>
+    type key2 返回key的数据类型</li>
+  <li>2、服务器相关命令 <br>
+    ping PONG返回响应是否连接成功 <br>
+    echo 在命令行打印一些内容 <br>
+    select 0~15 编号的数据库 <br>
+    quit  /exit 退出客户端 <br>
+    dbsize 返回当前数据库中所有key的数量 <br>
+    info 返回redis的相关信息 <br>
+    config get dir/* 实时传储收到的请求 <br>
+    flushdb 删除当前选择数据库中的所有key <br>
+    flushall 删除所有数据库中的数据库</li>
+  </ul>
+</blockquote>
+
+<h2 id="1服务器相关指令">1、服务器相关指令</h2>
+
+<h3 id="dbsize">dbsize</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">dbsize</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>(<span class="hljs-selector-tag">integer</span>) 1
+</div></code></pre>
+
+<h3 id="ping">ping</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">ping</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">PONG</span>
+</div></code></pre>
+
+
+
+<h3 id="1info">1、info</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs dts"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; info
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-meta"># Server</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-symbol">redis_version:</span><span class="hljs-number">4.0</span><span class="hljs-number">.2</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-symbol">redis_git_sha1:</span><span class="hljs-number">00000000</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-symbol">redis_git_dirty:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-symbol">redis_build_id:</span><span class="hljs-number">56f</span>2e37f7326c460
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-symbol">redis_mode:</span>standalone
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-symbol">os:</span>Linux <span class="hljs-number">3.10</span><span class="hljs-number">.0</span><span class="hljs-number">-514.26</span><span class="hljs-number">.2</span>.el7.x86_64 x86_64
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-symbol">arch_bits:</span><span class="hljs-number">64</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-symbol">multiplexing_api:</span>epoll
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-symbol">atomicvar_api:</span>atomic-builtin
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-symbol">gcc_version:</span><span class="hljs-number">4.8</span><span class="hljs-number">.5</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-symbol">process_id:</span><span class="hljs-number">92758</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-symbol">run_id:</span><span class="hljs-number">2</span>cdfc0502c14e24828c67e08ff40288a0acb9a7d
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-symbol">tcp_port:</span><span class="hljs-number">6379</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-symbol">uptime_in_seconds:</span><span class="hljs-number">2674</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-symbol">uptime_in_days:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-symbol">hz:</span><span class="hljs-number">10</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-symbol">lru_clock:</span><span class="hljs-number">13181227</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-symbol">executable:</span><span class="hljs-meta-keyword">/usr/</span>local<span class="hljs-meta-keyword">/redis/</span>src/./redis-server
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-symbol">config_file:</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span><span class="hljs-meta"># Clients</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span><span class="hljs-symbol">connected_clients:</span><span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span><span class="hljs-symbol">client_longest_output_list:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span><span class="hljs-symbol">client_biggest_input_buf:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span><span class="hljs-symbol">blocked_clients:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span><span class="hljs-meta"># Memory</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span><span class="hljs-symbol">used_memory:</span><span class="hljs-number">828432</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span><span class="hljs-symbol">used_memory_human:</span><span class="hljs-number">809.02</span>K
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span><span class="hljs-symbol">used_memory_rss:</span><span class="hljs-number">8175616</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span><span class="hljs-symbol">used_memory_rss_human:</span><span class="hljs-number">7.80</span>M
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span><span class="hljs-symbol">used_memory_peak:</span><span class="hljs-number">828432</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span><span class="hljs-symbol">used_memory_peak_human:</span><span class="hljs-number">809.02</span>K
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span><span class="hljs-symbol">used_memory_peak_perc:</span><span class="hljs-number">100.12</span>%
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span><span class="hljs-symbol">used_memory_overhead:</span><span class="hljs-number">815182</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span><span class="hljs-symbol">used_memory_startup:</span><span class="hljs-number">765480</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span><span class="hljs-symbol">used_memory_dataset:</span><span class="hljs-number">13250</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span><span class="hljs-symbol">used_memory_dataset_perc:</span><span class="hljs-number">21.05</span>%
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span><span class="hljs-symbol">total_system_memory:</span><span class="hljs-number">3958308864</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span><span class="hljs-symbol">total_system_memory_human:</span><span class="hljs-number">3.69</span>G
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span><span class="hljs-symbol">used_memory_lua:</span><span class="hljs-number">37888</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span><span class="hljs-symbol">used_memory_lua_human:</span><span class="hljs-number">37.00</span>K
+</div><div class="hljs-line"><span class="hljs-comment line-number">45.</span><span class="hljs-symbol">maxmemory:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">46.</span><span class="hljs-symbol">maxmemory_human:</span><span class="hljs-number">0</span>B
+</div><div class="hljs-line"><span class="hljs-comment line-number">47.</span><span class="hljs-symbol">maxmemory_policy:</span>noeviction
+</div><div class="hljs-line"><span class="hljs-comment line-number">48.</span><span class="hljs-symbol">mem_fragmentation_ratio:</span><span class="hljs-number">9.87</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">49.</span><span class="hljs-symbol">mem_allocator:</span>jemalloc<span class="hljs-number">-4.0</span><span class="hljs-number">.3</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">50.</span><span class="hljs-symbol">active_defrag_running:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">51.</span><span class="hljs-symbol">lazyfree_pending_objects:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">52.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">53.</span><span class="hljs-meta"># Persistence</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">54.</span><span class="hljs-symbol">loading:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">55.</span><span class="hljs-symbol">rdb_changes_since_last_save:</span><span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">56.</span><span class="hljs-symbol">rdb_bgsave_in_progress:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">57.</span><span class="hljs-symbol">rdb_last_save_time:</span><span class="hljs-number">1506350777</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">58.</span><span class="hljs-symbol">rdb_last_bgsave_status:</span>ok
+</div><div class="hljs-line"><span class="hljs-comment line-number">59.</span><span class="hljs-symbol">rdb_last_bgsave_time_sec:</span><span class="hljs-number">-1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">60.</span><span class="hljs-symbol">rdb_current_bgsave_time_sec:</span><span class="hljs-number">-1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">61.</span><span class="hljs-symbol">rdb_last_cow_size:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">62.</span><span class="hljs-symbol">aof_enabled:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">63.</span><span class="hljs-symbol">aof_rewrite_in_progress:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">64.</span><span class="hljs-symbol">aof_rewrite_scheduled:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">65.</span><span class="hljs-symbol">aof_last_rewrite_time_sec:</span><span class="hljs-number">-1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">66.</span><span class="hljs-symbol">aof_current_rewrite_time_sec:</span><span class="hljs-number">-1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">67.</span><span class="hljs-symbol">aof_last_bgrewrite_status:</span>ok
+</div><div class="hljs-line"><span class="hljs-comment line-number">68.</span><span class="hljs-symbol">aof_last_write_status:</span>ok
+</div><div class="hljs-line"><span class="hljs-comment line-number">69.</span><span class="hljs-symbol">aof_last_cow_size:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">70.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">71.</span><span class="hljs-meta"># Stats</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">72.</span><span class="hljs-symbol">total_connections_received:</span><span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">73.</span><span class="hljs-symbol">total_commands_processed:</span><span class="hljs-number">6</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">74.</span><span class="hljs-symbol">instantaneous_ops_per_sec:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">75.</span><span class="hljs-symbol">total_net_input_bytes:</span><span class="hljs-number">222</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">76.</span><span class="hljs-symbol">total_net_output_bytes:</span><span class="hljs-number">10295</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">77.</span><span class="hljs-symbol">instantaneous_input_kbps:</span><span class="hljs-number">0.00</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">78.</span><span class="hljs-symbol">instantaneous_output_kbps:</span><span class="hljs-number">0.00</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">79.</span><span class="hljs-symbol">rejected_connections:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">80.</span><span class="hljs-symbol">sync_full:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">81.</span><span class="hljs-symbol">sync_partial_ok:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">82.</span><span class="hljs-symbol">sync_partial_err:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">83.</span><span class="hljs-symbol">expired_keys:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">84.</span><span class="hljs-symbol">evicted_keys:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">85.</span><span class="hljs-symbol">keyspace_hits:</span><span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">86.</span><span class="hljs-symbol">keyspace_misses:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">87.</span><span class="hljs-symbol">pubsub_channels:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">88.</span><span class="hljs-symbol">pubsub_patterns:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">89.</span><span class="hljs-symbol">latest_fork_usec:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">90.</span><span class="hljs-symbol">migrate_cached_sockets:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">91.</span><span class="hljs-symbol">slave_expires_tracked_keys:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">92.</span><span class="hljs-symbol">active_defrag_hits:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">93.</span><span class="hljs-symbol">active_defrag_misses:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">94.</span><span class="hljs-symbol">active_defrag_key_hits:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">95.</span><span class="hljs-symbol">active_defrag_key_misses:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">96.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">97.</span><span class="hljs-meta"># Replication</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">98.</span><span class="hljs-symbol">role:</span>master
+</div><div class="hljs-line"><span class="hljs-comment line-number">99.</span><span class="hljs-symbol">connected_slaves:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">100.</span><span class="hljs-symbol">master_replid:</span>d1811faa248a9f44fe53742495cc3ae2a254ca32
+</div><div class="hljs-line"><span class="hljs-comment line-number">101.</span><span class="hljs-symbol">master_replid2:</span><span class="hljs-number">0000000000000000000000000000000000000000</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">102.</span><span class="hljs-symbol">master_repl_offset:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">103.</span><span class="hljs-symbol">second_repl_offset:</span><span class="hljs-number">-1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">104.</span><span class="hljs-symbol">repl_backlog_active:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">105.</span><span class="hljs-symbol">repl_backlog_size:</span><span class="hljs-number">1048576</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">106.</span><span class="hljs-symbol">repl_backlog_first_byte_offset:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">107.</span><span class="hljs-symbol">repl_backlog_histlen:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">108.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">109.</span><span class="hljs-meta"># CPU</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">110.</span><span class="hljs-symbol">used_cpu_sys:</span><span class="hljs-number">1.89</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">111.</span><span class="hljs-symbol">used_cpu_user:</span><span class="hljs-number">0.77</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">112.</span><span class="hljs-symbol">used_cpu_sys_children:</span><span class="hljs-number">0.00</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">113.</span><span class="hljs-symbol">used_cpu_user_children:</span><span class="hljs-number">0.00</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">114.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">115.</span><span class="hljs-meta"># Cluster</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">116.</span><span class="hljs-symbol">cluster_enabled:</span><span class="hljs-number">0</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">117.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">118.</span><span class="hljs-meta"># Keyspace</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">119.</span><span class="hljs-symbol">db0:</span>keys=<span class="hljs-number">1</span>,expires=<span class="hljs-number">0</span>,avg_ttl=<span class="hljs-number">0</span>
+</div></code></pre>
+
+<h2 id="2redis-键key">2、Redis 键(key)</h2>
+
+<p>Redis 键命令用于管理 redis 的键。 <br>
+语法</p>
+
+<p>Redis 键命令的基本语法如下：</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">COMMAND</span> <span class="hljs-selector-tag">KEY_NAME</span>
+</div></code></pre>
+
+<p>实例</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">SET</span> <span class="hljs-selector-tag">runoobkey</span> <span class="hljs-selector-tag">redis</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">OK</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">DEL</span> <span class="hljs-selector-tag">runoobkey</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>(<span class="hljs-selector-tag">integer</span>) 1
+</div></code></pre>
+
+<p>在以上实例中 DEL 是一个命令， runoobkey 是一个键。 如果键被删除成功，命令执行后输出 (integer) 1，否则将输出 (integer) 0</p>
+
+<ul><li>Redis keys 命令 <br>
+下表给出了与 Redis 键相关的基本命令：</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>命令</th>
+  <th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>1</td>
+  <td>DEL key</td>
+  <td>该命令用于在 key 存在时删除 key。</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>DUMP key</td>
+  <td>序列化给定 key ，并返回被序列化的值。</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>EXISTS key</td>
+  <td>检查给定 key 是否存在。</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>EXPIRE key seconds</td>
+  <td>为给定 key 设置过期时间。</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>EXPIREAT key timestamp</td>
+  <td>EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不同在于 EXPIREAT 命令接受的时间参数是 UNIX 时间戳(unix timestamp)。</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>PEXPIRE key milliseconds</td>
+  <td>设置 key 的过期时间以毫秒计。</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>PEXPIREAT key milliseconds-timestamp</td>
+  <td>设置 key 过期时间的时间戳(unix timestamp) 以毫秒计</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>KEYS pattern</td>
+  <td>查找所有符合给定模式( pattern)的 key 。</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>MOVE key db</td>
+  <td>将当前数据库的 key 移动到给定的数据库 db 当中。</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td>PERSIST key</td>
+  <td>移除 key 的过期时间，key 将持久保持。</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td>PTTL key</td>
+  <td>以毫秒为单位返回 key 的剩余的过期时间。</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td>TTL key</td>
+  <td>以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td>RANDOMKEY</td>
+  <td>从当前数据库中随机返回一个 key 。</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td>RENAME key newkey</td>
+  <td>修改 key 的名称</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td>RENAMENX key newkey</td>
+  <td>仅当 newkey 不存在时，将 key 改名为 newkey 。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td>TYPE key</td>
+  <td>返回 key 所储存的值的类型。</td>
+</tr>
+</tbody></table>
+
+
+<h2 id="3redis-字符串string">3、Redis 字符串(String)</h2>
+
+<p>Redis 字符串数据类型的相关命令用于管理 redis 字符串值，基本语法如下：</p>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">COMMAND</span> <span class="hljs-selector-tag">KEY_NAME</span>
+</div></code></pre>
+
+<ul><li>实例</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs css"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">SET</span> <span class="hljs-selector-tag">runoobkey</span> <span class="hljs-selector-tag">redis</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-selector-tag">OK</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-selector-tag">redis</span> 127<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-pseudo">:6379</span>&gt; <span class="hljs-selector-tag">GET</span> <span class="hljs-selector-tag">runoobkey</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>"<span class="hljs-selector-tag">redis</span>"
+</div></code></pre>
+
+<p>在以上实例中我们使用了 SET 和 GET 命令，键为 runoobkey。</p>
+
+<ul><li>Redis 字符串命令 <br>
+下表列出了常用的 redis 字符串命令：</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>序号</th>
+  <th>命令</th>
+  <th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>1</td>
+  <td>SET key value</td>
+  <td>设置指定 key 的值</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>GET key</td>
+  <td>获取指定 key 的值。</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>GETRANGE key start end</td>
+  <td>返回 key 中字符串值的子字符</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>GETSET key value</td>
+  <td>将给定 key 的值设为 value ，并返回 key 的旧值(old value)。</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>GETBIT key offset</td>
+  <td>对 key 所储存的字符串值，获取指定偏移量上的位(bit)。</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>MGET key1 [key2..]</td>
+  <td>获取所有(一个或多个)给定 key 的值。</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>SETBIT key offset value</td>
+  <td>对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>SETEX key seconds value</td>
+  <td>将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)。</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>SETNX key value</td>
+  <td>只有在 key 不存在时设置 key 的值。</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td>SETRANGE key offset value</td>
+  <td>用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始。</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td>STRLEN key</td>
+  <td>返回 key 所储存的字符串值的长度。</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td>MSET key value [key value …]</td>
+  <td>同时设置一个或多个 key-value 对。</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td>MSETNX key value [key value …]</td>
+  <td>同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在。</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td>PSETEX key milliseconds value</td>
+  <td>这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位。</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td>INCR key</td>
+  <td>将 key 中储存的数字值增一。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td>INCRBY key increment</td>
+  <td>将 key 所储存的值加上给定的增量值（increment） 。</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td>INCRBYFLOAT key increment</td>
+  <td>将 key 所储存的值加上给定的浮点增量值（increment） 。</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td>DECR key</td>
+  <td>将 key 中储存的数字值减一。</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td>DECRBY key decrement</td>
+  <td>key 所储存的值减去给定的减量值（decrement） 。</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td>APPEND key value</td>
+  <td>如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾。</td>
+</tr>
+</tbody></table>
+</div></body></html>
