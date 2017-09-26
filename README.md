@@ -17,4 +17,5 @@
 <p><a href="https://fatcatsk.github.io/git.html" target="_blank"><strong>git分布式版本控制系统</strong></a>
 <p><a href="https://fatcatsk.github.io/docker.html" target="_blank"><strong>docker容器</strong></a>
 <p><a href="https://fatcatsk.github.io/redis.html" target="_blank"><strong>Redis</strong></a>
+<p><a href="https://fatcatsk.github.io/redis2.html" target="_blank"><strong>Redis—运维</strong></a>
 <p><a href="https://fatcatsk.github.io/shell.html" target="_blank"><strong>shell</strong></a>
