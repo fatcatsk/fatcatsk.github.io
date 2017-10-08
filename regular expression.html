@@ -1,0 +1,1464 @@
+<!DOCTYPE html><html><head><title>正则表达式</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content , .note-content  div {font-size: 16px;}
+
+.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="正则表达式">正则表达式</h1>
+
+<p><p class="note-tags "><code class="notebook"><strong>关键字</strong></code> <code><strong>正则表达式</strong></code><strong> <code>grep</code></strong> </p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#正则表达式">正则表达式</a></li>
+<li><a href="#特殊符号">特殊符号</a></li>
+<li><a href="#grep指令">grep指令</a><ul>
+<li><a href="#参数说明">参数说明：</a></li>
+</ul>
+</li>
+<li><a href="#一正则表达式练习">一、正则表达式练习</a><ul>
+<li><a href="#1查找指定字符">1、查找指定字符</a><ul>
+<li><a href="#查找包含的字符">查找包含的字符</a></li>
+<li><a href="#查找不包含的">查找不包含的</a></li>
+<li><a href="#忽略大小写">忽略大小写</a></li>
+</ul>
+</li>
+<li><a href="#2查找字符集">2、查找字符集</a><ul>
+<li><a href="#反向字符集">反向字符集</a></li>
+</ul>
+</li>
+<li><a href="#3连续字符集">3、连续字符集</a></li>
+<li><a href="#4查找行首行末">4、查找行首，行末</a><ul>
+<li><a href="#行首">行首</a><ul>
+<li><a href="#开头不要字母">开头不要字母</a></li>
+</ul>
+</li>
+<li><a href="#行末">行末</a></li>
+<li><a href="#查找空白行">查找空白行</a></li>
+</ul>
+</li>
+<li><a href="#5任意字符与重复字符">5、任意字符与重复字符</a><ul>
+<li><a href="#小数点表示任意字符">.（小数点）表示任意字符</a></li>
+<li><a href="#星号表示重复字符">*（星号）表示重复字符</a></li>
+<li><a href="#查找指定开头结尾字符">查找指定开头结尾字符</a></li>
+</ul>
+</li>
+<li><a href="#6限定连续re字符范围">6、限定连续RE字符范围{}</a><ul>
+<li><a href="#查找连续n个o">查找连续N个o</a></li>
+<li><a href="#指定开头结尾中间指定范围">指定开头结尾，中间指定范围</a></li>
+<li><a href="#有下限没有上限">有下限，没有上限</a></li>
+<li><a href="#没下限有上限">没下限，有上限</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#二sed-工具">二、sed 工具</a><ul>
+<li><a href="#1指令解析">1、指令解析</a><ul>
+<li><a href="#简易说明">简易说明</a></li>
+<li><a href="#参数说明-1">参数说明</a><ul>
+<li><a href="#参数">参数</a></li>
+<li><a href="#动作">动作</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2实践">2、实践</a><ul>
+<li><a href="#输出并删除行">输出并删除行</a></li>
+<li><a href="#增加数据">增加数据</a><ul>
+<li><a href="#增加多行数据">增加多行数据</a></li>
+</ul>
+</li>
+<li><a href="#以行为单位替换和显示">以行为单位替换和显示</a><ul>
+<li><a href="#整行替换">整行替换</a></li>
+<li><a href="#查看指定行">查看指定行</a></li>
+</ul>
+</li>
+<li><a href="#部分数据的查找替换">部分数据的查找替换</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#三扩展正值表达式">三、扩展正值表达式</a><ul>
+<li><a href="#1过滤两次">1、过滤两次</a><ul>
+<li><a href="#管道过滤grep">管道过滤（grep）</a></li>
+<li><a href="#过滤两次扩展">过滤两次（扩展）</a></li>
+<li><a href="#grep-e">grep -E</a></li>
+</ul>
+</li>
+<li><a href="#2re字符">2、RE字符+</a></li>
+<li><a href="#3re字符">3、RE字符?</a></li>
+<li><a href="#4re字符">4、RE字符|</a></li>
+<li><a href="#5re字符">5、RE字符()</a></li>
+<li><a href="#6re字符">6、RE字符()+</a></li>
+</ul>
+</li>
+<li><a href="#title">——————————————————–</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <h1 id="特殊符号">特殊符号</h1>
+  
+  <table>
+<thead>
+<tr>
+  <th>符号</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>[:alnum:]</td>
+  <td>英文大小写及数字</td>
+</tr>
+<tr>
+  <td>[;alpha:]</td>
+  <td>英文大小写</td>
+</tr>
+<tr>
+  <td>[:blank:]</td>
+  <td>空格键与tab键</td>
+</tr>
+<tr>
+  <td>[:cntrl:]</td>
+  <td>控制按键，如：tab，del等</td>
+</tr>
+<tr>
+  <td>[:digit:]</td>
+  <td>代表数字</td>
+</tr>
+<tr>
+  <td>[:graph:]</td>
+  <td>出了空格符（空格键&amp;tab）外所有的按键</td>
+</tr>
+<tr>
+  <td>[:lower:]</td>
+  <td>小写字符</td>
+</tr>
+<tr>
+  <td>[:print:]</td>
+  <td>任何可以被打印的字符</td>
+</tr>
+<tr>
+  <td>[:punct:]</td>
+  <td>标点符号</td>
+</tr>
+<tr>
+  <td>[:upper:]</td>
+  <td>大写字符</td>
+</tr>
+<tr>
+  <td>[:space:]</td>
+  <td>空白字符</td>
+</tr>
+<tr>
+  <td>[:xdigit:]</td>
+  <td>十六进制</td>
+</tr>
+</tbody></table>
+
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h1 id="grep指令">grep指令</h1>
+  
+  <p>grep [-A]  [-B]   ‘要搜索的字符串’    filename</p>
+  
+  <h2 id="参数说明">参数说明：</h2>
+  
+  <p>-A：（after）后面带数字，列出指定列后面N列； <br>
+  -B：（befer）后面带数字，列出指定列前面N列 <br>
+  可以同时使用</p>
+</blockquote>
+
+<ul><li>实践</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs stata"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# vim <span class="hljs-keyword">test</span>.txt
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root@localhost lcr]# <span class="hljs-keyword">cat</span> <span class="hljs-keyword">test</span>.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-1
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-2
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-3
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-4
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-5
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-6
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-7
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-8
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-9
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-10
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-11
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-12
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-13
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-14
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-15
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-16
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-17
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-18
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-19
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-20
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>[root@localhost lcr]# grep -A 5 '<span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-5' <span class="hljs-keyword">test</span>.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-5
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-6
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-7
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-8
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-9
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-10
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span>[root@localhost lcr]# grep -A 5 '<span class="hljs-keyword">line</span>-6' <span class="hljs-keyword">test</span>.txt       #关键词不需要完全匹配某行
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-6
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-7
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-8
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-9
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-10
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-11
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span>[root@localhost lcr]# grep -A5 -B4 '<span class="hljs-keyword">line</span>-6' <span class="hljs-keyword">test</span>.txt    #使用两个参数
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-2
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-3
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-4
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-5
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-6
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-7
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-8
+</div><div class="hljs-line"><span class="hljs-comment line-number">45.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-9
+</div><div class="hljs-line"><span class="hljs-comment line-number">46.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-10
+</div><div class="hljs-line"><span class="hljs-comment line-number">47.</span><span class="hljs-keyword">test</span>-<span class="hljs-keyword">line</span>-11
+</div></code></pre>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs inform7"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-comment">[root@localhost lcr]</span># dmesg  | grep 'ens'
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-comment">[    0.813423]</span> ACPI: Added _OSI(3.0 _SCP Extensions)
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-comment">[   20.640242]</span> sd 2:0:0:0: <span class="hljs-comment">[sda]</span> Mode Sense: 61 00 00 00
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-comment">[   26.421599]</span> IPv6: ADDRCONF(NETDEV_UP): ens33: link <span class="hljs-keyword">is</span> not ready
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-comment">[   26.425384]</span> e1000: ens33 NIC Link <span class="hljs-keyword">is</span> Up 1000 Mbps Full Duplex, Flow Control: None
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-comment">[root@localhost lcr]</span># dmesg | grep -n 'ens'      ##显示行号
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>633:<span class="hljs-comment">[    0.813423]</span> ACPI: Added _OSI(3.0 _SCP Extensions)
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>1753:<span class="hljs-comment">[   20.640242]</span> sd 2:0:0:0: <span class="hljs-comment">[sda]</span> Mode Sense: 61 00 00 00
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>1819:<span class="hljs-comment">[   26.421599]</span> IPv6: ADDRCONF(NETDEV_UP): ens33: link <span class="hljs-keyword">is</span> not ready
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>1820:<span class="hljs-comment">[   26.425384]</span> e1000: ens33 NIC Link <span class="hljs-keyword">is</span> Up 1000 Mbps Full Duplex, Flow Control: None
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-comment">[root@localhost lcr]</span># dmesg | grep -A3 -B3 'ens33'      #指定显示前后
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-comment">[   26.295737]</span> ip6_tables: (C) 2000-2006 Netfilter Core Team
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-comment">[   26.347233]</span> Ebtables v2.0 registered
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-comment">[   26.402869]</span> nf_conntrack version 0.5.0 (16384 buckets, 65536 max)
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-comment">[   26.421599]</span> IPv6: ADDRCONF(NETDEV_UP): ens33: link <span class="hljs-keyword">is</span> not ready
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-comment">[   26.425384]</span> e1000: ens33 NIC Link <span class="hljs-keyword">is</span> Up 1000 Mbps Full Duplex, Flow Control: None
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-comment">[   26.500396]</span> bridge: automatic filtering via arp/ip/ip6tables has been deprecated. Update your scripts to load br_netfilter if you need this.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-comment">[   26.520362]</span> Netfilter messages via NETLINK v0.30.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-comment">[   26.524557]</span> ip_set: protocol 6
+</div></code></pre>
+
+<blockquote>
+  <p>设定别名  <code>grep='grep --color=auto'</code></p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vhdl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# <span class="hljs-keyword">alias</span> 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-keyword">alias</span> cp=<span class="hljs-symbol">'cp</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-keyword">alias</span> egrep=<span class="hljs-symbol">'egrep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-keyword">alias</span> fgrep=<span class="hljs-symbol">'fgrep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-keyword">alias</span> grep=<span class="hljs-symbol">'grep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-keyword">alias</span> l.=<span class="hljs-symbol">'ls</span> -d .* <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-keyword">alias</span> ll=<span class="hljs-symbol">'ls</span> -l <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-keyword">alias</span> ls=<span class="hljs-symbol">'ls</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-keyword">alias</span> mv=<span class="hljs-symbol">'mv</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-keyword">alias</span> rm=<span class="hljs-symbol">'rm</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-keyword">alias</span> which=<span class="hljs-symbol">'alias</span> | /usr/bin/which <span class="hljs-comment">--tty-only --read-alias --show-dot --show-tilde'</span>
+</div></code></pre>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs llvm"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-title">@localhost</span> lcr]# export | grep 'LANG'
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-keyword">declare</span> -<span class="hljs-keyword">x</span> GDM_LANG=<span class="hljs-string">"en_US.utf8"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-keyword">declare</span> -<span class="hljs-keyword">x</span> LANG=<span class="hljs-string">"en_US.utf8"</span>
+</div></code></pre>
+
+<blockquote>
+  <h1 id="一正则表达式练习">一、正则表达式练习</h1>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># cat regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Oh! My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-meta"># I am VBird</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="1查找指定字符">1、查找指定字符</h2>
+</blockquote>
+
+
+
+<h3 id="查找包含的字符">查找包含的字符</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs gauss"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-comment">@localhost lcr]# grep -n 'the' regular_express.txt 
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>8:I can't finish the test.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>12:the symbol '*' is represented as start.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>15:You are the best is mean you are the no. 1.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>16:The world &lt;Happy&gt; is the same with "glad".
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>18:google is the best tools for search keyword.
+</div></code></pre>
+
+
+
+<h3 id="查找不包含的">查找不包含的</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -vn 'the' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> <span class="hljs-keyword">my</span> favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn't fit <span class="hljs-keyword">me</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> <span class="hljs-keyword">about</span> $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">17</span>:I like dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">20</span>:go! go! Let's go.
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">21</span>:<span class="hljs-comment"># I am VBird</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">22</span>:
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>
+</div></code></pre>
+
+
+
+<h3 id="忽略大小写">忽略大小写</h3>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs gauss"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-comment">@localhost lcr]# grep -in 'the' regular_express.txt 
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>8:I can't finish the test.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>9:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>12:the symbol '*' is represented as start.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>14:The gd software is a library for drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>15:You are the best is mean you are the no. 1.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>16:The world &lt;Happy&gt; is the same with "glad".
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>18:google is the best tools for search keyword.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2查找字符集">2、查找字符集</h2>
+</blockquote>
+
+<ul><li>比如查找<code>the</code> ，<code>taste</code>，相同的部分有<code>t？st</code></li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs scheme"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[<span class="hljs-name">root@localhost</span> lcr]# grep -n <span class="hljs-symbol">'t</span>[<span class="hljs-name">ae</span>]st' regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">8</span>:I can<span class="hljs-symbol">'t</span> finish the test.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div></code></pre>
+
+<blockquote>
+  <p>[]里面不管有多少个字符，都只会按照一个字符单独组合</p>
+  
+  <h3 id="反向字符集">反向字符集</h3>
+  
+  <ul><li>查找<code>oo</code>,但是前面不带<code>g</code></li>
+  </ul>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n 'oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span><span class="hljs-symbol">:<span class="hljs-string">"Open Source"</span></span> is a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span><span class="hljs-symbol">:apple</span> is my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">9</span><span class="hljs-symbol">:Oh!</span> The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">18</span><span class="hljs-symbol">:google</span> is the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">19</span><span class="hljs-symbol">:goooooogle</span> yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n '[^g]oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">2</span><span class="hljs-symbol">:apple</span> is my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">18</span><span class="hljs-symbol">:google</span> is the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">19</span><span class="hljs-symbol">:goooooogle</span> yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># </span>
+</div></code></pre>
+
+<ul><li>查找<code>oo</code>,但是前面不带小写字母</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n '[^a-z]oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n '[:upper:]oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-symbol">grep:</span> character class syntax is [[<span class="hljs-symbol">:space</span><span class="hljs-symbol">:</span>]], <span class="hljs-keyword">not</span> [<span class="hljs-symbol">:space</span><span class="hljs-symbol">:</span>]
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n '[[:upper:]]oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="3连续字符集">3、连续字符集</h2>
+</blockquote>
+
+<ul><li>查找没有小写字母的</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs coffeescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n [0-9] regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">5</span>:However, <span class="hljs-keyword">this</span> dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the <span class="hljs-literal">no</span>. <span class="hljs-number">1.</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -n '[^[:lower:]]' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-number">21</span>:<span class="hljs-meta"># I am VBird</span>
+</div></code></pre>
+
+<p>这个不符合设定的目的</p>
+
+<p>设置</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs cpp"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-keyword">export</span> LANG=C
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n '[^[:lower:]]oo' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="4查找行首行末">4、查找行首，行末</h2>
+</blockquote>
+
+
+
+<h3 id="行首">行首</h3>
+
+<blockquote>
+  <p>使用制表符<code>^</code></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs coffeescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n '^the' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-string">'*'</span> <span class="hljs-keyword">is</span> represented <span class="hljs-keyword">as</span> start.
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n '^[a-z]' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> <span class="hljs-keyword">my</span> favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">4</span>:this dress doesn't fit <span class="hljs-keyword">me</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">12</span>:<span class="hljs-keyword">the</span> symbol '*' <span class="hljs-keyword">is</span> represented <span class="hljs-keyword">as</span> start.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">20</span>:go! go! Let's go.
+</div></code></pre>
+
+<blockquote>
+  <p>有别于[^a-z]</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n '[^a-z]' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> <span class="hljs-keyword">my</span> favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn't fit <span class="hljs-keyword">me</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:<span class="hljs-keyword">the</span> symbol '*' <span class="hljs-keyword">is</span> represented <span class="hljs-keyword">as</span> start.
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are <span class="hljs-keyword">the</span> best <span class="hljs-keyword">is</span> mean you are <span class="hljs-keyword">the</span> no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I like dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! Let's go.
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-number">21</span>:<span class="hljs-comment"># I am VBird</span>
+</div></code></pre>
+
+<blockquote>
+  <h4 id="开头不要字母">开头不要字母</h4>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n '^[^a-zA-Z]' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">21</span>:<span class="hljs-comment"># I am VBird</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong><code>^</code>在<code>[]</code>内外的含义不同，在内表示反向选择，在外表示行首</strong></p>
+</blockquote>
+
+
+
+<h3 id="行末">行末</h3>
+
+<blockquote>
+  <p>使用<code>$</code></p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -n '\.$' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <p><strong>因为<code>.</code>有特别的含义，所以需要反义符</strong> <br>
+  部分行末尾是<code>.</code>但是没有显示出来</p>
+  
+  <pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# cat -An regular_express.txt | head -n <span class="hljs-number">10</span> | tail -n <span class="hljs-number">6</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">5</span>  However, this dress is about $ <span class="hljs-number">3183</span> dollars.^M$
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">6</span>  GNU is free air not free beer.^M$
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>     <span class="hljs-number">7</span>  Her hair is very beauty.^M$
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">8</span>  I can't finish the test.^M$
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">9</span>  Oh! The soup taste good.^M$
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>    <span class="hljs-number">10</span>  motorcycle is cheap than car.$
+</div></code></pre>
+</blockquote>
+
+
+
+<h3 id="查找空白行">查找空白行</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> lcr]<span class="hljs-meta"># grep -n <span class="hljs-string">'^$'</span> regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">22</span>:
+</div></code></pre>
+
+
+
+<h2 id="5任意字符与重复字符">5、任意字符与重复字符</h2>
+
+<blockquote>
+  <h3 id="小数点表示任意字符"><code>.</code>（小数点）表示任意字符</h3>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n 'g..d' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div></code></pre>
+
+<blockquote>
+  <h3 id="星号表示重复字符"><code>*</code>（星号）表示重复字符</h3>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <ul><li>一个：<code>o*</code>：可有可无（没有意义）</li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -n 'o*' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">8</span>:I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-number">21</span>:<span class="hljs-meta"># I am VBird</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span><span class="hljs-number">22</span>:
+</div></code></pre>
+
+<blockquote>
+  <ul><li>两个：<code>oo*</code>：表示至少有一个<code>o</code></li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n 'oo*' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> <span class="hljs-keyword">my</span> favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn't fit <span class="hljs-keyword">me</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> <span class="hljs-keyword">about</span> $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">12</span>:<span class="hljs-keyword">the</span> symbol '*' <span class="hljs-keyword">is</span> represented <span class="hljs-keyword">as</span> start.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">15</span>:You are <span class="hljs-keyword">the</span> best <span class="hljs-keyword">is</span> mean you are <span class="hljs-keyword">the</span> no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">17</span>:I like dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">20</span>:go! go! Let's go.
+</div></code></pre>
+
+<blockquote>
+  <ul><li>三个：<code>ooo*</code>：表示至少有2个重复的<code>o</code></li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n 'ooo*' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span><span class="hljs-symbol">:<span class="hljs-string">"Open Source"</span></span> is a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span><span class="hljs-symbol">:apple</span> is my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">9</span><span class="hljs-symbol">:Oh!</span> The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">18</span><span class="hljs-symbol">:google</span> is the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">19</span><span class="hljs-symbol">:goooooogle</span> yes!
+</div></code></pre>
+
+<blockquote>
+  <ul><li>四个：<code>oooo*</code>：表示至少有三个重复的<code>o</code></li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> lcr]<span class="hljs-meta"># grep -n <span class="hljs-string">'oooo*'</span> regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div></code></pre>
+
+
+
+<h3 id="查找指定开头结尾字符">查找指定开头结尾字符</h3>
+
+<p>比如查找<code>g</code>开头结尾的字符</p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n 'g.g' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n 'g.*g' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">19</span>:goooooogle <span class="hljs-literal">yes</span>!
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">20</span>:go! go! Let<span class="hljs-string">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <p>“<code>.*</code>” ：代表林哥或多个任意字符</p>
+</blockquote>
+
+
+
+<h2 id="6限定连续re字符范围">6、限定连续RE字符范围{}</h2>
+
+<h3 id="查找连续n个o">查找连续N个<code>o</code></h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n 'o\{2\}' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span><span class="hljs-symbol">:<span class="hljs-string">"Open Source"</span></span> is a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span><span class="hljs-symbol">:apple</span> is my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">9</span><span class="hljs-symbol">:Oh!</span> The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">18</span><span class="hljs-symbol">:google</span> is the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">19</span><span class="hljs-symbol">:goooooogle</span> yes!
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> lcr]<span class="hljs-meta"># grep -n <span class="hljs-string">'o\{4\}'</span> regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div></code></pre>
+
+
+
+<h3 id="指定开头结尾中间指定范围">指定开头结尾，中间指定范围</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# <span class="hljs-keyword">grep</span> -n <span class="hljs-string">'go\{2,5\}g'</span> regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> <span class="hljs-built_in">search</span> keyword.
+</div></code></pre>
+
+
+
+<h3 id="有下限没有上限">有下限，没有上限</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs coffeescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># grep -n 'go\{2,\}g' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">19</span>:goooooogle <span class="hljs-literal">yes</span>!
+</div></code></pre>
+
+
+
+<h3 id="没下限有上限">没下限，有上限</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# <span class="hljs-keyword">grep</span> -n <span class="hljs-string">'go\{,5\}g'</span> regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> <span class="hljs-built_in">search</span> keyword.
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> lcr]<span class="hljs-comment"># grep -n 'go\{,5\}' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span><span class="hljs-symbol">:<span class="hljs-string">"Open Source"</span></span> is a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">3</span><span class="hljs-symbol">:Football</span> game is <span class="hljs-keyword">not</span> <span class="hljs-keyword">use</span> feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">9</span><span class="hljs-symbol">:Oh!</span> The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">13</span><span class="hljs-symbol">:Oh!</span>  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">14</span><span class="hljs-symbol">:The</span> gd software is a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">16</span><span class="hljs-symbol">:The</span> world &lt;Happy&gt; is the same with <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">17</span><span class="hljs-symbol">:I</span> like dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">18</span><span class="hljs-symbol">:google</span> is the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">19</span><span class="hljs-symbol">:goooooogle</span> yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">20</span><span class="hljs-symbol">:go!</span> go! Let<span class="hljs-string">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <h1 id="二sed-工具">二、sed 工具</h1>
+  
+  <p>sed也是一个管道命令，可以分析standard INPUT，可以替换，删除，新增，选取特定行等功能</p>
+  
+  <h2 id="1指令解析">1、指令解析</h2>
+  
+  <h3 id="简易说明">简易说明</h3>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs stata"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# sed
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>Usage: sed [OPTION]... {script-only-<span class="hljs-keyword">if</span>-<span class="hljs-keyword">no</span>-other-script} [<span class="hljs-keyword">input</span>-<span class="hljs-keyword">file</span>]...
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>  -<span class="hljs-keyword">n</span>, --quiet, --silent
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>                 suppress automatic printing of pattern space
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>  -<span class="hljs-keyword">e</span> script, --expression=script
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>                 add the script to the commands to be executed
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>  -f script-<span class="hljs-keyword">file</span>, --<span class="hljs-keyword">file</span>=script-<span class="hljs-keyword">file</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>                 add the contents of script-<span class="hljs-keyword">file</span> to the commands to be executed
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>  --follow-symlinks
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>                 follow symlinks when processing <span class="hljs-keyword">in</span> place
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>  -i[SUFFIX], --<span class="hljs-keyword">in</span>-place[=SUFFIX]
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>                 <span class="hljs-keyword">edit</span> files <span class="hljs-keyword">in</span> place (makes backup <span class="hljs-keyword">if</span> SUFFIX supplied)
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>  -c, --<span class="hljs-keyword">copy</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>                 <span class="hljs-keyword">use</span> <span class="hljs-keyword">copy</span> instead of <span class="hljs-keyword">rename</span> when shuffling files <span class="hljs-keyword">in</span> -i mode
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>  -b, --binary
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>                 does nothing; <span class="hljs-keyword">for</span> compatibility with WIN32/CYGWIN/MSDOS/EMX (
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>                 <span class="hljs-keyword">open</span> files <span class="hljs-keyword">in</span> binary mode (CR+LFs are not treated specially))
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>  -<span class="hljs-keyword">l</span> <span class="hljs-keyword">N</span>, --<span class="hljs-keyword">line</span>-length=<span class="hljs-keyword">N</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>                 specify the desired <span class="hljs-keyword">line</span>-wrap length <span class="hljs-keyword">for</span> the <span class="hljs-symbol">`l'</span> command
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>  --posix
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>                 disable all GNU extensions.
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>  -r, --regexp-extended
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>                 <span class="hljs-keyword">use</span> extended regular expressions <span class="hljs-keyword">in</span> the script.
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>  -s, --<span class="hljs-keyword">separate</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>                 consider files <span class="hljs-keyword">as</span> <span class="hljs-keyword">separate</span> rather than <span class="hljs-keyword">as</span> a single continuous
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>                 long stream.
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>  -<span class="hljs-keyword">u</span>, --unbuffered
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span>                 load minimal amounts of data from the <span class="hljs-keyword">input</span> files and flush
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span>                 the output buffers <span class="hljs-keyword">more</span> often
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span>  -z, --null-data
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span>                 <span class="hljs-keyword">separate</span> lines <span class="hljs-keyword">by</span> NUL characters
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span>  --<span class="hljs-keyword">help</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span>                 <span class="hljs-keyword">display</span> this <span class="hljs-keyword">help</span> and <span class="hljs-keyword">exit</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span>  --<span class="hljs-keyword">version</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span>                 output <span class="hljs-keyword">version</span> information and <span class="hljs-keyword">exit</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span><span class="hljs-keyword">If</span> <span class="hljs-keyword">no</span> -<span class="hljs-keyword">e</span>, --expression, -f, or --<span class="hljs-keyword">file</span> option is given, then the first
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span>non-option argument is taken <span class="hljs-keyword">as</span> the sed script to interpret.  All
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span>remaining arguments are names of <span class="hljs-keyword">input</span> files; <span class="hljs-keyword">if</span> <span class="hljs-keyword">no</span> <span class="hljs-keyword">input</span> files are
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span>specified, then the standard <span class="hljs-keyword">input</span> is <span class="hljs-keyword">read</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span>GNU sed home page: &lt;http:<span class="hljs-comment">//www.gnu.org/software/sed/&gt;.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span>General <span class="hljs-keyword">help</span> using GNU software: &lt;http:<span class="hljs-comment">//www.gnu.org/gethelp/&gt;.</span>
+</div></code></pre>
+
+<blockquote>
+  <h3 id="参数说明-1">参数说明</h3>
+  
+  <h4 id="参数">参数</h4>
+  
+  <table>
+<thead>
+<tr>
+  <th>参数</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>-n</td>
+  <td>安静模式，只有经过sed处理的才会显示</td>
+</tr>
+<tr>
+  <td>-e</td>
+  <td>在命令行模式编辑sed的动作</td>
+</tr>
+<tr>
+  <td>-f</td>
+  <td>执行文件内的sed动作</td>
+</tr>
+<tr>
+  <td>-r</td>
+  <td>支持扩展性正则表达式的语法</td>
+</tr>
+<tr>
+  <td>-i</td>
+  <td>自己修改读取的文件内容，而不输出到屏幕</td>
+</tr>
+</tbody></table>
+
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h4 id="动作">动作</h4>
+  
+  <p>[n1[,n2]]function <br>
+  n1,n2：选择进行处理的行数 <br>
+  动作参数</p>
+  
+  <table>
+<thead>
+<tr>
+  <th>参数</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>a</td>
+  <td>add，增加可以接字符串，加在当前行的下一行</td>
+</tr>
+<tr>
+  <td>c</td>
+  <td>change，替换，可接字符串，可以替换n1，n2之间的行</td>
+</tr>
+<tr>
+  <td>d</td>
+  <td>delete，删除，一般不接内容</td>
+</tr>
+<tr>
+  <td>i</td>
+  <td>insert，插入，可接字符串，插入当前行的上一行</td>
+</tr>
+<tr>
+  <td>p</td>
+  <td>print，打印，将选定的数据输到屏幕上通常与sed -n同时使用</td>
+</tr>
+<tr>
+  <td>s</td>
+  <td>switch，替换，通常与正则表达式配合使用</td>
+</tr>
+</tbody></table>
+
+</blockquote>
+
+<h2 id="2实践">2、实践</h2>
+
+<h3 id="输出并删除行">输出并删除行</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '2,5d'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">1</span>  <span class="hljs-symbol">root:</span><span class="hljs-symbol">x:</span><span class="hljs-number">0</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:root</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/bin/bash</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">9</span>  <span class="hljs-symbol">mail:</span><span class="hljs-symbol">x:</span><span class="hljs-number">8</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span><span class="hljs-symbol">:mail</span><span class="hljs-symbol">:/var/spool/mail</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>    <span class="hljs-number">10</span>  <span class="hljs-symbol">operator:</span><span class="hljs-symbol">x:</span><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:operator</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>    <span class="hljs-number">11</span>  <span class="hljs-symbol">games:</span><span class="hljs-symbol">x:</span><span class="hljs-number">12</span><span class="hljs-symbol">:</span><span class="hljs-number">100</span><span class="hljs-symbol">:games</span><span class="hljs-symbol">:/usr/games</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>    <span class="hljs-number">12</span>  <span class="hljs-symbol">ftp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">14</span><span class="hljs-symbol">:</span><span class="hljs-number">50</span><span class="hljs-symbol">:FTP</span> <span class="hljs-symbol">User:</span>/var/<span class="hljs-symbol">ftp:</span>/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>    <span class="hljs-number">13</span>  <span class="hljs-symbol">nobody:</span><span class="hljs-symbol">x:</span><span class="hljs-number">99</span><span class="hljs-symbol">:</span><span class="hljs-number">99</span><span class="hljs-symbol">:Nobody</span><span class="hljs-symbol">:/</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>    <span class="hljs-number">14</span>  <span class="hljs-symbol">pegasus:</span><span class="hljs-symbol">x:</span><span class="hljs-number">66</span><span class="hljs-symbol">:</span><span class="hljs-number">65</span><span class="hljs-symbol">:tog-pegasus</span> OpenPegasus WBEM/CIM <span class="hljs-symbol">services:</span>/var/lib/<span class="hljs-symbol">Pegasus:</span>/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>    <span class="hljs-number">15</span>  <span class="hljs-symbol">ods:</span><span class="hljs-symbol">x:</span><span class="hljs-number">999</span><span class="hljs-symbol">:</span><span class="hljs-number">998</span><span class="hljs-symbol">:softhsm</span> private keys <span class="hljs-symbol">owner:</span>/var/lib/<span class="hljs-symbol">softhsm:</span>/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>    <span class="hljs-number">16</span>  systemd-bus-<span class="hljs-symbol">proxy:</span><span class="hljs-symbol">x:</span><span class="hljs-number">998</span><span class="hljs-symbol">:</span><span class="hljs-number">996</span><span class="hljs-symbol">:systemd</span> Bus <span class="hljs-symbol">Proxy:</span>/<span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>    <span class="hljs-number">17</span>  systemd-<span class="hljs-symbol">network:</span><span class="hljs-symbol">x:</span><span class="hljs-number">192</span><span class="hljs-symbol">:</span><span class="hljs-number">192</span><span class="hljs-symbol">:systemd</span> Network <span class="hljs-symbol">Management:</span>/<span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span> ......
+</div></code></pre>
+
+<blockquote>
+  <p>2-5行不显示</p>
+</blockquote>
+
+
+
+<h3 id="增加数据">增加数据</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '2a drink tea'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">1</span>  <span class="hljs-symbol">root:</span><span class="hljs-symbol">x:</span><span class="hljs-number">0</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:root</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/bin/bash</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">2</span>  <span class="hljs-symbol">bin:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1</span><span class="hljs-symbol">:</span><span class="hljs-number">1</span><span class="hljs-symbol">:bin</span><span class="hljs-symbol">:/bin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>drink tea
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">3</span>  <span class="hljs-symbol">daemon:</span><span class="hljs-symbol">x:</span><span class="hljs-number">2</span><span class="hljs-symbol">:</span><span class="hljs-number">2</span><span class="hljs-symbol">:daemon</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">4</span>  <span class="hljs-symbol">adm:</span><span class="hljs-symbol">x:</span><span class="hljs-number">3</span><span class="hljs-symbol">:</span><span class="hljs-number">4</span><span class="hljs-symbol">:adm</span><span class="hljs-symbol">:/var/adm</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>     <span class="hljs-number">5</span>  <span class="hljs-symbol">lp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">4</span><span class="hljs-symbol">:</span><span class="hljs-number">7</span><span class="hljs-symbol">:lp</span><span class="hljs-symbol">:/var/spool/lpd</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>     <span class="hljs-number">9</span>  <span class="hljs-symbol">mail:</span><span class="hljs-symbol">x:</span><span class="hljs-number">8</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span><span class="hljs-symbol">:mail</span><span class="hljs-symbol">:/var/spool/mail</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>    <span class="hljs-number">10</span>  <span class="hljs-symbol">operator:</span><span class="hljs-symbol">x:</span><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:operator</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>    <span class="hljs-number">11</span>  <span class="hljs-symbol">games:</span><span class="hljs-symbol">x:</span><span class="hljs-number">12</span><span class="hljs-symbol">:</span><span class="hljs-number">100</span><span class="hljs-symbol">:games</span><span class="hljs-symbol">:/usr/games</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>    <span class="hljs-number">12</span>  <span class="hljs-symbol">ftp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">14</span><span class="hljs-symbol">:</span><span class="hljs-number">50</span><span class="hljs-symbol">:FTP</span> <span class="hljs-symbol">User:</span>/var/<span class="hljs-symbol">ftp:</span>/sbin/nologin
+</div></code></pre>
+
+
+
+<h4 id="增加多行数据">增加多行数据</h4>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '2a drink tea or ...........\&gt;drink beer?'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">1</span>  <span class="hljs-symbol">root:</span><span class="hljs-symbol">x:</span><span class="hljs-number">0</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:root</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/bin/bash</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">2</span>  <span class="hljs-symbol">bin:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1</span><span class="hljs-symbol">:</span><span class="hljs-number">1</span><span class="hljs-symbol">:bin</span><span class="hljs-symbol">:/bin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>drink tea <span class="hljs-keyword">or</span> ...........&gt;drink beer?
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">3</span>  <span class="hljs-symbol">daemon:</span><span class="hljs-symbol">x:</span><span class="hljs-number">2</span><span class="hljs-symbol">:</span><span class="hljs-number">2</span><span class="hljs-symbol">:daemon</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">4</span>  <span class="hljs-symbol">adm:</span><span class="hljs-symbol">x:</span><span class="hljs-number">3</span><span class="hljs-symbol">:</span><span class="hljs-number">4</span><span class="hljs-symbol">:adm</span><span class="hljs-symbol">:/var/adm</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>     <span class="hljs-number">5</span>  <span class="hljs-symbol">lp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">4</span><span class="hljs-symbol">:</span><span class="hljs-number">7</span><span class="hljs-symbol">:lp</span><span class="hljs-symbol">:/var/spool/lpd</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>     <span class="hljs-number">9</span>  <span class="hljs-symbol">mail:</span><span class="hljs-symbol">x:</span><span class="hljs-number">8</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span><span class="hljs-symbol">:mail</span><span class="hljs-symbol">:/var/spool/mail</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>........
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '2a drink tea or ..\  #此处要回车另起一行输入     </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>&gt; drink beer?<span class="hljs-string">'
+</span></div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>     1  root:x:0:0:root:/root:/bin/bash
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>     2  bin:x:1:1:bin:/bin:/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>drink tea or ..
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>drink beer?
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>     3  daemon:x:2:2:daemon:/sbin:/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>     4  adm:x:3:4:adm:/var/adm:/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>     5  lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>     6  sync:x:5:0:sync:/sbin:/bin/sync
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>     7  shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>     8  halt:x:7:0:halt:/sbin:/sbin/halt
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>     9  mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>.......
+</div></code></pre>
+
+
+
+<h3 id="以行为单位替换和显示">以行为单位替换和显示</h3>
+
+<h4 id="整行替换">整行替换</h4>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '2,5c NO 2-5 number'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">1</span>  <span class="hljs-symbol">root:</span><span class="hljs-symbol">x:</span><span class="hljs-number">0</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:root</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/bin/bash</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>NO <span class="hljs-number">2</span>-<span class="hljs-number">5</span> number
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>     <span class="hljs-number">9</span>  <span class="hljs-symbol">mail:</span><span class="hljs-symbol">x:</span><span class="hljs-number">8</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span><span class="hljs-symbol">:mail</span><span class="hljs-symbol">:/var/spool/mail</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>    <span class="hljs-number">10</span>  <span class="hljs-symbol">operator:</span><span class="hljs-symbol">x:</span><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:operator</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>    <span class="hljs-number">11</span>  <span class="hljs-symbol">games:</span><span class="hljs-symbol">x:</span><span class="hljs-number">12</span><span class="hljs-symbol">:</span><span class="hljs-number">100</span><span class="hljs-symbol">:games</span><span class="hljs-symbol">:/usr/games</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>    <span class="hljs-number">12</span>  <span class="hljs-symbol">ftp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">14</span><span class="hljs-symbol">:</span><span class="hljs-number">50</span><span class="hljs-symbol">:FTP</span> <span class="hljs-symbol">User:</span>/var/<span class="hljs-symbol">ftp:</span>/sbin/nologin
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>......
+</div></code></pre>
+
+
+
+<h4 id="查看指定行">查看指定行</h4>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed -n '3,8p'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">3</span>  <span class="hljs-symbol">daemon:</span><span class="hljs-symbol">x:</span><span class="hljs-number">2</span><span class="hljs-symbol">:</span><span class="hljs-number">2</span><span class="hljs-symbol">:daemon</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">4</span>  <span class="hljs-symbol">adm:</span><span class="hljs-symbol">x:</span><span class="hljs-number">3</span><span class="hljs-symbol">:</span><span class="hljs-number">4</span><span class="hljs-symbol">:adm</span><span class="hljs-symbol">:/var/adm</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>     <span class="hljs-number">5</span>  <span class="hljs-symbol">lp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">4</span><span class="hljs-symbol">:</span><span class="hljs-number">7</span><span class="hljs-symbol">:lp</span><span class="hljs-symbol">:/var/spool/lpd</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div></code></pre>
+
+<blockquote>
+  <p>sed -n，这个先阻止了输出到屏幕，‘3,8p’，打印3-8行</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs elixir"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-variable">@localhost</span> etc]<span class="hljs-comment"># nl passwd | sed '5,8p'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>     <span class="hljs-number">1</span>  <span class="hljs-symbol">root:</span><span class="hljs-symbol">x:</span><span class="hljs-number">0</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:root</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/bin/bash</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>     <span class="hljs-number">2</span>  <span class="hljs-symbol">bin:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1</span><span class="hljs-symbol">:</span><span class="hljs-number">1</span><span class="hljs-symbol">:bin</span><span class="hljs-symbol">:/bin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>     <span class="hljs-number">3</span>  <span class="hljs-symbol">daemon:</span><span class="hljs-symbol">x:</span><span class="hljs-number">2</span><span class="hljs-symbol">:</span><span class="hljs-number">2</span><span class="hljs-symbol">:daemon</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>     <span class="hljs-number">4</span>  <span class="hljs-symbol">adm:</span><span class="hljs-symbol">x:</span><span class="hljs-number">3</span><span class="hljs-symbol">:</span><span class="hljs-number">4</span><span class="hljs-symbol">:adm</span><span class="hljs-symbol">:/var/adm</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>     <span class="hljs-number">5</span>  <span class="hljs-symbol">lp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">4</span><span class="hljs-symbol">:</span><span class="hljs-number">7</span><span class="hljs-symbol">:lp</span><span class="hljs-symbol">:/var/spool/lpd</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>     <span class="hljs-number">5</span>  <span class="hljs-symbol">lp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">4</span><span class="hljs-symbol">:</span><span class="hljs-number">7</span><span class="hljs-symbol">:lp</span><span class="hljs-symbol">:/var/spool/lpd</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>     <span class="hljs-number">6</span>  <span class="hljs-symbol">sync:</span><span class="hljs-symbol">x:</span><span class="hljs-number">5</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:sync</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/bin/sync</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>     <span class="hljs-number">7</span>  <span class="hljs-symbol">shutdown:</span><span class="hljs-symbol">x:</span><span class="hljs-number">6</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:shutdown</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/shutdown</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>     <span class="hljs-number">8</span>  <span class="hljs-symbol">halt:</span><span class="hljs-symbol">x:</span><span class="hljs-number">7</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:halt</span><span class="hljs-symbol">:/sbin</span><span class="hljs-symbol">:/sbin/halt</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>     <span class="hljs-number">9</span>  <span class="hljs-symbol">mail:</span><span class="hljs-symbol">x:</span><span class="hljs-number">8</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span><span class="hljs-symbol">:mail</span><span class="hljs-symbol">:/var/spool/mail</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>    <span class="hljs-number">10</span>  <span class="hljs-symbol">operator:</span><span class="hljs-symbol">x:</span><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">0</span><span class="hljs-symbol">:operator</span><span class="hljs-symbol">:/root</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>    <span class="hljs-number">11</span>  <span class="hljs-symbol">games:</span><span class="hljs-symbol">x:</span><span class="hljs-number">12</span><span class="hljs-symbol">:</span><span class="hljs-number">100</span><span class="hljs-symbol">:games</span><span class="hljs-symbol">:/usr/games</span><span class="hljs-symbol">:/sbin/nologin</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>    <span class="hljs-number">12</span>  <span class="hljs-symbol">ftp:</span><span class="hljs-symbol">x:</span><span class="hljs-number">14</span><span class="hljs-symbol">:</span><span class="hljs-number">50</span><span class="hljs-symbol">:FTP</span> <span class="hljs-symbol">User:</span>/var/<span class="hljs-symbol">ftp:</span>/sbin/nologin
+</div></code></pre>
+
+<blockquote>
+  <p>如果不加上<code>-n</code>，则会全部显示，在此基础上，5-8行显示多一次，则会造成重复，而不是选择输出显示</p>
+</blockquote>
+
+
+
+<h3 id="部分数据的查找替换">部分数据的查找替换</h3>
+
+<blockquote>
+  <p>以网卡信息的处理为例</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs tap"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost etc]<span class="hljs-comment"># ifconfig </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>        inet 192.168.121.7  netmask 255.255.255.0  broadcast 192.168.121.255
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>        inet6 fe80::6cc1:deec:46c3:c576  prefixlen<span class="hljs-number"> 64 </span> scopeid 0x20&lt;link&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>        ether 00:0c:29:50:7c:3b  txqueuelen<span class="hljs-number"> 1000 </span> (Ethernet)
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>        RX packets<span class="hljs-number"> 1428 </span> bytes<span class="hljs-number"> 136309 </span>(133.1 KiB)
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>        RX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span> overruns<span class="hljs-number"> 0 </span> frame 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>        TX packets<span class="hljs-number"> 362 </span> bytes<span class="hljs-number"> 31363 </span>(30.6 KiB)
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>        TX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span>overruns<span class="hljs-number"> 0 </span> carrier<span class="hljs-number"> 0 </span> collisions 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>        inet 127.0.0.1  netmask 255.0.0.0
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>        inet6 ::1  prefixlen<span class="hljs-number"> 128 </span> scopeid 0x10&lt;host&gt;
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>        loop  txqueuelen<span class="hljs-number"> 1 </span> (Local Loopback)
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>        RX packets<span class="hljs-number"> 72 </span> bytes<span class="hljs-number"> 6252 </span>(6.1 KiB)
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>        RX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span> overruns<span class="hljs-number"> 0 </span> frame 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>        TX packets<span class="hljs-number"> 72 </span> bytes<span class="hljs-number"> 6252 </span>(6.1 KiB)
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>        TX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span>overruns<span class="hljs-number"> 0 </span> carrier<span class="hljs-number"> 0 </span> collisions 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>virbr0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>        inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>        ether 52:54:00:02:b2:34  txqueuelen<span class="hljs-number"> 1000 </span> (Ethernet)
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>        RX packets<span class="hljs-number"> 0 </span> bytes<span class="hljs-number"> 0 </span>(0.0 B)
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>        RX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span> overruns<span class="hljs-number"> 0 </span> frame 0
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>        TX packets<span class="hljs-number"> 0 </span> bytes<span class="hljs-number"> 0 </span>(0.0 B)
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>        TX errors<span class="hljs-number"> 0 </span> dropped<span class="hljs-number"> 0 </span>overruns<span class="hljs-number"> 0 </span> carrier<span class="hljs-number"> 0 </span> collisions 0
+</div></code></pre>
+
+<ul><li>第一步：只显示第二行</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost etc]# ifconfig | sed -n '<span class="hljs-number">2</span>p'
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>        inet <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.7</span>  netmask <span class="hljs-number">255.255</span><span class="hljs-number">.255</span><span class="hljs-number">.0</span>  broadcast <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.255</span>
+</div></code></pre>
+
+<blockquote>
+  <p>这样数据就只剩下第二行 <br>
+  也可以使用正则表达式</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs lsl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost etc]# ifconfig ens33 | grep 'inet <span class="hljs-number">1</span>'
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>        inet <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.7</span>  netmask <span class="hljs-number">255.255</span><span class="hljs-number">.255</span><span class="hljs-number">.0</span>  broadcast <span class="hljs-number">192.168</span><span class="hljs-number">.121</span><span class="hljs-number">.255</span>
+</div></code></pre>
+
+<blockquote>
+  <h1 id="三扩展正值表达式">三、扩展正值表达式</h1>
+</blockquote>
+
+<h2 id="1过滤两次">1、过滤两次</h2>
+
+
+
+<h3 id="管道过滤grep">管道过滤（grep）</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -v '^$' regular_express.txt | grep -v '^#'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Oh! My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <ul><li>上面的没有行号，尝试添加行号</li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -nv '^$' regular_express.txt | grep -v '^#'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">8</span>:I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span><span class="hljs-number">21</span>:<span class="hljs-meta"># I am VBird</span>
+</div></code></pre>
+
+<blockquote>
+  <p>上面显示行号了，但是第21行，猜测是因为第一遍过滤的时候添加了行号，改变了开头 <br>
+  修改为在第二遍过滤的时候添加行号</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -v '^$' regular_express.txt | grep -nv '^#'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">8</span>:I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <p>这次正常显示</p>
+</blockquote>
+
+
+
+<h3 id="过滤两次扩展">过滤两次（扩展）</h3>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># egrep -v '^$|^#' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Oh! My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>[root@localhost lcr]<span class="hljs-meta"># egrep -nv '^$|^#' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span><span class="hljs-number">8</span>:I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span>[root@localhost lcr]<span class="hljs-meta"># </span>
+</div></code></pre>
+
+<blockquote>
+  <p>其中单引号内的<code>|</code>为“或”的意思</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <h3 id="grep-e">grep -E</h3>
+  
+  <p>grep  -E 类似于egrep的别名</p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -E -v '^$|^#' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>Oh! My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vbnet"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-meta"># grep -Env '^$|^#' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">2</span>:apple <span class="hljs-keyword">is</span> my favorite food.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">3</span>:Football game <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> use feet only.
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">4</span>:this dress doesn<span class="hljs-comment">'t fit me.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">5</span>:However, this dress <span class="hljs-keyword">is</span> about $ <span class="hljs-number">3183</span> dollars.
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-number">6</span>:GNU <span class="hljs-keyword">is</span> free air <span class="hljs-keyword">not</span> free beer.
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-number">7</span>:Her hair <span class="hljs-keyword">is</span> very beauty.
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-number">8</span>:I can<span class="hljs-comment">'t finish the test.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-number">10</span>:motorcycle <span class="hljs-keyword">is</span> cheap than car.
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-number">11</span>:This window <span class="hljs-keyword">is</span> clear.
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span><span class="hljs-number">12</span>:the symbol <span class="hljs-comment">'*' is represented as start.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a library <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span><span class="hljs-number">15</span>:You are the best <span class="hljs-keyword">is</span> mean you are the no. <span class="hljs-number">1.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span><span class="hljs-number">17</span>:I <span class="hljs-keyword">like</span> dog.
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span><span class="hljs-number">18</span>:google <span class="hljs-keyword">is</span> the best tools <span class="hljs-keyword">for</span> search keyword.
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span><span class="hljs-number">19</span>:goooooogle yes!
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span><span class="hljs-number">20</span>:go! go! <span class="hljs-keyword">Let</span><span class="hljs-comment">'s go.</span>
+</div></code></pre>
+
+<blockquote>
+  <h2 id="2re字符">2、RE字符<code>+</code></h2>
+  
+  <p>重复一个或者多个前一个字符 <br>
+  eg：查找god，good，goood</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs erlang-repl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> is a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div></code></pre>
+
+<blockquote>
+  <h2 id="3re字符">3、RE字符<code>?</code></h2>
+  
+  <p>零个或者一个起哪一个字符 <br>
+  eg：查找gd，god</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs dart"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-meta">@localhost</span> lcr]# egrep -n <span class="hljs-string">'go?d'</span> regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a <span class="hljs-keyword">library</span> <span class="hljs-keyword">for</span> drafting programs.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="4re字符">4、RE字符<code>|</code></h2>
+  
+  <p>或条件 <br>
+  eg：查找gd或者good</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs dart"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-meta">@localhost</span> lcr]# egrep -n <span class="hljs-string">'gd|god'</span> regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a <span class="hljs-keyword">library</span> <span class="hljs-keyword">for</span> drafting programs.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="5re字符">5、RE字符<code>()</code></h2>
+  
+  <p>“组” <br>
+  eg：查找glad或者good</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># egrep -n 'g(la|oo)d' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div></code></pre>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs scheme"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[<span class="hljs-name">root@localhost</span> lcr]# egrep -n <span class="hljs-symbol">'g</span>(<span class="hljs-name">la</span>|o)d' regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; is the same with <span class="hljs-string">"glad"</span>.
+</div></code></pre>
+
+<ul><li>结合使用<code>+</code></li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs livescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># egrep -n 'g(la|o+)d' regular_express.txt </span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism <span class="hljs-keyword">to</span> develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div></code></pre>
+
+<ul><li>结合使用<code>*</code></li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs dart"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-meta">@localhost</span> lcr]# egrep -n <span class="hljs-string">'g(la|o*)d'</span> regular_express.txt 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-number">1</span>:<span class="hljs-string">"Open Source"</span> <span class="hljs-keyword">is</span> a good mechanism to develop programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-number">9</span>:Oh! The soup taste good.
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-number">13</span>:Oh!  My god!
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-number">14</span>:The gd software <span class="hljs-keyword">is</span> a <span class="hljs-keyword">library</span> <span class="hljs-keyword">for</span> drafting programs.
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-number">16</span>:The world &lt;Happy&gt; <span class="hljs-keyword">is</span> the same <span class="hljs-keyword">with</span> <span class="hljs-string">"glad"</span>.
+</div></code></pre>
+
+<blockquote>
+  <h2 id="6re字符">6、RE字符<code>()+</code></h2>
+  
+  <p>多个重复的组</p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs scheme"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[<span class="hljs-name">root@localhost</span> lcr]# echo <span class="hljs-symbol">'AxyzxyzxyzxyzxyzC</span>' | egrep <span class="hljs-symbol">'A</span>(<span class="hljs-name">xyz</span>)+C'
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>AxyzxyzxyzxyzxyzC
+</div></code></pre>
+
+
+
+<h1 id="title">——————————————————–</h1>
+
+<blockquote>
+  <p><strong>bash特点：</strong></p>
+  
+  <ul><li>命令记忆 <br>
+  执行过的命令会记忆下来，</li>
+  </ul>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <ul><li>别名功能（alias）</li>
+  <li>查看已有的别名</li>
+  </ul>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vhdl"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]# <span class="hljs-keyword">alias</span> 
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-keyword">alias</span> cp=<span class="hljs-symbol">'cp</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-keyword">alias</span> egrep=<span class="hljs-symbol">'egrep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-keyword">alias</span> fgrep=<span class="hljs-symbol">'fgrep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-keyword">alias</span> grep=<span class="hljs-symbol">'grep</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-keyword">alias</span> l.=<span class="hljs-symbol">'ls</span> -d .* <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span><span class="hljs-keyword">alias</span> ll=<span class="hljs-symbol">'ls</span> -l <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span><span class="hljs-keyword">alias</span> lm=<span class="hljs-symbol">'ls</span> -al'
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span><span class="hljs-keyword">alias</span> ls=<span class="hljs-symbol">'ls</span> <span class="hljs-comment">--color=auto'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span><span class="hljs-keyword">alias</span> mv=<span class="hljs-symbol">'mv</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span><span class="hljs-keyword">alias</span> rm=<span class="hljs-symbol">'rm</span> -i'
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span><span class="hljs-keyword">alias</span> which=<span class="hljs-symbol">'alias</span> | /usr/bin/which <span class="hljs-comment">--tty-only --read-alias --show-dot --show-tilde'</span>
+</div></code></pre>
+
+<ul><li>设置别名lm</li>
+</ul>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs tap"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root@localhost lcr]<span class="hljs-comment"># alias lm='ls -al'</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>[root@localhost lcr]<span class="hljs-comment"># lm</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>total 312
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>drwx------.<span class="hljs-number"> 19 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Oct <span class="hljs-number"> 7 </span>19:58 .
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>drwxr-xr-x. <span class="hljs-number"> 4 </span>root root  <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 28 </span>21:22 ..
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span>-rw-------. <span class="hljs-number"> 1 </span>lcr  lcr    <span class="hljs-number"> 749 </span>Oct <span class="hljs-number"> 6 </span>21:03 .bash_history
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>-rw-r--r--. <span class="hljs-number"> 1 </span>lcr  lcr     <span class="hljs-number"> 18 </span>Aug <span class="hljs-number"> 3 </span><span class="hljs-number"> 2016 </span>.bash_logout
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>-rw-r--r--. <span class="hljs-number"> 1 </span>lcr  lcr    <span class="hljs-number"> 193 </span>Aug <span class="hljs-number"> 3 </span><span class="hljs-number"> 2016 </span>.bash_profile
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>-rw-r--r--. <span class="hljs-number"> 1 </span>lcr  lcr    <span class="hljs-number"> 231 </span>Aug <span class="hljs-number"> 3 </span><span class="hljs-number"> 2016 </span>.bashrc
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>drwx------.<span class="hljs-number"> 12 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Oct <span class="hljs-number"> 5 </span>23:48 .cache
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>drwxr-xr-x.<span class="hljs-number"> 18 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Oct <span class="hljs-number"> 6 </span>21:13 .config
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>drwxr-xr-x. <span class="hljs-number"> 2 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 28 </span>21:45 Desktop
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>drwxr-xr-x. <span class="hljs-number"> 7 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Oct <span class="hljs-number"> 1 </span>10:57 Documents
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>drwxr-xr-x. <span class="hljs-number"> 2 </span>lcr  lcr   <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 28 </span>21:45 Downloads
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>...
+</div></code></pre>
+
+<ul><li>删除已有的别名</li>
+</ul>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@localhost</span> lcr]<span class="hljs-meta"># unalias lm</span>
+</div></code></pre></div></body></html>
