@@ -1,0 +1,451 @@
+<!DOCTYPE html><html><head><title>[转载]系统服务列表</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>
+
+.note-content  {font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Song, sans-serif;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="转载系统服务列表">[转载]系统服务列表</h1>
+
+<blockquote>
+  <p>前言： <br>
+  RHEL/CentOS 6.x的系统服务比5.x系列的要多了很多新面孔，估计很多童鞋不甚理解，网上这方面资料也很少。理解这个对运维人员是必要的，因为开启不必要的服务越多，系统就相对越不安全。不需开启的服务尽量关闭。本人结合自己的应用经验做一些讲解说明，有不同理解的童鞋欢迎交流。</p>
+</blockquote>
+
+<p>下面列表是在RHEL/CentOS 6.x最小化桌面环境安装下显示出来的系统服务，其中红色字体标注的是用官方的minimal ISO最小化安装系统后的服务列表。</p>
+
+<table>
+<thead>
+<tr>
+  <th>服务名称</th>
+  <th>功能</th>
+  <th>默认</th>
+  <th>建议</th>
+  <th>备注说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>NetworkManager</td>
+  <td>用于自动连接网络，常用在Laptop上</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>abrt-ccpp</td>
+  <td></td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>abrt-oops</td>
+  <td></td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>abrtd</td>
+  <td></td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>acpid</td>
+  <td>电源的开关等检测管理，常用在Laptop上</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td><code>atd</code></td>
+  <td>在指定时间执行命令</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>如果用crond，则可关闭它</td>
+</tr>
+<tr>
+  <td><code>auditd</code></td>
+  <td>审核守护进程</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>如果用selinux，需要开启它</td>
+</tr>
+<tr>
+  <td>autofs</td>
+  <td>文件系统自动加载和卸载</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>只在需要时开启它，可以关闭</td>
+</tr>
+<tr>
+  <td>avahi-daemon</td>
+  <td>本地网络服务查找</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>bluetooth</td>
+  <td>蓝牙无线通讯</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>certmonger</td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>cpuspeed</td>
+  <td>调节cpu速度用来省电，常用在Laptop上</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td><code>crond</code></td>
+  <td>计划任务管理</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>常用，开启</td>
+</tr>
+<tr>
+  <td><code>cups</code></td>
+  <td>通用unix打印服务</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>对服务器无用</td>
+</tr>
+<tr>
+  <td>dnsmasq</td>
+  <td>dns cache</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>DNS缓存服务，无用</td>
+</tr>
+<tr>
+  <td>firstboot</td>
+  <td>系统安装后初始设定</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>haldaemon</td>
+  <td>硬件信息收集服务</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>ip6tables</code></td>
+  <td>ipv6防火墙</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>用到ipv6网络的就用，一般关闭</td>
+</tr>
+<tr>
+  <td><code>iptables</code></td>
+  <td>ipv4防火墙</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>ipv4防火墙服务</td>
+</tr>
+<tr>
+  <td>irqbalance</td>
+  <td>cpu负载均衡</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>多核cup需要</td>
+</tr>
+<tr>
+  <td>kdump</td>
+  <td>硬件变动检测</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>服务器无用</td>
+</tr>
+<tr>
+  <td>lvm2-monitor</td>
+  <td>lvm监视</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>如果使用LVM逻辑卷管理就开启</td>
+</tr>
+<tr>
+  <td><code>matahari-broker</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>此服务不清楚，我关闭</td>
+</tr>
+<tr>
+  <td><code>matahari-host</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>此服务不清楚，我关闭</td>
+</tr>
+<tr>
+  <td><code>matahari-network</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>此服务不清楚，我关闭</td>
+</tr>
+<tr>
+  <td><code>matahari-service</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>此服务不清楚，我关闭</td>
+</tr>
+<tr>
+  <td><code>matahari-sysconfig</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>此服务不清楚，我关闭</td>
+</tr>
+<tr>
+  <td>mdmonitor</td>
+  <td>软raid监视</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>messagebus</code></td>
+  <td>负责在各个系统进程之间传递消息</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>如停用，haldaemon启动会失败</td>
+</tr>
+<tr>
+  <td><code>netconsole</code></td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>netfs</code></td>
+  <td>系统启动时自动挂载网络文件系统</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>如果使用nfs服务，就开启</td>
+</tr>
+<tr>
+  <td><code>network</code></td>
+  <td>系统启动时激活所有网络接口</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>网络基础服务，必需！</td>
+</tr>
+<tr>
+  <td>nfs</td>
+  <td>网络文件系统</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>nfs文件服务，用到就开启</td>
+</tr>
+<tr>
+  <td>nfslock</td>
+  <td>nfs相关</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>nfs相关服务，用到就开启</td>
+</tr>
+<tr>
+  <td>ntpd</td>
+  <td>自动对时工具</td>
+  <td>关闭</td>
+  <td>自定</td>
+  <td>网络对时服务，用到就开启</td>
+</tr>
+<tr>
+  <td>ntpdate</td>
+  <td>自动对时工具</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>oddjobd</td>
+  <td>与D-BUS相关</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>portreserve</code></td>
+  <td>RPC 服务相关</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>可以关闭</td>
+</tr>
+<tr>
+  <td><code>postfix</code></td>
+  <td>替代sendmail的邮件服务器</td>
+  <td>开启</td>
+  <td>自定</td>
+  <td>如果无邮件服务，可关闭</td>
+</tr>
+<tr>
+  <td>psacct</td>
+  <td>负荷检测</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>可以关闭</td>
+</tr>
+<tr>
+  <td><code>qpidd</code></td>
+  <td>消息通信</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td></td>
+</tr>
+<tr>
+  <td>quota_nld</td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>可以关闭</td>
+</tr>
+<tr>
+  <td><code>rdisc</code></td>
+  <td>自动检测路由器</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>restorecond</code></td>
+  <td>selinux相关</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>如果开启了selinux，就需开启</td>
+</tr>
+<tr>
+  <td>rpcbind</td>
+  <td></td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>关键的基础服务，nfs服务和桌面环境都依赖此服务！相当于CentOS 5.x里面的portmap服务。</td>
+</tr>
+<tr>
+  <td>rpcgssd</td>
+  <td>NFS相关</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>NFS相关服务，可选</td>
+</tr>
+<tr>
+  <td>rpcidmapd</td>
+  <td>RPC name to UID/GID mapper</td>
+  <td>开启</td>
+  <td>关闭</td>
+  <td>NFS相关服务，可选</td>
+</tr>
+<tr>
+  <td>rpcsvcgssd</td>
+  <td>NFS相关</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td>NFS相关服务，可选</td>
+</tr>
+<tr>
+  <td><code>rsyslog</code></td>
+  <td>提供系统的登录档案记录</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>系统日志关键服务，必需！</td>
+</tr>
+<tr>
+  <td><code>saslauthd</code></td>
+  <td>sasl认证服务相关</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>smartd</td>
+  <td>硬盘自动检测守护进程</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>spice-vdagentd</td>
+  <td></td>
+  <td>开启</td>
+  <td>开启</td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>sshd</code></td>
+  <td>ssh服务端，可提供安全的shell登录</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>SSH远程登录服务，必需！</td>
+</tr>
+<tr>
+  <td>sssd</td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>sysstat</td>
+  <td></td>
+  <td>开启</td>
+  <td>开启</td>
+  <td>一组系统监控工具的服务，常用</td>
+</tr>
+<tr>
+  <td><code>udev-post</code></td>
+  <td>设备管理系统</td>
+  <td>开启</td>
+  <td>开启</td>
+  <td></td>
+</tr>
+<tr>
+  <td>wdaemon</td>
+  <td></td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>wpa_supplicant</td>
+  <td>无线认证相关</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+<tr>
+  <td>ypbind</td>
+  <td>network information service客户端</td>
+  <td>关闭</td>
+  <td>关闭</td>
+  <td></td>
+</tr>
+</tbody></table>
+
+
+<blockquote>
+  <p>可以使用 <br>
+  禁止开机启动：systemctl disable  servicename <br>
+  开启开机启动：systemctl enable servicename</p>
+</blockquote>
+
+<p>原文链接：<a href="http://www.ha97.com/4815.html" target="_blank">http://www.ha97.com/4815.html</a></p></div></body></html>
