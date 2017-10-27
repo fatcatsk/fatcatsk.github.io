@@ -21,3 +21,5 @@
 <p><a href="https://fatcatsk.github.io/shell.html" target="_blank"><strong>shell</strong></a>
 <p><a href="https://fatcatsk.github.io/regular%20expression.html" target="_blank"><strong>正则表达式</strong></a>
 <p><a href="https://fatcatsk.github.io/systemdaemon.html" target="_blank"><strong>[转载]系统服务列表</strong></a>
+<p><a href="https://fatcatsk.github.io/mongodbinstall.html" target="_blank"><strong>Centos7 安装mongodb，以及启动失败</strong></a>
+  
