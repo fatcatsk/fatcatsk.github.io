@@ -1,0 +1,129 @@
+<!DOCTYPE html><html><head><title>Centos7 安装mongodb，以及启动失败</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content  {font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+<h1 id="centos7-安装mongodb以及启动失败">Centos7 安装mongodb，以及启动失败</h1>
+
+<h1 id="一安装">一、安装</h1>
+
+<h2 id="1添加软件源">1、添加软件源：</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs stylus"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo vim /etc/yum<span class="hljs-selector-class">.repos</span><span class="hljs-selector-class">.d</span>/mongodb-org-<span class="hljs-number">3.6</span>.repo
+</div></code></pre>
+
+<h2 id="2添加以下内容">2、添加以下内容：</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ini"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-section">[mongodb-org-3.6]</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-attr">name</span>=MongoDB Repository
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span><span class="hljs-attr">baseurl</span>=https://repo.mongodb.org/yum/redhat/<span class="hljs-variable">$releasever</span>/mongodb-org/testing/x<span class="hljs-number">86_64</span>/
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span><span class="hljs-attr">gpgcheck</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span><span class="hljs-attr">enabled</span>=<span class="hljs-number">1</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-attr">gpgkey</span>=https://www.mongodb.org/static/pgp/server-<span class="hljs-number">3.6</span>.asc
+</div></code></pre>
+
+
+
+<h2 id="3清理缓存">3、清理缓存</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ada"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo yum clean <span class="hljs-keyword">all</span>
+</div></code></pre>
+
+<h2 id="4生成缓存">4、生成缓存</h2>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs ebnf"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-attribute">sudo yum makecache</span>
+</div></code></pre>
+
+<h2 id="5关闭selinux">5、关闭selinux</h2>
+
+<blockquote>
+  <p><strong><code>临时</code>关闭selinux</strong></p>
+</blockquote>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@centos</span><span class="hljs-number">-1</span>]<span class="hljs-meta"># setenforce 0</span>
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <p><strong>将selinux的参数改为“<code>disabled</code>”，这可以永久关闭selinux</strong></p>
+</blockquote>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs autoit"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>[root<span class="hljs-symbol">@centos</span><span class="hljs-number">-1</span>]<span class="hljs-meta"># sed -i <span class="hljs-string">"s/SELINUX=enforcing/SELINUX=disabled/g"</span> /etc/selinux/config</span>
+</div></code></pre>
+
+<p><strong>or</strong></p>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs arduino"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>vi /etc/selinux/<span class="hljs-built_in">config</span>
+</div></code></pre>
+
+
+
+<h2 id="6启动重点">6、启动（重点）</h2>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs crmsh"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo service mongod <span class="hljs-literal">start</span>
+</div></code></pre>
+
+<blockquote>
+  <p>注意，一定不要使用systemctl start mongod</p>
+</blockquote>
+
+<h2 id="7设置开机启动重点">7、设置开机启动（重点）</h2>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs applescript"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo chkconfig mongod <span class="hljs-keyword">on</span>
+</div></code></pre>
+
+<blockquote>
+  <p>注意，一定不要使用systemctl enable mongod</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p><strong><code>步骤6、7是导致启动失败的主要原因，因此建议严格按照说明操作</code></strong></p>
+</blockquote>
+
+<h1 id="二卸载">二、卸载</h1>
+
+
+
+<h2 id="1停止mogodb">1、停止mogodb</h2>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs arduino"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo service mongod <span class="hljs-built_in">stop</span>
+</div></code></pre>
+
+
+
+<h2 id="2卸载mogodb">2、卸载mogodb</h2>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs vim"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo yum erase $(rpm -<span class="hljs-keyword">qa</span> | <span class="hljs-keyword">grep</span> mongodb-org)
+</div></code></pre>
+
+
+
+<h2 id="3删除mongodb数据">3、删除mongodb数据</h2>
+
+
+
+<pre class="prettyprint with-line-number hljs-light"><code class="hljs crystal"><div class="hljs-line"><span class="hljs-comment line-number">1.</span>sudo rm -r /var/log/mongodb
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span>sudo rm -r /var/<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">mongo</span></span>
+</div></code></pre>
+
+<p>参考链接：<a href="http://t.cn/RW0U23p" target="_blank">http://t.cn/RW0U23p</a></p></div></body></html>
