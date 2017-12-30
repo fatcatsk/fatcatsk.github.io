@@ -1,0 +1,183 @@
+<!DOCTYPE html><html><head><title>[转载]Go常用包系列—strings包</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>.note-content , .note-content  div {font-size: 16px;}
+
+.note-content  {font-family: 微软雅黑, 'Helvetica Neue', Arial, 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', 'WenQuanYi Micro Hei', SimSun, Song, sans-serif;}
+
+.note-content h1 {color: #1E90FF;}
+.note-content h2 {color: #191970;}
+.note-content h3 {color: #4F94CD;}
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="转载go常用包系列strings包">[转载]Go常用包系列—strings包</h1>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#转载go常用包系列strings包">[转载]Go常用包系列—strings包</a></li>
+<li><a href="#strings包">strings包</a></li>
+<li><a href="#例子">例子：</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<h1 id="strings包">strings包</h1>
+
+<table>
+<thead>
+<tr>
+  <th>函数</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>strings.HasPrefix(s, prefix string) bool</td>
+  <td>判断字符串s是否以prefix 开头</td>
+</tr>
+<tr>
+  <td>strings.HasSuffix(s, suffix string) bool</td>
+  <td>判断字符串是否以suffix结尾</td>
+</tr>
+<tr>
+  <td>strings.Contains(s, substr string) bool</td>
+  <td>判断字符串s是否包含substr</td>
+</tr>
+<tr>
+  <td>strings.Index(s, str string) int</td>
+  <td>判断子字符串在父字符串中第一次出现的位置</td>
+</tr>
+<tr>
+  <td>strings.LastIndex(s, str string) int</td>
+  <td>判断子字符串在父字符串中最后出现的位置</td>
+</tr>
+<tr>
+  <td>strings.IndexRune(s, r rune) int</td>
+  <td>判断ASCII编码的字符在父字符串中最后出现的位置</td>
+</tr>
+<tr>
+  <td>strings.Count(s, str string) int</td>
+  <td>计算字符串str在字符串s中出现的非重叠的次数</td>
+</tr>
+<tr>
+  <td>strings.Repeat(s, count int) string</td>
+  <td>重复count次字符串s并返回一个新的字符串</td>
+</tr>
+<tr>
+  <td>strings.ToLower(s) string</td>
+  <td>将字符串中的Unicode字符全部转换为相应小写字符</td>
+</tr>
+<tr>
+  <td>strings.ToUpper(s) string</td>
+  <td>将字符串中的Unicode字符全部转换为相应大写字符</td>
+</tr>
+<tr>
+  <td>strings.TrimSpace(s string) string</td>
+  <td>去除字符串两侧的空白字符</td>
+</tr>
+<tr>
+  <td>strings.Trim(s string, cutset string) string</td>
+  <td>去掉字符串两侧的cutset字符串中的任意字符 *</td>
+</tr>
+<tr>
+  <td>strings.TrimLeft(s string, cutset string) string</td>
+  <td>去掉字符串左侧的cutset字符串中的任意字符</td>
+</tr>
+<tr>
+  <td>strings.TrimRight(s string, cutset string) string</td>
+  <td>去掉字符串右侧的cutset字符串中的任意字符</td>
+</tr>
+<tr>
+  <td>strings.TrimPrefix(s string, cutset string) string</td>
+  <td>去掉字符串开头的cutset字符串</td>
+</tr>
+<tr>
+  <td>strings.TrimSuffix(s string, cutset string) string</td>
+  <td>去掉字符串结尾的cutset字符串</td>
+</tr>
+<tr>
+  <td>strings.Fields(s string) []string</td>
+  <td>以1个或多个空白字符分隔字符串s并返回slice</td>
+</tr>
+<tr>
+  <td>strings.Split(s string, sep string) []string</td>
+  <td>以sep分隔字符串s并返回slice</td>
+</tr>
+<tr>
+  <td>strings.Join(a []string, sep string) string</td>
+  <td>将元素类型为string的slice使用sep拼接返回一个字符串</td>
+</tr>
+</tbody></table>
+
+
+<h1 id="例子">例子：</h1>
+
+<pre class="prettyprint with-line-number hljs-light"><code class="language-go hljs"><div class="hljs-line"><span class="hljs-comment line-number">1.</span><span class="hljs-keyword">package</span> main
+</div><div class="hljs-line"><span class="hljs-comment line-number">2.</span><span class="hljs-keyword">import</span> (
+</div><div class="hljs-line"><span class="hljs-comment line-number">3.</span>    <span class="hljs-string">"fmt"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">4.</span>    <span class="hljs-string">"strings"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">5.</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">6.</span><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+</div><div class="hljs-line"><span class="hljs-comment line-number">7.</span>    <span class="hljs-comment">/* strings 包使用 */</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">8.</span>    str := <span class="hljs-string">" This is an example of a string "</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">9.</span>    prefix := <span class="hljs-string">"T"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">10.</span>    <span class="hljs-keyword">if</span> strings.HasPrefix(str, prefix) {
+</div><div class="hljs-line"><span class="hljs-comment line-number">11.</span>        fmt.Printf(<span class="hljs-string">"the string '%s' have prefix %s\n"</span>, str, prefix)
+</div><div class="hljs-line"><span class="hljs-comment line-number">12.</span>    }
+</div><div class="hljs-line"><span class="hljs-comment line-number">13.</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">14.</span>suffix := <span class="hljs-string">"g"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">15.</span>    <span class="hljs-keyword">if</span> strings.HasSuffix(str, suffix) {
+</div><div class="hljs-line"><span class="hljs-comment line-number">16.</span>        fmt.Printf(<span class="hljs-string">"the string '%s' have suffix %s\n"</span>, str, suffix)
+</div><div class="hljs-line"><span class="hljs-comment line-number">17.</span>    }
+</div><div class="hljs-line"><span class="hljs-comment line-number">18.</span>    substr := <span class="hljs-string">"example"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">19.</span>    <span class="hljs-keyword">if</span> strings.Contains(str, substr) {
+</div><div class="hljs-line"><span class="hljs-comment line-number">20.</span>        fmt.Printf(<span class="hljs-string">"the string '%s' contains '%s'\n"</span>, str, substr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">21.</span>    }
+</div><div class="hljs-line"><span class="hljs-comment line-number">22.</span>    <span class="hljs-comment">//Index返回字符串substr在字符串str中的第一个索引(-1表示字符串str不包含字符串substr)，索引从0开始</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">23.</span>    pos := strings.Index(str, substr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">24.</span>    fmt.Printf(<span class="hljs-string">"字符串 '%s' 在字符串 '%s' 中的位置是%d\n"</span>, substr, str, pos)
+</div><div class="hljs-line"><span class="hljs-comment line-number">25.</span>    <span class="hljs-comment">//Index返回字符串substr在字符串str中最后出现位置的索引(-1表示字符串str不包含字符串substr)，索引从0开始</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">26.</span>    lastPos := strings.LastIndex(str, <span class="hljs-string">"a"</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">27.</span>    fmt.Printf(<span class="hljs-string">"字符串 'a' 在字符串 '%s' 中最后出现的位置是%d\n"</span>, str, lastPos)
+</div><div class="hljs-line"><span class="hljs-comment line-number">28.</span>    runePos := strings.IndexRune(str, <span class="hljs-string">'a'</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">29.</span>    fmt.Printf(<span class="hljs-string">"字符'a' 在字符串 '%s' 中出现的位置是%d\n"</span>, str, runePos)
+</div><div class="hljs-line"><span class="hljs-comment line-number">30.</span>    count := strings.Count(str, <span class="hljs-string">"a"</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">31.</span>    fmt.Printf(<span class="hljs-string">"the string 'a' has appeared %d times in '%s'\n"</span>, count, str)
+</div><div class="hljs-line"><span class="hljs-comment line-number">32.</span>    repeatStr := <span class="hljs-string">"repeat string!"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">33.</span>    repeatStr = strings.Repeat(repeatStr, <span class="hljs-number">2</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">34.</span>    fmt.Printf(<span class="hljs-string">"重复后的字符串为'%s'\n"</span>, repeatStr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">35.</span>    upperStr := strings.ToUpper(str)
+</div><div class="hljs-line"><span class="hljs-comment line-number">36.</span>    fmt.Printf(<span class="hljs-string">"字符串大写：'%s'\n"</span>, upperStr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">37.</span>    lowerStr := strings.ToLower(upperStr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">38.</span>    fmt.Printf(<span class="hljs-string">"字符串小写：'%s'\n"</span>, lowerStr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">39.</span>    newStr := strings.TrimSpace(str)
+</div><div class="hljs-line"><span class="hljs-comment line-number">40.</span>    fmt.Printf(<span class="hljs-string">"原始字符串为：'%s'\n"</span>, str)
+</div><div class="hljs-line"><span class="hljs-comment line-number">41.</span>    fmt.Printf(<span class="hljs-string">"去掉两边的空格后字符串为：'%s'\n"</span>, newStr)
+</div><div class="hljs-line"><span class="hljs-comment line-number">42.</span>    cutset1 := <span class="hljs-string">"Ths"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">43.</span>    s1 := <span class="hljs-string">"ThisisGThiss"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">44.</span>    newStr1 := strings.Trim(s1, cutset1)
+</div><div class="hljs-line"><span class="hljs-comment line-number">45.</span>    fmt.Printf(<span class="hljs-string">"'%s'去掉两边的'%s'后字符串为：'%s'\n"</span>, s1, cutset1, newStr1)
+</div><div class="hljs-line"><span class="hljs-comment line-number">46.</span>    <span class="hljs-comment">//注意与strings.TrimPrefix的区别</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">47.</span>    s2 := <span class="hljs-string">"ThisisGThiss"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">48.</span>    cutset2 := <span class="hljs-string">"This"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">49.</span>    newStr2 := strings.TrimLeft(s2, cutset2)
+</div><div class="hljs-line"><span class="hljs-comment line-number">50.</span>    fmt.Printf(<span class="hljs-string">"'%s'去掉左边的'%s'后字符串为：'%s'\n"</span>, s2, cutset2, newStr2)
+</div><div class="hljs-line"><span class="hljs-comment line-number">51.</span>    s4 := <span class="hljs-string">"ThisisGisThiss"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">52.</span>    cutset4 := <span class="hljs-string">"This"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">53.</span>    newStr4 := strings.TrimPrefix(s4, cutset4)
+</div><div class="hljs-line"><span class="hljs-comment line-number">54.</span>    fmt.Printf(<span class="hljs-string">"去掉'%s'的前缀'%s'后的字符串为：'%s'\n"</span>, s4, cutset4, newStr4)
+</div><div class="hljs-line"><span class="hljs-comment line-number">55.</span>    <span class="hljs-comment">//注意与strings.TrimSuffix的区别</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">56.</span>    newStr3 := strings.TrimRight(s2, cutset2)
+</div><div class="hljs-line"><span class="hljs-comment line-number">57.</span>    fmt.Printf(<span class="hljs-string">"'%s'去掉右边的'%s'后字符串为：'%s'\n"</span>, s2, cutset2, newStr3)
+</div><div class="hljs-line"><span class="hljs-comment line-number">58.</span>    s5 := <span class="hljs-string">"ThisisGisThis"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">59.</span>    cutset5 := <span class="hljs-string">"This"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">60.</span>    newStr5 := strings.TrimSuffix(s5, cutset5)
+</div><div class="hljs-line"><span class="hljs-comment line-number">61.</span>    fmt.Printf(<span class="hljs-string">"去掉'%s'的后缀'%s'后的字符串为：'%s'\n"</span>, s5, cutset5, newStr5)
+</div><div class="hljs-line"><span class="hljs-comment line-number">62.</span>    s6 := <span class="hljs-string">"sss,s s"</span>
+</div><div class="hljs-line"><span class="hljs-comment line-number">63.</span>    fmt.Printf(<span class="hljs-string">"Fields are: %q\n"</span>, strings.Fields(s6))
+</div><div class="hljs-line"><span class="hljs-comment line-number">64.</span>    fmt.Printf(<span class="hljs-string">"Fields are: %q\n"</span>, strings.Split(s6, <span class="hljs-string">","</span>))
+</div><div class="hljs-line"><span class="hljs-comment line-number">65.</span>    slice1 := strings.Split(s6, <span class="hljs-string">","</span>)
+</div><div class="hljs-line"><span class="hljs-comment line-number">66.</span>    fmt.Printf(<span class="hljs-string">"The string is: %q\n"</span>, strings.Join(slice1, <span class="hljs-string">"#"</span>))
+</div><div class="hljs-line"><span class="hljs-comment line-number">67.</span>}
+</div></code></pre></div></body></html>
