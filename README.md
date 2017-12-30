@@ -24,4 +24,6 @@
 <p><a href="https://fatcatsk.github.io/mongodbinstall.html" target="_blank"><strong>Centos7 安装mongodb，以及启动失败</strong></a>
 <p><a href="https://fatcatsk.github.io/shortcuts.html" target="_blank"><strong>Centos7 快捷键启动终端</strong></a>
 <p><a href="https://fatcatsk.github.io/go%20fmt%20printf.html" target="_blank"><strong>[转载]Go语言fmt包Printf方法详解</strong></a>
+<p><a href="https://fatcatsk.github.io/string.html" target="_blank"><strong>[转载]Go常用包系列—strings包</strong></a>
+
 
