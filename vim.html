@@ -1,0 +1,246 @@
+<!DOCTYPE html><html><head><title>vim使用技巧</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="vim使用技巧">vim使用技巧</h1>
+
+<p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#vim使用技巧">vim使用技巧</a><ul>
+<li><a href="#一vim基础设置">一、vim基础设置</a><ul>
+<li><a href="#1基础准备">1、基础准备</a></li>
+<li><a href="#2添加基础配置">2、添加基础配置</a></li>
+</ul>
+</li>
+<li><a href="#二窗口分割">二、窗口分割</a></li>
+<li><a href="#三一键执行代码">三、一键执行代码</a></li>
+<li><a href="#四插件">四、插件</a><ul>
+<li><a href="#1管理插件的插件vundle">1、管理插件的插件Vundle</a><ul>
+<li><a href="#创建vimbundle-目录">创建：~/.vim/bundle 目录</a></li>
+<li><a href="#添加配置">添加配置</a></li>
+</ul>
+</li>
+<li><a href="#2常用插件">2、常用插件</a><ul>
+<li><a href="#自动缩进">自动缩进</a></li>
+<li><a href="#代码补全">代码补全</a></li>
+<li><a href="#语法检查">语法检查</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <p>开始之前需要理解一点，不同用户使用vim的时候，会调用各自主目录下的配置文件，因此不同的用户需要在其目录配置参数文件 <br>
+  下面均以root用户为例：</p>
+</blockquote>
+
+<h2 id="一vim基础设置">一、vim基础设置</h2>
+
+
+
+<h3 id="1基础准备">1、基础准备</h3>
+
+<p>默认情况下配置文件不存在，首先创建</p>
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span> ~
+</div><div class="hljs-line">touch .vimrc
+</div></code></pre>
+
+
+
+<h3 id="2添加基础配置">2、添加基础配置</h3>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">set</span> nocompatible <span class="hljs-comment">"关闭与vi的兼容模式</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> <span class="hljs-keyword">number</span> <span class="hljs-comment">"显示行号</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> nowrap    <span class="hljs-comment">"不自动折行</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> showmatch    <span class="hljs-comment">"显示匹配的括号</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> scrolloff=<span class="hljs-number">3</span>        <span class="hljs-string">"距离顶部和底部3行"</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> encoding=utf-<span class="hljs-number">8</span>  <span class="hljs-comment">"编码</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> fenc=utf-<span class="hljs-number">8</span>      <span class="hljs-comment">"编码</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> mouse=<span class="hljs-keyword">a</span>        <span class="hljs-comment">"启用鼠标</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> hlsearch        <span class="hljs-comment">"搜索高亮</span>
+</div><div class="hljs-line"><span class="hljs-keyword">syntax</span> <span class="hljs-keyword">on</span>    <span class="hljs-comment">"语法高亮</span>
+</div></code></pre>
+
+<p>为py文件添加下支持pep8风格的配置：</p>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">au</span> BufNewFile,BufRead *.<span class="hljs-keyword">py</span>
+</div><div class="hljs-line">\ <span class="hljs-keyword">set</span> tabstop=<span class="hljs-number">4</span>   <span class="hljs-string">"tab宽度
+</span></div><div class="hljs-line">\ set softtabstop=4 
+</div><div class="hljs-line">\ set shiftwidth=4  
+</div><div class="hljs-line">\ set textwidth=79  "行最大宽度
+</div><div class="hljs-line">\ <span class="hljs-keyword">set</span> expandtab       <span class="hljs-string">"tab替换为空格键
+</span></div><div class="hljs-line">\ set autoindent      "自动缩进
+</div><div class="hljs-line">\ <span class="hljs-keyword">set</span> fileformat=unix   <span class="hljs-comment">"保存文件格式</span>
+</div></code></pre>
+
+<h2 id="二窗口分割">二、窗口分割</h2>
+
+<ul><li><strong>vim在编辑的时候就可以打开多个文件：</strong></li>
+</ul>
+
+<table><tbody><tr style="font-weight:bold">  <td align="left">参数</td>  <td align="left">说明</td></tr><tr>  <td align="left">:vs  或者 :vsplit</td>  <td align="left">将当前窗口竖直分割，并在上面新窗口中显示当前文件</td></tr><tr>  <td align="left">:vs filename</td>  <td align="left">将当前窗口竖直分割，新文件在新窗口中显示</td></tr><tr>  <td align="left">:sp 或者:sv或者:split</td>  <td align="left">将当前窗口水平分割，并在左边新窗口中显示当前文件</td></tr><tr>  <td align="left">:sp filename</td>  <td align="left">将当前窗口竖直分割，新文件在左边新窗口中显示</td></tr><tr>  <td align="left">:new</td>  <td align="left">新建文件并竖直分割</td></tr><tr>  <td align="left">:vnew</td>  <td align="left">新建文件并水平分割</td></tr></tbody></table>
+
+<ul><li><strong>如果想让新窗口在右边或者下方打开，添加配置：</strong></li>
+</ul>
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line"><span class="hljs-keyword">set</span> splitbelow
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> <span class="hljs-comment">splitright</span>
+</div></code></pre>
+
+<hr>
+
+<ul><li><strong>在窗口之间切换可以用鼠标，如果不想用鼠标，切换按键如下：</strong></li>
+</ul>
+
+<blockquote>
+  <p>Ctrl-w-j 切换到下方的分割窗口 <br>
+  Ctrl-w-k 切换到上方的分割窗口 <br>
+  Ctrl-w-l 切换到右侧的分割窗口 <br>
+  Ctrl-w-h 切换到左侧的分割窗口</p>
+</blockquote>
+
+<h2 id="三一键执行代码">三、一键执行代码</h2>
+
+<p>将以下配置添加到  <code>~/.vimre</code>中，既可以在编辑代码之后按F5快速执行</p>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-comment">"一键执行代码</span>
+</div><div class="hljs-line"><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-keyword">map</span> <span class="hljs-symbol">&lt;F5&gt;</span> :<span class="hljs-keyword">call</span> CompileRunGcc()<span class="hljs-symbol">&lt;CR&gt;</span>
+</div><div class="hljs-line">func! CompileRunGcc()
+</div><div class="hljs-line">    exec <span class="hljs-string">"w"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">if</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'c'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!g++ % -o %&lt;"</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!time ./%&lt;"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'cpp'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!g++ % -o %&lt;"</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!time ./%&lt;"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'java'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!javac %"</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!time java %&lt;"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'sh'</span>
+</div><div class="hljs-line">        :!time bash %
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'python'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!time python2.7 %"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'html'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!firefox % &amp;"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'go'</span>
+</div><div class="hljs-line">    <span class="hljs-string">" exec "</span>!go build %&lt;<span class="hljs-comment">"</span>
+</div><div class="hljs-line">    exec <span class="hljs-string">"!time go run %"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">elseif</span> &amp;<span class="hljs-keyword">filetype</span> == <span class="hljs-string">'mkd'</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!~/.vim/markdown.pl % &gt; %.html &amp;"</span>
+</div><div class="hljs-line">        exec <span class="hljs-string">"!firefox %.html &amp;"</span>
+</div><div class="hljs-line">    <span class="hljs-keyword">endif</span>
+</div><div class="hljs-line">endfunc
+</div></code></pre>
+
+<blockquote>
+  <p>在vim的配置文件内，<strong><code>"</code></strong>引号后面的内容为注释内容</p>
+</blockquote>
+
+<hr>
+
+<h2 id="四插件">四、插件</h2>
+
+
+
+<h3 id="1管理插件的插件vundle">1、管理插件的插件Vundle</h3>
+
+<blockquote>
+  <p>Vundle 是 Vim bundle 的简称,使用git来管理vim插件</p>
+</blockquote>
+
+
+
+<h4 id="创建vimbundle-目录">创建：<code>~/.vim/bundle</code> 目录</h4>
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span> ~
+</div><div class="hljs-line">mkdir .vim
+</div><div class="hljs-line"><span class="hljs-built_in">cd</span> .vim
+</div><div class="hljs-line">mkdir bundle
+</div></code></pre>
+
+<hr>
+
+<h4 id="添加配置">添加配置</h4>
+
+<blockquote>
+  <p>然后将下列配置放在.vimrc文件</p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">set</span> nocompatible              <span class="hljs-comment">" be iMproved, required</span>
+</div><div class="hljs-line"><span class="hljs-keyword">filetype</span> off                  <span class="hljs-comment">" required</span>
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">" set the runtime path to include Vundle and initialize</span>
+</div><div class="hljs-line"><span class="hljs-keyword">set</span> rtp+=~/.<span class="hljs-keyword">vim</span>/bundle/Vundle.<span class="hljs-keyword">vim</span>
+</div><div class="hljs-line"><span class="hljs-keyword">call</span> vundle#begin()
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">" let Vundle manage Vundle, required</span>
+</div><div class="hljs-line">Plugin <span class="hljs-string">'VundleVim/Vundle.vim'</span>
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">" All of your Plugins must be added before the following line</span>
+</div><div class="hljs-line"><span class="hljs-keyword">call</span> vundle#end()            <span class="hljs-comment">" required</span>
+</div><div class="hljs-line"><span class="hljs-keyword">filetype</span> plugin <span class="hljs-built_in">indent</span> <span class="hljs-keyword">on</span>    <span class="hljs-comment">" required</span>
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <p><strong>如果想下载某个插件，比如自动缩进indentpython.vim插件，需要将</strong></p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'vim-scripts/indentpython.vim'</span>
+</div></code></pre>
+
+<p>置于<code>call vundle#begin()</code>和<code>call vundle#end()</code>之间，保存配置后在vim中执行</p>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">:PluginInstall
+</div></code></pre>
+
+<p><strong>即可以自动下载indentpython.vim插件了。</strong></p>
+
+<ul><li><strong>其他命令：</strong></li>
+</ul>
+
+<table><tbody><tr style="font-weight:bold">  <td align="left">命令</td>  <td align="left">说明</td></tr><tr>  <td align="left">:PluginList</td>  <td align="left">列出已有插件</td></tr><tr>  <td align="left">:PluginInstall</td>  <td align="left">安装插件; 追加 <code>!</code> 用于升级或者使用 :PluginUpdate 升级</td></tr><tr>  <td align="left">:PluginSearch foo</td>  <td align="left">搜索插件foo; 追加 <code>!</code> 用来刷新本地缓存</td></tr><tr>  <td align="left">:PluginClean</td>  <td align="left">确认删除未使用的插件; 追加 <code>!</code> 用于自动确认删除</td></tr></tbody></table>
+
+<h3 id="2常用插件">2、常用插件</h3>
+
+
+
+<h4 id="自动缩进">自动缩进</h4>
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'vim-scripts/indentpython.vim'</span>
+</div></code></pre>
+
+<h4 id="代码补全">代码补全</h4>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'MarcWeber/vim-addon-mw-utils'</span>
+</div><div class="hljs-line">Plugin <span class="hljs-string">'tomtom/tlib_vim'</span>
+</div><div class="hljs-line">Plugin <span class="hljs-string">'garbas/vim-snipmate'</span>
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-comment">" Optional:</span>
+</div><div class="hljs-line">Plugin <span class="hljs-string">'honza/vim-snippets'</span>
+</div></code></pre>
+
+
+
+<h4 id="语法检查">语法检查</h4>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'vim-syntastic/syntastic'</span>
+</div></code></pre></div></body></html>
