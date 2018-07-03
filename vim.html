@@ -21,7 +21,9 @@
 <li><a href="#四插件">四、插件</a><ul>
 <li><a href="#1管理插件的插件vundle">1、管理插件的插件Vundle</a><ul>
 <li><a href="#创建vimbundle-目录">创建：~/.vim/bundle 目录</a></li>
+<li><a href="#下载vundle源码">下载vundle源码</a></li>
 <li><a href="#添加配置">添加配置</a></li>
+<li><a href="#使用示例">使用示例</a></li>
 </ul>
 </li>
 <li><a href="#2常用插件">2、常用插件</a><ul>
@@ -52,6 +54,8 @@
 
 <p>默认情况下配置文件不存在，首先创建</p>
 
+
+
 <pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span> ~
 </div><div class="hljs-line">touch .vimrc
 </div></code></pre>
@@ -59,6 +63,8 @@
 
 
 <h3 id="2添加基础配置">2、添加基础配置</h3>
+
+
 
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">set</span> nocompatible <span class="hljs-comment">"关闭与vi的兼容模式</span>
 </div><div class="hljs-line"><span class="hljs-keyword">set</span> <span class="hljs-keyword">number</span> <span class="hljs-comment">"显示行号</span>
@@ -74,6 +80,8 @@
 
 <p>为py文件添加下支持pep8风格的配置：</p>
 
+
+
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">au</span> BufNewFile,BufRead *.<span class="hljs-keyword">py</span>
 </div><div class="hljs-line">\ <span class="hljs-keyword">set</span> tabstop=<span class="hljs-number">4</span>   <span class="hljs-string">"tab宽度
 </span></div><div class="hljs-line">\ set softtabstop=4 
@@ -84,6 +92,8 @@
 </div><div class="hljs-line">\ <span class="hljs-keyword">set</span> fileformat=unix   <span class="hljs-comment">"保存文件格式</span>
 </div></code></pre>
 
+
+
 <h2 id="二窗口分割">二、窗口分割</h2>
 
 <ul><li><strong>vim在编辑的时候就可以打开多个文件：</strong></li>
@@ -93,6 +103,8 @@
 
 <ul><li><strong>如果想让新窗口在右边或者下方打开，添加配置：</strong></li>
 </ul>
+
+
 
 <pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line"><span class="hljs-keyword">set</span> splitbelow
 </div><div class="hljs-line"><span class="hljs-keyword">set</span> <span class="hljs-comment">splitright</span>
@@ -110,9 +122,14 @@
   Ctrl-w-h 切换到左侧的分割窗口</p>
 </blockquote>
 
+
+
 <h2 id="三一键执行代码">三、一键执行代码</h2>
 
-<p>将以下配置添加到  <code>~/.vimre</code>中，既可以在编辑代码之后按F5快速执行</p>
+<blockquote>
+  <p>将以下配置添加到  <code>~/.vimre</code>中，既可以在编辑代码之后按F5快速执行 <br>
+  使用说明：编辑完从编辑模式切换到命令模式（ESC），再按F5既可以 执行</p>
+</blockquote>
 
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span><span class="hljs-string">""</span>
 </div><div class="hljs-line"><span class="hljs-comment">"一键执行代码</span>
@@ -146,7 +163,7 @@
 </div></code></pre>
 
 <blockquote>
-  <p>在vim的配置文件内，<strong><code>"</code></strong>引号后面的内容为注释内容</p>
+  <p>注释：在vim的配置文件内，<strong><code>"</code></strong>引号后面的内容为注释内容</p>
 </blockquote>
 
 <hr>
@@ -165,6 +182,8 @@
 
 <h4 id="创建vimbundle-目录">创建：<code>~/.vim/bundle</code> 目录</h4>
 
+
+
 <pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span> ~
 </div><div class="hljs-line">mkdir .vim
 </div><div class="hljs-line"><span class="hljs-built_in">cd</span> .vim
@@ -173,11 +192,24 @@
 
 <hr>
 
+<h4 id="下载vundle源码">下载vundle源码</h4>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">git <span class="hljs-built_in">clone</span> https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+</div></code></pre>
+
+<hr>
+
+
+
 <h4 id="添加配置">添加配置</h4>
 
 <blockquote>
   <p>然后将下列配置放在.vimrc文件</p>
 </blockquote>
+
+
 
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line"><span class="hljs-keyword">set</span> nocompatible              <span class="hljs-comment">" be iMproved, required</span>
 </div><div class="hljs-line"><span class="hljs-keyword">filetype</span> off                  <span class="hljs-comment">" required</span>
@@ -196,6 +228,10 @@
 
 <hr>
 
+
+
+<h4 id="使用示例">使用示例</h4>
+
 <blockquote>
   <p><strong>如果想下载某个插件，比如自动缩进indentpython.vim插件，需要将</strong></p>
 </blockquote>
@@ -203,7 +239,8 @@
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'vim-scripts/indentpython.vim'</span>
 </div></code></pre>
 
-<p>置于<code>call vundle#begin()</code>和<code>call vundle#end()</code>之间，保存配置后在vim中执行</p>
+<p>置于<code>call vundle#begin()</code>和<code>call vundle#end()</code>之间， <br>
+保存配置后在vim中执行</p>
 
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">:PluginInstall
 </div></code></pre>
@@ -215,14 +252,22 @@
 
 <table><tbody><tr style="font-weight:bold">  <td align="left">命令</td>  <td align="left">说明</td></tr><tr>  <td align="left">:PluginList</td>  <td align="left">列出已有插件</td></tr><tr>  <td align="left">:PluginInstall</td>  <td align="left">安装插件; 追加 <code>!</code> 用于升级或者使用 :PluginUpdate 升级</td></tr><tr>  <td align="left">:PluginSearch foo</td>  <td align="left">搜索插件foo; 追加 <code>!</code> 用来刷新本地缓存</td></tr><tr>  <td align="left">:PluginClean</td>  <td align="left">确认删除未使用的插件; 追加 <code>!</code> 用于自动确认删除</td></tr></tbody></table>
 
+
+
+<hr>
+
 <h3 id="2常用插件">2、常用插件</h3>
 
 
 
 <h4 id="自动缩进">自动缩进</h4>
 
+
+
 <pre class="prettyprint hljs-dark"><code class="language-vim hljs"><div class="hljs-line">Plugin <span class="hljs-string">'vim-scripts/indentpython.vim'</span>
 </div></code></pre>
+
+<hr>
 
 <h4 id="代码补全">代码补全</h4>
 
@@ -236,7 +281,7 @@
 </div><div class="hljs-line">Plugin <span class="hljs-string">'honza/vim-snippets'</span>
 </div></code></pre>
 
-
+<hr>
 
 <h4 id="语法检查">语法检查</h4>
 
