@@ -27,5 +27,4 @@
 <p><a href="https://fatcatsk.github.io/string.html" target="_blank"><strong>[转载]Go常用包系列—strings包</strong></a>
 <p><a href="https://fatcatsk.github.io/VisualEditor.html" target="_blank"><strong>Visualeditor</strong></a>
 <p><a href="https://fatcatsk.github.io/Padavan.html" target="_blank"><strong>Padavan路由系统刷机教程</strong></a>
-  
-
+<p><a href="https://fatcatsk.github.io/vim.html" target="_blank"><strong>vim使用技巧</strong></a>
