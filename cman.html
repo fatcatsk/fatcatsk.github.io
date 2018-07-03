@@ -1,0 +1,148 @@
+<!DOCTYPE html><html><head><title>中文版man文档安装</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="中文版man文档安装">中文版man文档安装</h1>
+
+<p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#中文版man文档安装">中文版man文档安装</a><ul>
+<li><a href="#1下载">1、下载</a></li>
+<li><a href="#2解压">2、解压</a></li>
+<li><a href="#3安装">3、安装</a><ul>
+<li><a href="#切换工作目录">切换工作目录</a></li>
+<li><a href="#安装">安装</a></li>
+</ul>
+</li>
+<li><a href="#4设置别名">4、设置别名</a><ul>
+<li><a href="#切换工作目录-1">切换工作目录</a></li>
+<li><a href="#编辑配置文件">编辑配置文件</a></li>
+<li><a href="#重载参数">重载参数</a></li>
+</ul>
+</li>
+<li><a href="#5测试使用">5、测试使用</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<h2 id="1下载">1、下载</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">wget https://src.fedoraproject.org/repo/pkgs/man-pages-zh-CN/manpages-zh-1.5.2.tar.bz2/cab232c7bb49b214c2f7ee44f7f35900/manpages-zh-1.5.2.tar.bz2
+</div></code></pre>
+
+<blockquote>
+  <p>链接可能失效，可以在以下链接中获取最新中文包 <br>
+  <a href="https://src.fedoraproject.org/repo/pkgs/man-pages-zh-CN/" target="_blank">https://src.fedoraproject.org/repo/pkgs/man-pages-zh-CN/</a></p>
+</blockquote>
+
+
+
+<h2 id="2解压">2、解压</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">tar -xjf  manpages-zh-1.5.2.tar.bz2
+</div></code></pre>
+
+
+
+<h2 id="3安装">3、安装</h2>
+
+
+
+<h3 id="切换工作目录">切换工作目录</h3>
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span>  manpages-zh-1.5.2
+</div></code></pre>
+
+<hr>
+
+<blockquote>
+  <p>以下命令需在root账号下运行</p>
+</blockquote>
+
+<h3 id="安装">安装</h3>
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">./configure --prefix=/usr/<span class="hljs-built_in">local</span>/zhman --disable-zhtw
+</div></code></pre>
+
+<p><em>禁用zhtw，繁体中文</em></p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">make
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">make install
+</div></code></pre>
+
+
+
+<h2 id="4设置别名">4、设置别名</h2>
+
+
+
+<h3 id="切换工作目录-1">切换工作目录</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">cd</span> ～
+</div></code></pre>
+
+
+
+<h3 id="编辑配置文件">编辑配置文件</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">vim .bashrc
+</div></code></pre>
+
+<p>将下面这行添加到文件后面</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sml"><div class="hljs-line">alias cman=<span class="hljs-symbol">'man</span> -<span class="hljs-type">M</span> /usr/<span class="hljs-keyword">local</span>/zhman/share/man/zh_CN'
+</div></code></pre>
+
+<p>保存退出</p>
+
+
+
+<h3 id="重载参数">重载参数</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line"><span class="hljs-built_in">source</span> .bashrc
+</div></code></pre>
+
+
+
+<h2 id="5测试使用">5、测试使用</h2>
+
+<p>[lcr@node1 ~]$ cman grep</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">GREP(1)                                        General Commands Manual                                        GREP(1)
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line">NAME
+</div><div class="hljs-line">       grep, egrep, fgrep - 打印匹配给定模式的行
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line">总览 SYNOPSIS
+</div><div class="hljs-line">       grep [options] PATTERN [FILE...]
+</div><div class="hljs-line">       grep [options] [<span class="hljs-_">-e</span> PATTERN | <span class="hljs-_">-f</span> FILE] [FILE...]
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line">.......
+</div></code></pre></div></body></html>
