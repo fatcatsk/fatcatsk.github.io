@@ -1,0 +1,57 @@
+<!DOCTYPE html><html><head><title>CentOS 7 安装smplayer</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="centos-7-安装smplayer">CentOS 7 安装smplayer</h1>
+
+<p> <br>
+[TOC]</p>
+
+<blockquote>
+  <p>由于CentOS主要面向服务器用户，因此在个人软件方面比较贫乏 <br>
+  SMPlayer提供源码安装，但是其安装过程及其复杂</p>
+</blockquote>
+
+<h2 id="一安装软件源">一、安装软件源：</h2>
+
+<p><em>以root权限或者sudo执行</em></p>
+
+
+
+<h3 id="1安装依赖库">1、安装依赖库</h3>
+
+<blockquote>
+  <p>Nux Dextop库依赖于EPEL库，所有要先安装EPEL库(需要管理员权限)。如果安装过则跳过。</p>
+</blockquote>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">yum -y install epel-release
+</div></code></pre>
+
+
+
+<h3 id="2安装软件源">2、安装软件源</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">yum install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+</div></code></pre>
+
+<blockquote>
+  <p>软件源可能更新，可在此处获取最新版本：<a href="http://li.nux.ro/download/nux/dextop/el7/x86_64/" target="_blank">http://li.nux.ro/download/nux/dextop/el7/x86_64/</a> <br>
+  查找：nux-dextop-release-0-5.el7.nux.noarch.rpm类似的源</p>
+</blockquote>
+
+<hr>
+
+
+
+<h2 id="二安装smplayer">二、安装smplayer：</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">yum install smplayer
+</div></code></pre></div></body></html>
