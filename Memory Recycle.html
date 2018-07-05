@@ -1,0 +1,141 @@
+<!DOCTYPE html><html><head><title>内存回收</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="内存回收">内存回收</h1>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#内存回收">内存回收</a><ul>
+<li><a href="#1内存使用查看">1、内存使用查看</a><ul>
+<li><a href="#查看">查看</a></li>
+<li><a href="#说明">说明</a></li>
+</ul>
+</li>
+<li><a href="#2手动同步">2、手动同步</a></li>
+<li><a href="#3回收">3、回收</a></li>
+<li><a href="#title">——————————————————————————————————</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<h2 id="1内存使用查看">1、内存使用查看</h2>
+
+
+
+<h3 id="查看">查看</h3>
+
+<p>使用free<a href="#fn:free" id="fnref:free" title="See footnote" class="footnote">1</a>指令</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[lcr@centos ~]$ free
+</div><div class="hljs-line">              total        used        free      shared  buff/cache   available
+</div><div class="hljs-line">Mem:        5739356     1328856     3485940      146308      924560     3969900
+</div><div class="hljs-line">Swap:       6287356           0     6287356
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[MI-R3G /opt/home/admin]<span class="hljs-comment"># free -m</span>
+</div><div class="hljs-line">             total       used       free     shared    buffers     cached
+</div><div class="hljs-line">Mem:        255532     206948      48584          0        296     170948
+</div><div class="hljs-line">-/+ buffers/cache:      35704     219828
+</div><div class="hljs-line">Swap:            0          0          0
+</div></code></pre>
+
+
+
+<h3 id="说明">说明</h3>
+
+<table><tbody><tr style="font-weight:bold">  <td align="left">项目</td>  <td>说明</td></tr><tr>  <td align="left">total</td>  <td>总共的内存，等于used+free</td></tr><tr>  <td align="left">used</td>  <td>已用内存</td></tr><tr>  <td align="left">free</td>  <td>空闲内存</td></tr><tr>  <td align="left">shared</td>  <td>被多个进程共享的内存</td></tr><tr>  <td align="left">buff/buffers</td>  <td>缓冲，是用于存放要输出到disk（块设备）的数据。是根据磁盘的读写 设计的，把分散的写操作集中进行，减少磁盘碎片和硬盘的反复寻道，从而提高系统性能。</td></tr><tr>  <td align="left">cache/cached</td>  <td>缓存，存放从disk上读出的数据。是把读取过的数据保存起来，重新读取时若命中（找到需要的数据）就不                       要去读硬盘了，若没有命中就读硬盘。其中的数据会根据读取频率进行组织，把最频繁读取的内容放在                           最容易找到的位置，把不再读的内容不断往后排，直至从中删除。如果cache 的值很大，说明cache住的文件数很多。如果频繁访问到的文件都能被cache住，那么磁盘的读IO bi会非常小。</td></tr><tr>  <td align="left">available</td>  <td>可用</td></tr><tr>  <td align="left">Mem</td>  <td>物理内存</td></tr><tr>  <td align="left">-buffers/cache</td>  <td>= used -(buffers+cache)   表示使用的内存中不计算buffers和cache，系统使用内存量</td></tr><tr>  <td align="left">+buffers/cache</td>  <td>=free+( buffers+cache)    表示系统空闲内存与buffers、cache的和</td></tr><tr>  <td align="left">Swap</td>  <td>交换内存，相当于windows系统的虚拟内存</td></tr></tbody></table>
+
+<hr>
+
+
+
+<h2 id="2手动同步">2、手动同步</h2>
+
+<blockquote>
+  <p>使用sync指令<a href="#fn:sync" id="fnref:sync" title="See footnote" class="footnote">2</a>
+</p></blockquote>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[lcr@centos ~]$ sync
+</div></code></pre>
+
+<blockquote>
+  <p>手动执行sync命令（描述：sync 命令运行 sync 子例程。如果必须停止系统，则运行sync 命令以确保文件系统的完整性。sync 命令将所有未写的系统缓冲区写到磁盘中，包含已修改的 i-node、已延迟的块 I/O 和读写映射文件）</p>
+</blockquote>
+
+<hr>
+
+
+
+<h2 id="3回收">3、回收</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[lcr@centos ~]$ <span class="hljs-built_in">echo</span> 3 &gt; /proc/sys/vm/drop_caches
+</div></code></pre>
+
+<p>参数说明：</p>
+
+<table><tbody><tr style="font-weight:bold">  <td align="left">参数</td>  <td>说明</td></tr><tr>  <td align="left">1</td>  <td>To free pagecache:     清空 页面 高速缓存</td></tr><tr>  <td align="left">2</td>  <td>To free dentries and inodes:    清空 目录项 和 索引节点</td></tr><tr>  <td align="left">3</td>  <td>To free pagecache, dentries and inodes:    清空以上两项</td></tr></tbody></table>
+
+<p>实例</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[MI-R3G /opt/home/admin]<span class="hljs-comment"># free -m</span>
+</div><div class="hljs-line">             total       used       free     shared    buffers     cached
+</div><div class="hljs-line">Mem:        255532     207028      48504          0        548     171168
+</div><div class="hljs-line">-/+ buffers/cache:      35312     220220
+</div><div class="hljs-line">Swap:            0          0          0
+</div><div class="hljs-line">[MI-R3G /opt/home/admin]<span class="hljs-comment"># echo 3 &gt; /proc/sys/vm/drop_caches</span>
+</div><div class="hljs-line">[MI-R3G /opt/home/admin]<span class="hljs-comment"># free -m</span>
+</div><div class="hljs-line">             total       used       free     shared    buffers     cached
+</div><div class="hljs-line">Mem:        255532      40280     215252          0        340       5160
+</div><div class="hljs-line">-/+ buffers/cache:      34780     220752
+</div><div class="hljs-line">Swap:            0          0          0
+</div></code></pre>
+
+<blockquote>
+  <p>执行前后对比可以看到，<strong><em>cached</em></strong> 一项的占用减少了很多</p>
+</blockquote>
+
+
+
+<h2 id="title">——————————————————————————————————</h2><div class="footnotes"><hr><ol><li id="fn:free"><strong><em><code>FREE指令</code></em></strong> <br>
+<strong>NAME</strong> <br>
+free - 显示系统中已用和未用的内存空间总和. <br>
+<strong>总览 (SYNOPSIS)</strong> <br>
+       free [-b | -k | -m] [-o] [-s delay ] [-t] [-V] <br>
+<strong>描述 (DESCRIPTION)</strong> <br>
+       free 显示 系统中 已用和未用的 物理内存和交换内存, 共享内存和 内核使用的缓冲区的 总和. <br>
+<strong>选项 (Options)</strong> <br>
+       -b 选项 以字节为单位 显示 内存总和; -k 选项 (缺省的) 以 KB 为单位 显示; <br>
+       -m 选项 以 MB 为单位. <br>
+       -t 选项 显示 一个 总计行. <br>
+       -o  选项  禁止  “buffer  adjusted” 行的显示. 除非 指定 free 从 (相应的)已用/未用的 内存 减去/加上 缓冲区内存. <br>
+       -s 使 free 以 delay  秒为间隔,  连续抽样显示.  delay  可以设置成浮点数,它用 usleep(3) 做 微秒级 延迟. <br>
+       -V 显示版本信息. <br>
+<strong>文件 (FILES)</strong> <br>
+       /proc/meminfo– 内存信息 <a href="#fnref:free" title="Return to article" class="reversefootnote">↩</a></li><li id="fn:sync"><strong><em><code>sync指令</code></em></strong> <br>
+<strong>NAME</strong> <br>
+       sync - 清空文件系统缓冲区 <br>
+<strong>总览 (SYNOPSIS)</strong> <br>
+       sync [OPTION] <br>
+<strong>描述 (DESCRIPTION)</strong> <br>
+       强迫把更改的块写入磁盘， 并更新超级块。 <br>
+       –help 显示帮助然后终止。 <br>
+       –version <br>
+              显示版本信息然后终止。 <a href="#fnref:sync" title="Return to article" class="reversefootnote">↩</a></li></ol></div></div></body></html>
