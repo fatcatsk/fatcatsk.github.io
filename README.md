@@ -31,4 +31,4 @@
 <p><a href="https://fatcatsk.github.io/smplayer.html" target="_blank"><strong>CentOS 7 安装 smplayer</strong></a>
 <p><a href="https://fatcatsk.github.io/cman.html" target="_blank"><strong>中文版man文档安装</strong></a>
 <p><a href="https://fatcatsk.github.io/Memory Recycle.html" target="_blank"><strong>Linux系统内存回收</strong></a>
-
+<p><a href="https://fatcatsk.github.io/VMware Workstations.html" target="_blank"><strong>Linux 安装 VMware Workstations</strong></a>
