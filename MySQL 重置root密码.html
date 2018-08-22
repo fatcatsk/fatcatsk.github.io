@@ -1,0 +1,146 @@
+<!DOCTYPE html><html><head><title>MySQL 重置root密码</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="mysql-重置root密码">MySQL 重置root密码</h1>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#mysql-重置root密码">MySQL 重置root密码</a><ul>
+<li><a href="#一编辑配置文件">一、编辑配置文件</a></li>
+<li><a href="#二重启mysql">二、重启mysql</a></li>
+<li><a href="#三修改root密码">三、修改root密码</a><ul>
+<li><a href="#1无账号连接mysql">1、无账号连接mysql</a></li>
+<li><a href="#2连接mysql数据库">2、连接mysql数据库</a></li>
+<li><a href="#3修改root密码">3、修改root密码</a><ul>
+<li><a href="#157以前的版本">1、5.7以前的版本</a></li>
+<li><a href="#257版本">2、5.7版本</a></li>
+<li><a href="#3刷新权限">3、刷新权限</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#四恢复配置文件并重启mysql">四、恢复配置文件并重启mysql</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<blockquote>
+  <p><strong><code>执行以下操作需要注意几点</code></strong> <br>
+  1、没有任何服务或者用户在使用mysql <br>
+  2、最好断网，因为以下操作会使得mysql数据库处于无密码状态，任何可以登录主机的用户都可以随意操作数据库</p>
+</blockquote>
+
+<h2 id="一编辑配置文件">一、编辑配置文件</h2>
+
+<blockquote>
+  <p>编辑配置文件，跳过权限 <br>
+  将以下参数添加到<strong><code>/etc/my.cnf</code></strong>的[mysqld]下</p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line">skip-<span class="hljs-keyword">grant</span>-<span class="hljs-keyword">tables</span>
+</div></code></pre>
+
+<p>eg：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">[mysqld]
+</div><div class="hljs-line">datadir=/var/lib/mysql
+</div><div class="hljs-line">socket=/var/lib/mysql/mysql.sock
+</div><div class="hljs-line">skip-grant-tables
+</div></code></pre>
+
+
+
+<h2 id="二重启mysql">二、重启mysql</h2>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">systemctl restart mysqld
+</div></code></pre>
+
+
+
+<h2 id="三修改root密码">三、修改root密码</h2>
+
+
+
+<h3 id="1无账号连接mysql">1、无账号连接mysql</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">mysql
+</div></code></pre>
+
+<hr>
+
+<h3 id="2连接mysql数据库">2、连接mysql数据库</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-keyword">use</span> mysql
+</div></code></pre>
+
+<hr>
+
+<h3 id="3修改root密码">3、修改root密码</h3>
+
+
+
+<h4 id="157以前的版本">1、5.7以前的版本</h4>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-keyword">update</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">set</span> <span class="hljs-keyword">password</span>=<span class="hljs-keyword">password</span>(<span class="hljs-string">'newpassword'</span>) <span class="hljs-keyword">where</span> <span class="hljs-keyword">user</span>=<span class="hljs-string">'root'</span>;
+</div></code></pre>
+
+<hr>
+
+
+
+<h4 id="257版本">2、5.7版本</h4>
+
+<blockquote>
+  <p>在5.7版本中不存在password字段，所有要用以下修改进行重置密码</p>
+</blockquote>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-keyword">update</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">set</span> authentication_string=<span class="hljs-keyword">password</span>(<span class="hljs-string">'newpassword'</span>) <span class="hljs-keyword">where</span> <span class="hljs-keyword">user</span>=<span class="hljs-string">'root'</span>;
+</div></code></pre>
+
+<hr>
+
+<h4 id="3刷新权限">3、刷新权限</h4>
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line"><span class="hljs-keyword">flush</span> <span class="hljs-keyword">privileges</span>;
+</div></code></pre>
+
+<hr>
+
+
+
+<h2 id="四恢复配置文件并重启mysql">四、恢复配置文件并重启mysql</h2>
+
+<blockquote>
+  <p>将前面添加的参数删除</p>
+</blockquote>
+
+<hr>
+
+<blockquote>
+  <p>重启mysql</p>
+</blockquote>
+
+<pre class="prettyprint hljs-dark"><code class="language-bash hljs"><div class="hljs-line">systemctl restart mysqld
+</div></code></pre>
+
+<hr>
+
+<p>至此mysql的root账户密码重置完毕</p></div></body></html>
