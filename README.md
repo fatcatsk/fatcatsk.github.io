@@ -33,6 +33,7 @@
 <p><a href="https://fatcatsk.github.io/Memory Recycle.html" target="_blank"><strong>Linux系统内存回收</strong></a>
 <p><a href="https://fatcatsk.github.io/VMware Workstations.html" target="_blank"><strong>Linux 安装 VMware Workstations</strong></a>
 <p><a href="https://fatcatsk.github.io/MySQL%20secure-file-priv.html" target="_blank"><strong>MySQL secure-file-priv 文件导出失败</strong></a>
+<p><a href="https://fatcatsk.github.io/MySQL-root-password-reset.html" target="_blank"><strong>MySQL重置root密码</strong></a>
 
 
     
