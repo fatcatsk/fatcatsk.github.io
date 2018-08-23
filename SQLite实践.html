@@ -1,0 +1,1317 @@
+<!DOCTYPE html><html><head><title>SQLite实践</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style></style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h1 id="sqlite实践">SQLite实践</h1>
+
+<p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#sqlite实践">SQLite实践</a></li>
+<li><a href="#sqlite-简介">SQLite 简介</a><ul>
+<li><a href="#什么是-sqlite">什么是 SQLite？</a></li>
+<li><a href="#为什么要用-sqlite">为什么要用 SQLite？</a></li>
+<li><a href="#sqlite-局限性">SQLite 局限性</a></li>
+<li><a href="#sqlite-命令">SQLite 命令</a><ul>
+<li><a href="#1ddl-数据定义语言">1、DDL - 数据定义语言</a></li>
+<li><a href="#2dml-数据操作语言">2、DML - 数据操作语言</a></li>
+<li><a href="#3dql-数据查询语言">3、DQL - 数据查询语言</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#一安装">一、安装</a></li>
+<li><a href="#二常用指令">二、常用指令</a><ul>
+<li><a href="#1查看已经进入sqlite的方式">1、查看已经进入sqlite的方式</a></li>
+<li><a href="#2点指令">2、点指令</a><ul>
+<li><a href="#help">.help</a></li>
+</ul>
+</li>
+<li><a href="#语句">语句</a><ul>
+<li><a href="#常用语句示例">常用语句示例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#三常用操作">三、常用操作</a><ul>
+<li><a href="#1创建数据库">1、创建数据库</a></li>
+<li><a href="#2导出导出数据库">2、导出/导出数据库</a><ul>
+<li><a href="#导出">导出</a></li>
+<li><a href="#导入">导入</a></li>
+</ul>
+</li>
+<li><a href="#3附加分离数据库">3、附加/分离数据库</a><ul>
+<li><a href="#附加">附加</a></li>
+<li><a href="#分离">分离</a></li>
+</ul>
+</li>
+<li><a href="#4创建删除表">4、创建/删除表</a><ul>
+<li><a href="#创建表">创建表</a></li>
+<li><a href="#删除表">删除表</a></li>
+<li><a href="#insert-语句">Insert 语句</a></li>
+<li><a href="#update-语句">Update 语句</a></li>
+<li><a href="#delete-语句">Delete 语句</a></li>
+<li><a href="#select-语句">Select 语句</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#总结">总结</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<h1 id="sqlite-简介">SQLite 简介</h1>
+
+<blockquote>
+  <p>SQLite是一个<code>软件库</code>，实现了<code>自给自足的、无服务器的、零配置的、事务性的</code> SQL 数据库引擎。SQLite是一个增长最快的数据库引擎，这是在普及方面的增长，与它的尺寸大小无关。SQLite 源代码不受版权限制。</p>
+</blockquote>
+
+
+
+<h2 id="什么是-sqlite">什么是 SQLite？</h2>
+
+<p>SQLite是一个进程内的库，实现了自给自足的、无服务器的、零配置的、事务性的 SQL 数据库引擎。它是一个零配置的数据库，这意味着与其他数据库一样，您不需要在系统中配置。 <br>
+就像其他数据库，SQLite 引擎不是一个独立的进程，可以按应用程序需求进行静态或动态连接。<code>SQLite 直接访问其存储文件</code>。</p>
+
+
+
+<h2 id="为什么要用-sqlite">为什么要用 SQLite？</h2>
+
+<ul><li>不需要一个单独的服务器进程或操作的系统（无服务器的）。</li>
+<li>SQLite 不需要配置，这意味着不需要安装或管理。</li>
+<li>一个完整的 SQLite 数据库是存储在一个单一的跨平台的磁盘文件。</li>
+<li>SQLite 是非常小的，是轻量级的，完全配置时小于 400KiB，省略可选功能配置时小于250KiB。</li>
+<li>SQLite 是自给自足的，这意味着不需要任何外部的依赖。</li>
+<li>SQLite 事务是完全兼容 ACID 的，允许从多个进程或线程安全访问。</li>
+<li>SQLite 支持 SQL92（SQL2）标准的大多数查询语言的功能。</li>
+<li>SQLite 使用 ANSI-C 编写的，并提供了简单和易于使用的 API。</li>
+<li>SQLite 可在 UNIX（Linux, Mac OS-X, Android, iOS）和 Windows（Win32, WinCE, WinRT）中运行。</li>
+</ul>
+
+
+
+<h2 id="sqlite-局限性">SQLite 局限性</h2>
+
+<ul><li>在 SQLite 中，SQL92 不支持的特性如下所示：</li>
+</ul>
+
+<table><tbody><tr style="font-weight:bold">  <td>特性</td>  <td>描述</td></tr><tr>  <td>RIGHT OUTER JOIN</td>  <td>只实现了 LEFT OUTER JOIN。</td></tr><tr>  <td>FULL OUTER JOIN</td>  <td>只实现了 LEFT OUTER JOIN。</td></tr><tr>  <td>ALTER TABLE</td>  <td>支持 RENAME TABLE 和 ALTER TABLE 的 ADD COLUMN variants 命令，不支持 DROP COLUMN、ALTER COLUMN、ADD CONSTRAINT。</td></tr><tr>  <td>Trigger 支持</td>  <td>支持 FOR EACH ROW 触发器，但不支持 FOR EACH STATEMENT 触发器。</td></tr><tr>  <td>VIEWs</td>  <td>在 SQLite 中，视图是只读的。您不可以在视图上执行 DELETE、INSERT 或 UPDATE 语句。</td></tr><tr>  <td>GRANT 和 REVOKE</td>  <td>可以应用的唯一的访问权限是底层操作系统的正常文件访问权限。</td></tr></tbody></table>
+
+
+
+<h2 id="sqlite-命令">SQLite 命令</h2>
+
+<p>与关系数据库进行交互的标准 SQLite 命令类似于 SQL。命令包括 CREATE、SELECT、INSERT、UPDATE、DELETE 和 DROP。这些命令基于它们的操作性质可分为以下几种：</p>
+
+
+
+<h3 id="1ddl-数据定义语言">1、DDL - 数据定义语言</h3>
+
+<table><tbody><tr style="font-weight:bold">  <td>命令</td>  <td>描述</td></tr><tr>  <td>CREATE</td>  <td>创建一个新的表，一个表的视图，或者数据库中的其他对象。</td></tr><tr>  <td>ALTER</td>  <td>修改数据库中的某个已有的数据库对象，比如一个表。</td></tr><tr>  <td>DROP</td>  <td>删除整个表，或者表的视图，或者数据库中的其他对象。</td></tr></tbody></table>
+
+
+
+<h3 id="2dml-数据操作语言">2、DML - 数据操作语言</h3>
+
+<table><tbody><tr style="font-weight:bold">  <td>命令</td>  <td>描述</td></tr><tr>  <td>INSERT</td>  <td>创建一条记录。</td></tr><tr>  <td>UPDATE</td>  <td>修改记录。</td></tr><tr>  <td>DELETE</td>  <td>删除记录。</td></tr></tbody></table>
+
+
+
+<h3 id="3dql-数据查询语言">3、DQL - 数据查询语言</h3>
+
+<table><tbody><tr style="font-weight:bold">  <td>命令</td>  <td>描述</td></tr><tr>  <td>SELECT</td>  <td>从一个或多个表中检索某些记录。</td></tr></tbody></table>
+
+
+
+<h1 id="一安装">一、安装</h1>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs cmake"><div class="hljs-line">yum <span class="hljs-keyword">install</span> -y sqlite
+</div></code></pre>
+
+
+
+<h1 id="二常用指令">二、常用指令</h1>
+
+
+
+<h2 id="1查看已经进入sqlite的方式">1、查看已经进入sqlite的方式</h2>
+
+<ul><li>指令</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs"><div class="hljs-line">sqlite3
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs applescript"><div class="hljs-line">[root@localhost ~]<span class="hljs-comment"># sqlite3</span>
+</div><div class="hljs-line">SQLite <span class="hljs-built_in">version</span> <span class="hljs-number">3.7</span><span class="hljs-number">.17</span> <span class="hljs-number">2013</span><span class="hljs-number">-05</span><span class="hljs-number">-20</span> <span class="hljs-number">00</span>:<span class="hljs-number">56</span>:<span class="hljs-number">22</span>
+</div><div class="hljs-line">Enter <span class="hljs-string">".help"</span> <span class="hljs-keyword">for</span> instructions     &lt;<span class="hljs-comment">---输入.help查看说明</span>
+</div><div class="hljs-line">Enter SQL statements terminated <span class="hljs-keyword">with</span> a <span class="hljs-string">";"</span>   &lt;<span class="hljs-comment">---sql语句以分号结尾</span>
+</div></code></pre>
+
+
+
+<h2 id="2点指令">2、点指令</h2>
+
+<blockquote>
+  <p>因为以<code>.</code>开头，所以叫点指令，不需要分号<code>;</code>。 <br>
+  sqlite&gt; 提示符与点命令之间没有空格，否则将无法正常工作。</p>
+</blockquote>
+
+
+
+<h3 id="help"><code>.help</code></h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs stata"><div class="hljs-line">sqlite&gt; .<span class="hljs-keyword">help</span>
+</div><div class="hljs-line">.backup ?<span class="hljs-keyword">DB</span>? <span class="hljs-keyword">FILE</span>      Backup <span class="hljs-keyword">DB</span> (default <span class="hljs-string">"main"</span>) to <span class="hljs-keyword">FILE</span>
+</div><div class="hljs-line">.bail <span class="hljs-keyword">ON</span>|OFF           Stop after hitting <span class="hljs-keyword">an</span> <span class="hljs-keyword">error</span>.  Default OFF
+</div><div class="hljs-line">.databases             <span class="hljs-keyword">List</span> names and files of attached databases
+</div><div class="hljs-line">.dump ?<span class="hljs-keyword">TABLE</span>? ...      Dump the database <span class="hljs-keyword">in</span> <span class="hljs-keyword">an</span> SQL text <span class="hljs-keyword">format</span>
+</div><div class="hljs-line">                         <span class="hljs-keyword">If</span> <span class="hljs-keyword">TABLE</span> specified, only dump tables matching
+</div><div class="hljs-line">                         LIKE pattern <span class="hljs-keyword">TABLE</span>.
+</div><div class="hljs-line">.echo <span class="hljs-keyword">ON</span>|OFF           Turn command echo <span class="hljs-keyword">on</span> or off
+</div><div class="hljs-line">.<span class="hljs-keyword">exit</span>                  <span class="hljs-keyword">Exit</span> this <span class="hljs-keyword">program</span>
+</div><div class="hljs-line">.explain ?<span class="hljs-keyword">ON</span>|OFF?      Turn output mode suitable <span class="hljs-keyword">for</span> EXPLAIN <span class="hljs-keyword">on</span> or off.
+</div><div class="hljs-line">                         With <span class="hljs-keyword">no</span> <span class="hljs-keyword">args</span>, it turns EXPLAIN <span class="hljs-keyword">on</span>.
+</div><div class="hljs-line">.header(s) <span class="hljs-keyword">ON</span>|OFF      Turn <span class="hljs-keyword">display</span> of headers <span class="hljs-keyword">on</span> or off
+</div><div class="hljs-line">.<span class="hljs-keyword">help</span>                  Show this message
+</div><div class="hljs-line">.import <span class="hljs-keyword">FILE</span> <span class="hljs-keyword">TABLE</span>     Import data from <span class="hljs-keyword">FILE</span> into <span class="hljs-keyword">TABLE</span>
+</div><div class="hljs-line">.indices ?<span class="hljs-keyword">TABLE</span>?       Show names of all indices
+</div><div class="hljs-line">                         <span class="hljs-keyword">If</span> <span class="hljs-keyword">TABLE</span> specified, only show indices <span class="hljs-keyword">for</span> tables
+</div><div class="hljs-line">                         matching LIKE pattern <span class="hljs-keyword">TABLE</span>.
+</div><div class="hljs-line">.load <span class="hljs-keyword">FILE</span> ?ENTRY?     Load <span class="hljs-keyword">an</span> extension library
+</div><div class="hljs-line">.<span class="hljs-keyword">log</span> <span class="hljs-keyword">FILE</span>|off          Turn logging <span class="hljs-keyword">on</span> or off.  <span class="hljs-keyword">FILE</span> can be stderr/stdout
+</div><div class="hljs-line">.mode MODE ?<span class="hljs-keyword">TABLE</span>?     <span class="hljs-keyword">Set</span> output mode where MODE is <span class="hljs-keyword">one</span> of:
+</div><div class="hljs-line">                         csv      Comma-separated values
+</div><div class="hljs-line">                         column   Left-aligned columns.  (See .width)
+</div><div class="hljs-line">                         html     HTML &lt;<span class="hljs-keyword">table</span>&gt; code
+</div><div class="hljs-line">                         insert   SQL insert statements <span class="hljs-keyword">for</span> <span class="hljs-keyword">TABLE</span>
+</div><div class="hljs-line">                         <span class="hljs-keyword">line</span>     <span class="hljs-keyword">One</span> value per <span class="hljs-keyword">line</span>
+</div><div class="hljs-line">                         <span class="hljs-keyword">list</span>     Values delimited <span class="hljs-keyword">by</span> .separator <span class="hljs-built_in">string</span>
+</div><div class="hljs-line">                         tabs     <span class="hljs-keyword">Tab</span>-separated values
+</div><div class="hljs-line">                         tcl      TCL <span class="hljs-keyword">list</span> elements
+</div><div class="hljs-line">.nullvalue STRING      <span class="hljs-keyword">Use</span> STRING <span class="hljs-keyword">in</span> place of NULL values
+</div><div class="hljs-line">.output FILENAME       Send output to FILENAME
+</div><div class="hljs-line">.output stdout         Send output to the screen
+</div><div class="hljs-line">.<span class="hljs-keyword">print</span> STRING...       <span class="hljs-keyword">Print</span> literal <span class="hljs-built_in">STRING</span>
+</div><div class="hljs-line">.prompt MAIN <span class="hljs-keyword">CONTINUE</span>  <span class="hljs-keyword">Replace</span> the standard prompts
+</div><div class="hljs-line">.quit                  <span class="hljs-keyword">Exit</span> this <span class="hljs-keyword">program</span>
+</div><div class="hljs-line">.<span class="hljs-keyword">read</span> FILENAME         Execute SQL <span class="hljs-keyword">in</span> FILENAME
+</div><div class="hljs-line">.<span class="hljs-keyword">restore</span> ?<span class="hljs-keyword">DB</span>? <span class="hljs-keyword">FILE</span>     <span class="hljs-keyword">Restore</span> content of <span class="hljs-keyword">DB</span> (default <span class="hljs-string">"main"</span>) from <span class="hljs-keyword">FILE</span>
+</div><div class="hljs-line">.schema ?<span class="hljs-keyword">TABLE</span>?        Show the CREATE statements
+</div><div class="hljs-line">                         <span class="hljs-keyword">If</span> <span class="hljs-keyword">TABLE</span> specified, only show tables matching
+</div><div class="hljs-line">                         LIKE pattern <span class="hljs-keyword">TABLE</span>.
+</div><div class="hljs-line">.separator STRING      Change separator used <span class="hljs-keyword">by</span> output mode and .import
+</div><div class="hljs-line">.show                  Show the current values <span class="hljs-keyword">for</span> various settings
+</div><div class="hljs-line">.stats <span class="hljs-keyword">ON</span>|OFF          Turn stats <span class="hljs-keyword">on</span> or off
+</div><div class="hljs-line">.tables ?<span class="hljs-keyword">TABLE</span>?        <span class="hljs-keyword">List</span> names of tables
+</div><div class="hljs-line">                         <span class="hljs-keyword">If</span> <span class="hljs-keyword">TABLE</span> specified, only <span class="hljs-keyword">list</span> tables matching
+</div><div class="hljs-line">                         LIKE pattern <span class="hljs-keyword">TABLE</span>.
+</div><div class="hljs-line">.timeout MS            Try opening locked tables <span class="hljs-keyword">for</span> MS milliseconds
+</div><div class="hljs-line">.trace <span class="hljs-keyword">FILE</span>|off        Output each SQL statement <span class="hljs-keyword">as</span> it is <span class="hljs-keyword">run</span>
+</div><div class="hljs-line">.vfsname ?AUX?         <span class="hljs-keyword">Print</span> the name of the VFS <span class="hljs-keyword">stack</span>
+</div><div class="hljs-line">.width NUM1 NUM2 ...   <span class="hljs-keyword">Set</span> column widths <span class="hljs-keyword">for</span> <span class="hljs-string">"column"</span> mode
+</div><div class="hljs-line">.<span class="hljs-keyword">timer</span> <span class="hljs-keyword">ON</span>|OFF          Turn the CPU <span class="hljs-keyword">timer</span> measurement <span class="hljs-keyword">on</span> or off
+</div></code></pre>
+
+<p>以上是关于点指令的说明</p>
+
+<table><tbody><tr style="font-weight:bold">  <td>命令</td>  <td>描述</td></tr><tr>  <td>.backup ?DB? FILE</td>  <td>备份 DB 数据库（默认是 “main”）到 FILE 文件。</td></tr><tr>  <td>.bail ON OFF</td>  <td>发生错误后停止。默认为 OFF。</td></tr><tr>  <td>.databases</td>  <td>列出附加数据库的名称和文件。</td></tr><tr>  <td>.dump ?TABLE?</td>  <td>以 SQL 文本格式转储数据库。如果指定了 TABLE 表，则只转储匹配 LIKE 模式的 TABLE 表。</td></tr><tr>  <td>.echo ON、OFF</td>  <td>开启或关闭 echo 命令。</td></tr><tr>  <td>.exit</td>  <td>退出 SQLite 提示符。</td></tr><tr>  <td>.explain ON 、OFF</td>  <td>开启或关闭适合于 EXPLAIN 的输出模式。如果没有带参数，则为 EXPLAIN on，及开启 EXPLAIN。</td></tr><tr>  <td>.header(s) ON、OFF</td>  <td>开启或关闭头部显示。</td></tr><tr>  <td>.help</td>  <td>显示消息。</td></tr><tr>  <td>.import FILE TABLE</td>  <td>导入来自 FILE 文件的数据到 TABLE 表中。</td></tr><tr>  <td>.indices ?TABLE?</td>  <td>显示所有索引的名称。如果指定了 TABLE 表，则只显示匹配 LIKE 模式的 TABLE 表的索引。</td></tr><tr>  <td>.load FILE ?ENTRY?</td>  <td>加载一个扩展库。</td></tr><tr>  <td>.log FILE on、off</td>  <td>开启或关闭日志。FILE 文件可以是 stderr（标准错误）/stdout（标准输出）。</td></tr><tr>  <td>.mode MODE</td>  <td>设置输出模式，MODE 可以是下列之一：csv 逗号分隔的值 ；column 左对齐的列html HTML 的  代码；insert TABLE 表的 SQL 插入（insert）语句；line 每行一个值；list 由 .separator 字符串分隔的值；tabs 由 Tab 分隔的值；tcl</td></tr><tr>  <td>.nullvalue STRING</td>  <td>在 NULL 值的地方输出 STRING 字符串。</td></tr><tr>  <td>.output FILENAME</td>  <td>发送输出到 FILENAME 文件。</td></tr><tr>  <td>.output stdout</td>  <td>发送输出到屏幕。</td></tr><tr>  <td>.print STRING…</td>  <td>逐字地输出 STRING 字符串。</td></tr><tr>  <td>.prompt MAIN CONTINUE</td>  <td>替换标准提示符。</td></tr><tr>  <td>.quit</td>  <td>退出 SQLite 提示符。</td></tr><tr>  <td>.read FILENAME</td>  <td>执行 FILENAME 文件中的 SQL。</td></tr><tr>  <td>.schema ?TABLE?</td>  <td>显示 CREATE 语句。如果指定了 TABLE 表，则只显示匹配 LIKE 模式的 TABLE 表。</td></tr><tr>  <td>.separator STRING</td>  <td>改变输出模式和 .import 所使用的分隔符。</td></tr><tr>  <td>.show</td>  <td>显示各种设置的当前值。</td></tr><tr>  <td>.stats ON、OFF</td>  <td>开启或关闭统计。</td></tr><tr>  <td>.tables ?PATTERN?</td>  <td>列出匹配 LIKE 模式的表的名称。</td></tr><tr>  <td>.timeout MS</td>  <td>尝试打开锁定的表 MS 毫秒。</td></tr><tr>  <td>.width NUM</td>  <td>NUM    为 “column” 模式设置列宽度。</td></tr><tr>  <td>.timer ON、OFF</td>  <td>开启或关闭 CPU 定时器。</td></tr></tbody></table>
+
+<blockquote>
+  <p>实践</p>
+</blockquote>
+
+<ul><li>.databases—&gt;show databases;</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line">sqlite&gt; .databases
+</div><div class="hljs-line">seq  name             file                                                      
+</div><div class="hljs-line"><span class="hljs-comment">---  ---------------  ----------------------------------------------------------</span>
+</div><div class="hljs-line">0    main 
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-sql hljs"><div class="hljs-line">MariaDB [(none)]&gt; <span class="hljs-keyword">show</span> <span class="hljs-keyword">databases</span>;
+</div><div class="hljs-line">+<span class="hljs-comment">--------------------+</span>
+</div><div class="hljs-line">| Database           |
+</div><div class="hljs-line">+<span class="hljs-comment">--------------------+</span>
+</div><div class="hljs-line">| information_schema |
+</div><div class="hljs-line">| mysql              |
+</div><div class="hljs-line">| performance_schema |
+</div><div class="hljs-line">| wiki               |
+</div><div class="hljs-line">+<span class="hljs-comment">--------------------+</span>
+</div><div class="hljs-line">4 rows in <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)
+</div></code></pre>
+
+<ul><li>.show 查看当前设置的参数</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs dts"><div class="hljs-line">sqlite&gt; .show
+</div><div class="hljs-line"><span class="hljs-symbol">     echo:</span> off
+</div><div class="hljs-line"><span class="hljs-symbol">  explain:</span> off
+</div><div class="hljs-line"><span class="hljs-symbol">  headers:</span> off
+</div><div class="hljs-line"><span class="hljs-symbol">     mode:</span> list
+</div><div class="hljs-line"><span class="hljs-symbol">nullvalue:</span> <span class="hljs-string">""</span>
+</div><div class="hljs-line"><span class="hljs-symbol">   output:</span> stdout
+</div><div class="hljs-line"><span class="hljs-symbol">separator:</span> <span class="hljs-string">"|"</span>
+</div><div class="hljs-line"><span class="hljs-symbol">    stats:</span> off
+</div><div class="hljs-line"><span class="hljs-symbol">    width:</span> 
+</div></code></pre>
+
+
+
+<h2 id="语句">语句</h2>
+
+<blockquote>
+  <ul><li>SQLite 是不区分大小写的，但也有一些命令是大小写敏感的，比如 <code>GLOB</code> 和 <code>glob</code> 在 SQLite 的语句中有不同的含义。</li>
+  <li>SQLite 语句可以以任何关键字开始，如<code>SELECT、INSERT、UPDATE、DELETE、ALTER、DROP</code>等，所有的语句以分号（<code>;</code>）结束。</li>
+  </ul>
+</blockquote>
+
+
+
+<h3 id="常用语句示例">常用语句示例</h3>
+
+<ul><li>SQLite ANALYZE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">ANALYZE</span>;
+</div><div class="hljs-line">or
+</div><div class="hljs-line"><span class="hljs-keyword">ANALYZE</span> database_name;
+</div><div class="hljs-line">or
+</div><div class="hljs-line"><span class="hljs-keyword">ANALYZE</span> database_name.table_name;
+</div></code></pre>
+
+<ul><li>SQLite AND/OR 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION<span class="hljs-number">-1</span> {<span class="hljs-keyword">AND</span>|<span class="hljs-keyword">OR</span>} CONDITION<span class="hljs-number">-2</span>;
+</div></code></pre>
+
+<ul><li>SQLite ALTER TABLE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line"><span class="hljs-function"><span class="hljs-title">ALTER</span></span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-comment">ADD COLUMN column_def...</span>;
+</div></code></pre>
+
+<ul><li>SQLite ALTER TABLE 语句（Rename）：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">RENAME</span> <span class="hljs-keyword">TO</span> new_table_name;
+</div></code></pre>
+
+<ul><li>SQLite ATTACH DATABASE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs delphi"><div class="hljs-line">ATTACH DATABASE <span class="hljs-string">'DatabaseName'</span> <span class="hljs-keyword">As</span> <span class="hljs-string">'Alias-Name'</span>;
+</div></code></pre>
+
+<ul><li>SQLite BEGIN TRANSACTION 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">BEGIN</span>;
+</div><div class="hljs-line">or
+</div><div class="hljs-line"><span class="hljs-keyword">BEGIN</span> EXCLUSIVE <span class="hljs-keyword">TRANSACTION</span>;
+</div></code></pre>
+
+<ul><li>SQLite BETWEEN 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name <span class="hljs-keyword">BETWEEN</span> val<span class="hljs-number">-1</span> <span class="hljs-keyword">AND</span> val<span class="hljs-number">-2</span>;
+</div></code></pre>
+
+<ul><li>SQLite COMMIT 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">COMMIT</span>;
+</div></code></pre>
+
+<ul><li>SQLite CREATE INDEX 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">INDEX</span> index_name
+</div><div class="hljs-line"><span class="hljs-keyword">ON</span> table_name ( column_name <span class="hljs-keyword">COLLATE</span> NOCASE );
+</div></code></pre>
+
+<ul><li>SQLite CREATE UNIQUE INDEX 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">INDEX</span> index_name
+</div><div class="hljs-line"><span class="hljs-keyword">ON</span> table_name ( column1, column2,...columnN);
+</div></code></pre>
+
+<ul><li>SQLite CREATE TABLE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs elm"><div class="hljs-line"><span class="hljs-type">CREATE</span> <span class="hljs-type">TABLE</span> table_name(
+</div><div class="hljs-line">   column1 data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   column2 data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   column3 data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   .....
+</div><div class="hljs-line">   columnN data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   <span class="hljs-type">PRIMARY</span> <span class="hljs-type">KEY</span>( one or more columns )
+</div><div class="hljs-line">);
+</div></code></pre>
+
+<ul><li>SQLite CREATE TRIGGER 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TRIGGER</span> database_name.trigger_name 
+</div><div class="hljs-line"><span class="hljs-keyword">BEFORE</span> <span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">ON</span> table_name <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">EACH</span> <span class="hljs-keyword">ROW</span>
+</div><div class="hljs-line"><span class="hljs-keyword">BEGIN</span> 
+</div><div class="hljs-line">   stmt1; 
+</div><div class="hljs-line">   stmt2;
+</div><div class="hljs-line">   ....
+</div><div class="hljs-line"><span class="hljs-keyword">END</span>;
+</div></code></pre>
+
+<ul><li>SQLite CREATE VIEW 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIEW</span> database_name.view_name  <span class="hljs-keyword">AS</span>
+</div><div class="hljs-line"><span class="hljs-keyword">SELECT</span> statement....;
+</div></code></pre>
+
+<ul><li>SQLite CREATE VIRTUAL TABLE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIRTUAL</span> <span class="hljs-keyword">TABLE</span> database_name.table_name <span class="hljs-keyword">USING</span> weblog( access.log );
+</div><div class="hljs-line">or
+</div><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">VIRTUAL</span> <span class="hljs-keyword">TABLE</span> database_name.table_name <span class="hljs-keyword">USING</span> fts3( );
+</div></code></pre>
+
+<ul><li>SQLite COMMIT TRANSACTION 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">COMMIT</span>;
+</div></code></pre>
+
+<ul><li>SQLite COUNT 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">COUNT</span>(column_name)
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION;
+</div></code></pre>
+
+<ul><li>SQLite DELETE 语句： <br>
+··· <br>
+DELETE FROM table_name <br>
+WHERE  {CONDITION}; <br>
+···</li>
+<li>SQLite DETACH DATABASE 语句： <br>
+···</li>
+<li>DETACH DATABASE ‘Alias-Name’; <br>
+···</li>
+<li>SQLite DISTINCT 子句： <br>
+···</li>
+<li>SELECT DISTINCT column1, column2….columnN <br>
+FROM   table_name; <br>
+···</li>
+<li>SQLite DROP INDEX 语句： <br>
+··· <br>
+DROP INDEX database_name.index_name; <br>
+···</li>
+</ul>
+
+<p>-SQLite DROP TABLE 语句：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> database_name.table_name;
+</div></code></pre>
+
+<ul><li>SQLite DROP VIEW 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">VIEW</span> view_name;
+</div></code></pre>
+
+<ul><li>SQLite DROP TRIGGER 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TRIGGER</span> trigger_name
+</div></code></pre>
+
+<ul><li>SQLite EXISTS 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name <span class="hljs-keyword">EXISTS</span> (<span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span>   table_name );
+</div></code></pre>
+
+<ul><li>SQLite EXPLAIN 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">EXPLAIN</span> <span class="hljs-keyword">INSERT</span> statement...;
+</div><div class="hljs-line">or 
+</div><div class="hljs-line"><span class="hljs-keyword">EXPLAIN</span> <span class="hljs-keyword">QUERY</span> PLAN <span class="hljs-keyword">SELECT</span> statement...;
+</div></code></pre>
+
+<ul><li>SQLite GLOB 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name GLOB { PATTERN };
+</div></code></pre>
+
+<ul><li>SQLite GROUP BY 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">SUM</span>(column_name)
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION
+</div><div class="hljs-line"><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> column_name;
+</div></code></pre>
+
+<p>SQLite HAVING 子句：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">SUM</span>(column_name)
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION
+</div><div class="hljs-line"><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> column_name
+</div><div class="hljs-line"><span class="hljs-keyword">HAVING</span> (arithematic <span class="hljs-keyword">function</span> condition);
+</div></code></pre>
+
+<ul><li>SQLite INSERT INTO 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs clean"><div class="hljs-line">INSERT INTO table_name( column1, column2....columnN)
+</div><div class="hljs-line">VALUES ( value1, value2....valueN);
+</div></code></pre>
+
+<ul><li>SQLite IN 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lasso"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2<span class="hljs-params">...</span>.columnN
+</div><div class="hljs-line">FROM   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name <span class="hljs-keyword">IN</span> (val<span class="hljs-number">-1</span>, val<span class="hljs-number">-2</span>,<span class="hljs-params">...</span>val<span class="hljs-params">-N</span>);
+</div></code></pre>
+
+<ul><li>SQLite Like 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name <span class="hljs-keyword">LIKE</span> { PATTERN };
+</div></code></pre>
+
+<ul><li>SQLite NOT IN 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lasso"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2<span class="hljs-params">...</span>.columnN
+</div><div class="hljs-line">FROM   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  column_name <span class="hljs-literal">NOT</span> <span class="hljs-keyword">IN</span> (val<span class="hljs-number">-1</span>, val<span class="hljs-number">-2</span>,<span class="hljs-params">...</span>val<span class="hljs-params">-N</span>);
+</div></code></pre>
+
+<ul><li>SQLite ORDER BY 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION
+</div><div class="hljs-line"><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> column_name {<span class="hljs-keyword">ASC</span>|<span class="hljs-keyword">DESC</span>};
+</div></code></pre>
+
+<ul><li>SQLite PRAGMA 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">PRAGMA</span> pragma_name;
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">PRAGMA</span> page_size;
+</div><div class="hljs-line"><span class="hljs-keyword">PRAGMA</span> cache_size = <span class="hljs-number">1024</span>;
+</div><div class="hljs-line"><span class="hljs-keyword">PRAGMA</span> table_info(table_name);
+</div></code></pre>
+
+<ul><li>SQLite RELEASE SAVEPOINT 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">RELEASE</span> savepoint_name;
+</div></code></pre>
+
+<ul><li>SQLite REINDEX 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs abnf"><div class="hljs-line">REINDEX collation_name<span class="hljs-comment">;</span>
+</div><div class="hljs-line">REINDEX database_name.index_name<span class="hljs-comment">;</span>
+</div><div class="hljs-line">REINDEX database_name.table_name<span class="hljs-comment">;</span>
+</div></code></pre>
+
+<ul><li>SQLite ROLLBACK 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">ROLLBACK</span>;
+</div><div class="hljs-line">or
+</div><div class="hljs-line"><span class="hljs-keyword">ROLLBACK</span> <span class="hljs-keyword">TO</span> <span class="hljs-keyword">SAVEPOINT</span> savepoint_name;
+</div></code></pre>
+
+<ul><li>SQLite SAVEPOINT 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SAVEPOINT</span> savepoint_name;
+</div></code></pre>
+
+<ul><li>SQLite SELECT 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name;
+</div></code></pre>
+
+<ul><li>SQLite UPDATE 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line">UPDATE table_name
+</div><div class="hljs-line"><span class="hljs-keyword">SET</span> column1 <span class="hljs-comment">= value1, column2 = value2....columnN=valueN</span>
+</div><div class="hljs-line">[ WHERE  <span class="hljs-comment">CONDITION ]</span>;
+</div></code></pre>
+
+<ul><li>SQLite VACUUM 语句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs abnf"><div class="hljs-line">VACUUM<span class="hljs-comment">;</span>
+</div></code></pre>
+
+<ul><li>SQLite WHERE 子句：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2....columnN
+</div><div class="hljs-line"><span class="hljs-keyword">FROM</span>   table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span>  CONDITION;
+</div></code></pre>
+
+
+
+<h1 id="三常用操作">三、常用操作</h1>
+
+
+
+<h2 id="1创建数据库">1、创建数据库</h2>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs avrasm"><div class="hljs-line">sqlite3 DatabaseName<span class="hljs-meta">.db</span>
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs applescript"><div class="hljs-line">[root@localhost lcr]<span class="hljs-comment"># sqlite3 test.db</span>
+</div><div class="hljs-line">SQLite <span class="hljs-built_in">version</span> <span class="hljs-number">3.7</span><span class="hljs-number">.17</span> <span class="hljs-number">2013</span><span class="hljs-number">-05</span><span class="hljs-number">-20</span> <span class="hljs-number">00</span>:<span class="hljs-number">56</span>:<span class="hljs-number">22</span>
+</div><div class="hljs-line">Enter <span class="hljs-string">".help"</span> <span class="hljs-keyword">for</span> instructions
+</div><div class="hljs-line">Enter SQL statements terminated <span class="hljs-keyword">with</span> a <span class="hljs-string">";"</span>
+</div><div class="hljs-line">sqlite&gt; .databases
+</div><div class="hljs-line">seq  <span class="hljs-built_in">name</span>             <span class="hljs-built_in">file</span>                                                      
+</div><div class="hljs-line"><span class="hljs-comment">---  ---------------  ----------------------------------------------------------</span>
+</div><div class="hljs-line"><span class="hljs-number">0</span>    main             /home/lcr/test.db                                         
+</div></code></pre>
+
+<blockquote>
+  <ul><li>可以看到，文件存放在操作的当前目录：/home/lcr</li>
+  </ul>
+</blockquote>
+
+
+
+<h2 id="2导出导出数据库">2、导出/导出数据库</h2>
+
+
+
+<h3 id="导出">导出</h3>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs stylus"><div class="hljs-line">DatabaseName<span class="hljs-selector-class">.db</span> <span class="hljs-selector-class">.dump</span> &gt; filename
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs css"><div class="hljs-line"><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">sqlite3</span> <span class="hljs-selector-tag">test</span><span class="hljs-selector-class">.db</span> <span class="hljs-selector-class">.dump</span> &gt; <span class="hljs-selector-tag">test</span><span class="hljs-selector-class">.sql</span>
+</div><div class="hljs-line"><span class="hljs-selector-attr">[root@localhost lcr]</span># <span class="hljs-selector-tag">ls</span>
+</div><div class="hljs-line">7<span class="hljs-selector-tag">A0V</span>+6<span class="hljs-selector-tag">bZ</span><span class="hljs-selector-class">.bin</span>  <span class="hljs-selector-tag">perl5</span>    <span class="hljs-selector-tag">test</span><span class="hljs-selector-class">.sql</span>  模板  图片  下载  桌面
+</div><div class="hljs-line"><span class="hljs-selector-tag">b7ZpN4fk</span><span class="hljs-selector-class">.bin</span>  <span class="hljs-selector-tag">test</span><span class="hljs-selector-class">.db</span>  公共      视频  文档  音乐
+</div></code></pre>
+
+
+
+<h3 id="导入">导入</h3>
+
+
+
+<h2 id="3附加分离数据库">3、附加/分离数据库</h2>
+
+
+
+<h3 id="附加">附加</h3>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs delphi"><div class="hljs-line">ATTACH DATABASE <span class="hljs-string">'DatabaseName'</span> <span class="hljs-keyword">As</span> <span class="hljs-string">'Alias-Name'</span>;
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs stata"><div class="hljs-line">sqlite&gt; ATTACH DATABASE '<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>' <span class="hljs-keyword">AS</span> '<span class="hljs-keyword">TEST</span>';
+</div><div class="hljs-line">sqlite&gt; .databases
+</div><div class="hljs-line">seq  name             <span class="hljs-keyword">file</span>                                                      
+</div><div class="hljs-line">---  ---------------  ----------------------------------------------------------
+</div><div class="hljs-line">0    main             /home/lcr/<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>                                         
+</div><div class="hljs-line">2    <span class="hljs-keyword">TEST</span>             /home/lcr/<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>      
+</div></code></pre>
+
+<blockquote>
+  <p>其中<code>ATTACH DATABASE</code>,<code>AS</code>注意大小写 <br>
+  数据库名<code>main</code>,<code>temp</code>是保留的名字，不能使用</p>
+</blockquote>
+
+
+
+<h3 id="分离">分离</h3>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs nginx"><div class="hljs-line"><span class="hljs-attribute">DETACH</span> DATABASE <span class="hljs-string">'Alias-Name'</span>;
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs stata"><div class="hljs-line">sqlite&gt; .databases
+</div><div class="hljs-line">seq  name             <span class="hljs-keyword">file</span>                                                      
+</div><div class="hljs-line">---  ---------------  ----------------------------------------------------------
+</div><div class="hljs-line">0    main             /home/lcr/<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>                                         
+</div><div class="hljs-line">2    <span class="hljs-keyword">TEST</span>             /home/lcr/<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>                                         
+</div><div class="hljs-line">sqlite&gt; DETACH DATABASE '<span class="hljs-keyword">TEST</span>';
+</div><div class="hljs-line">sqlite&gt; .databases
+</div><div class="hljs-line">seq  name             <span class="hljs-keyword">file</span>                                                      
+</div><div class="hljs-line">---  ---------------  ----------------------------------------------------------
+</div><div class="hljs-line">0    main             /home/lcr/<span class="hljs-keyword">test</span>.<span class="hljs-keyword">db</span>
+</div></code></pre>
+
+
+
+<h2 id="4创建删除表">4、创建/删除表</h2>
+
+
+
+<h3 id="创建表">创建表</h3>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs elm"><div class="hljs-line"><span class="hljs-type">CREATE</span> <span class="hljs-type">TABLE</span> database_name.table_name(
+</div><div class="hljs-line">   column1 data<span class="hljs-keyword">type</span>  <span class="hljs-type">PRIMARY</span> <span class="hljs-type">KEY</span>(one or more columns),
+</div><div class="hljs-line">   column2 data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   column3 data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">   .....
+</div><div class="hljs-line">   columnN data<span class="hljs-keyword">type</span>,
+</div><div class="hljs-line">);
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lasso"><div class="hljs-line">sqlite&gt; CREATE TABLE TEST.<span class="hljs-built_in">list</span>(
+</div><div class="hljs-line">   <span class="hljs-params">...</span>&gt; ID INT PRIMARY KEY   <span class="hljs-literal">NOT</span> <span class="hljs-built_in">NULL</span>,
+</div><div class="hljs-line">   <span class="hljs-params">...</span>&gt; ADDRESS    CHAR(<span class="hljs-number">50</span>)
+</div><div class="hljs-line">   <span class="hljs-params">...</span>&gt; );
+</div><div class="hljs-line">sqlite&gt; .schema <span class="hljs-built_in">list</span>
+</div><div class="hljs-line">CREATE TABLE <span class="hljs-built_in">list</span>(
+</div><div class="hljs-line">ID INT PRIMARY KEY   <span class="hljs-literal">NOT</span> <span class="hljs-built_in">NULL</span>,
+</div><div class="hljs-line">ADDRESS    CHAR(<span class="hljs-number">50</span>)
+</div><div class="hljs-line">);
+</div></code></pre>
+
+
+
+<h3 id="删除表">删除表</h3>
+
+<ul><li>语法</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> database_name.table_name;
+</div></code></pre>
+
+<ul><li>实践</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs stata"><div class="hljs-line">sqlite&gt; .tables
+</div><div class="hljs-line"><span class="hljs-keyword">TEST</span>.<span class="hljs-keyword">list</span>  <span class="hljs-keyword">list</span>     
+</div><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">list</span>;
+</div><div class="hljs-line">sqlite&gt; .tables
+</div></code></pre>
+
+
+
+<h3 id="insert-语句">Insert 语句</h3>
+
+<p>SQLite 的 INSERT INTO 语句用于向数据库的某个表中添加新的数据行。</p>
+
+<ul><li>语法</li>
+</ul>
+
+<p>INSERT INTO 语句有两种基本语法，</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> TABLE_NAME [(column1, column2, column3,...columnN)]  
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (value1, value2, value3,...valueN);
+</div></code></pre>
+
+<p>在这里，column1, column2,…columnN 是要插入数据的表中的列的名称。 <br>
+如果要为表中的所有列添加值，您也可以不需要在 SQLite 查询中指定列名称。但要确保值的顺序与列在表中的顺序一致。</p>
+
+<p>SQLite 的 INSERT INTO 语法如下：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> TABLE_NAME <span class="hljs-keyword">VALUES</span> (value1,value2,value3,...valueN);
+</div></code></pre>
+
+<p>实例 <br>
+假设您已经在 testDB.db 中创建了 COMPANY表，如下所示：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gauss"><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">CREATE</span> TABLE COMPANY(
+</div><div class="hljs-line">   ID INT PRIMARY <span class="hljs-built_in">KEY</span>     <span class="hljs-keyword">NOT</span> <span class="hljs-built_in">NULL</span>,
+</div><div class="hljs-line">   NAME           TEXT    <span class="hljs-keyword">NOT</span> <span class="hljs-built_in">NULL</span>,
+</div><div class="hljs-line">   AGE            INT     <span class="hljs-keyword">NOT</span> <span class="hljs-built_in">NULL</span>,
+</div><div class="hljs-line">   ADDRESS        CHAR(<span class="hljs-number">50</span>),
+</div><div class="hljs-line">   SALARY         <span class="hljs-built_in">REAL</span>
+</div><div class="hljs-line">);
+</div></code></pre>
+
+<p>现在，下面的语句将在 COMPANY 表中创建六个记录：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-string">'Paul'</span>, <span class="hljs-number">32</span>, <span class="hljs-string">'California'</span>, <span class="hljs-number">20000.00</span> );
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>, <span class="hljs-string">'Allen'</span>, <span class="hljs-number">25</span>, <span class="hljs-string">'Texas'</span>, <span class="hljs-number">15000.00</span> );
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">3</span>, <span class="hljs-string">'Teddy'</span>, <span class="hljs-number">23</span>, <span class="hljs-string">'Norway'</span>, <span class="hljs-number">20000.00</span> );
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">4</span>, <span class="hljs-string">'Mark'</span>, <span class="hljs-number">25</span>, <span class="hljs-string">'Rich-Mond '</span>, <span class="hljs-number">65000.00</span> );
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">5</span>, <span class="hljs-string">'David'</span>, <span class="hljs-number">27</span>, <span class="hljs-string">'Texas'</span>, <span class="hljs-number">85000.00</span> );
+</div><div class="hljs-line"><wbr>
+</div><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY (<span class="hljs-keyword">ID</span>,<span class="hljs-keyword">NAME</span>,AGE,ADDRESS,SALARY)
+</div><div class="hljs-line"><span class="hljs-keyword">VALUES</span> (<span class="hljs-number">6</span>, <span class="hljs-string">'Kim'</span>, <span class="hljs-number">22</span>, <span class="hljs-string">'South-Hall'</span>, <span class="hljs-number">45000.00</span> );
+</div></code></pre>
+
+<p>您也可以使用第二种语法在 COMPANY 表中创建一个记录，如下所示：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> COMPANY <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">7</span>, <span class="hljs-string">'James'</span>, <span class="hljs-number">24</span>, <span class="hljs-string">'Houston'</span>, <span class="hljs-number">10000.00</span> );
+</div></code></pre>
+
+<p>上面的所有语句将在 COMPANY 表中创建下列记录。</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>使用一个表来填充另一个表 <br>
+您可以通过在一个有一组字段的表上使用 select 语句，填充数据到另一个表中。下面是语法：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> first_table_name [(column1, column2, ... columnN)] 
+</div><div class="hljs-line">   <span class="hljs-keyword">SELECT</span> column1, column2, ...columnN 
+</div><div class="hljs-line">   <span class="hljs-keyword">FROM</span> second_table_name
+</div><div class="hljs-line">   [<span class="hljs-keyword">WHERE</span> condition];
+</div></code></pre>
+
+
+
+<h3 id="update-语句">Update 语句</h3>
+
+<p>SQLite 的 UPDATE 查询用于修改表中已有的记录。可以使用带有 WHERE 子句的 UPDATE 查询来更新选定行，否则所有的行都会被更新。</p>
+
+<ul><li>语法 <br>
+带有 WHERE 子句的 UPDATE 查询的基本语法如下：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line">UPDATE table_name
+</div><div class="hljs-line"><span class="hljs-keyword">SET</span> column1 <span class="hljs-comment">= value1, column2 = value2...., columnN = valueN</span>
+</div><div class="hljs-line">WHERE <span class="hljs-comment">[condition]</span>;
+</div></code></pre>
+
+<p>可以使用 AND 或 OR 运算符来结合 N 个数量的条件。</p>
+
+<ul><li>实例 <br>
+假设 COMPANY 表有以下记录：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>下面是一个实例，它会更新 ID 为 6 的客户地址：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line">sqlite&gt; UPDATE COMPANY <span class="hljs-keyword">SET</span> ADDRESS <span class="hljs-comment">=</span> <span class="hljs-comment">'Texas'</span><span class="hljs-comment"> WHERE ID = 6</span>;
+</div></code></pre>
+
+<p>现在，COMPANY 表有以下记录：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          Texas       <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>如果您想修改 COMPANY 表中 ADDRESS 和 SALARY 列的所有值，则不需要使用 WHERE 子句，UPDATE 查询如下：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gams"><div class="hljs-line">sqlite&gt; UPDATE COMPANY <span class="hljs-keyword">SET</span> ADDRESS <span class="hljs-comment">=</span> <span class="hljs-comment">'Texas'</span><span class="hljs-comment">, SALARY = 20000.00</span>;
+</div></code></pre>
+
+<p>现在，COMPANY 表有以下记录：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          Texas       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Texas       <span class="hljs-number">20000.0</span>
+</div></code></pre>
+
+
+
+<h3 id="delete-语句">Delete 语句</h3>
+
+<p>SQLite 的 DELETE 查询用于删除表中已有的记录。可以使用带有 WHERE 子句的 DELETE 查询来删除选定行，否则所有的记录都会被删除。</p>
+
+<ul><li>语法 <br>
+带有 WHERE 子句的 DELETE 查询的基本语法如下：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> table_name
+</div><div class="hljs-line"><span class="hljs-keyword">WHERE</span> [condition];
+</div></code></pre>
+
+<p>可以使用 AND 或 OR 运算符来结合 N 个数量的条件。</p>
+
+<ul><li>实例 <br>
+假设 COMPANY 表有以下记录：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>下面是一个实例，它会删除 ID 为 7 的客户：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gauss"><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">DELETE</span> FROM COMPANY <span class="hljs-built_in">WHERE</span> ID = <span class="hljs-number">7</span>;
+</div></code></pre>
+
+<p>现在，COMPANY 表有以下记录：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div></code></pre>
+
+<p>如果您想要从 COMPANY 表中删除所有记录，则不需要使用 WHERE 子句，DELETE 查询如下：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs gradle"><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> COMPANY;
+</div></code></pre>
+
+<p>现在，COMPANY 表中没有任何的记录，因为所有的记录已经通过 DELETE 语句删除。</p>
+
+
+
+<h3 id="select-语句">Select 语句</h3>
+
+<p>SQLite 的 SELECT 语句用于从 SQLite 数据库表中获取数据，以结果表的形式返回数据。这些结果表也被称为结果集。 <br>
+语法</p>
+
+<ul><li>SELECT 语句的基本语法如下：</li>
+</ul>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> column1, column2, columnN <span class="hljs-keyword">FROM</span> table_name;
+</div></code></pre>
+
+<p>在这里，column1, column2…是表的字段，他们的值即是您要获取的。如果您想获取所有可用的字段，那么可以使用下面的语法：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> table_name;
+</div></code></pre>
+
+<ul><li>实例</li>
+</ul>
+
+<p>假设 COMPANY 表有以下记录：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>下面是一个实例，使用 SELECT 语句获取并显示所有这些记录。在这里，前三个命令被用来设置正确格式化的输出。</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lasso"><div class="hljs-line">sqlite&gt;.<span class="hljs-keyword">header</span> <span class="hljs-keyword">on</span>
+</div><div class="hljs-line">sqlite&gt;.mode column
+</div><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">SELECT</span> * FROM COMPANY;
+</div></code></pre>
+
+<p>最后，将得到以下的结果：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  ----------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>如果只想获取 COMPANY 表中指定的字段，则使用下面的查询：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sqf"><div class="hljs-line">sqlite&gt; <span class="hljs-built_in">SELECT</span> ID, <span class="hljs-built_in">NAME</span>, SALARY <span class="hljs-keyword">FROM</span> COMPANY;
+</div></code></pre>
+
+<p>上面的查询会产生以下结果：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME        SALARY
+</div><div class="hljs-line">----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul        <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy       <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark        <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim         <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James       <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<ul><li>设置输出列的宽度</li>
+</ul>
+
+<p>有时，由于要显示的列的默认宽度导致 .mode column，这种情况下，输出被截断。此时，您可以使用 .width num, num…. 命令设置显示列的宽度，如下所示：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">sqlite&gt;.width <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">10</span>
+</div><div class="hljs-line">sqlite&gt;SELECT * FROM COMPANY;
+</div></code></pre>
+
+<p>上面的 .width 命令设置第一列的宽度为 10，第二列的宽度为 20，第三列的宽度为 10。因此上述 SELECT 语句将得到以下结果：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs lsl"><div class="hljs-line">ID          NAME                  AGE         ADDRESS     SALARY
+</div><div class="hljs-line">----------  --------------------  ----------  ----------  ----------
+</div><div class="hljs-line"><span class="hljs-number">1</span>           Paul                  <span class="hljs-number">32</span>          California  <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">2</span>           Allen                 <span class="hljs-number">25</span>          Texas       <span class="hljs-number">15000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">3</span>           Teddy                 <span class="hljs-number">23</span>          Norway      <span class="hljs-number">20000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">4</span>           Mark                  <span class="hljs-number">25</span>          Rich-Mond   <span class="hljs-number">65000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">5</span>           David                 <span class="hljs-number">27</span>          Texas       <span class="hljs-number">85000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">6</span>           Kim                   <span class="hljs-number">22</span>          South-Hall  <span class="hljs-number">45000.0</span>
+</div><div class="hljs-line"><span class="hljs-number">7</span>           James                 <span class="hljs-number">24</span>          Houston     <span class="hljs-number">10000.0</span>
+</div></code></pre>
+
+<p>Schema 信息 <br>
+因为所有的点命令只在 SQLite 提示符中可用，所以当您进行带有 SQLite 的编程时，您要使用下面的带有 sqlite_master 表的 SELECT 语句来列出所有在数据库中创建的表：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs oxygene"><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">SELECT</span> tbl_name <span class="hljs-keyword">FROM</span> sqlite_master <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">type</span> = <span class="hljs-string">'table'</span>;
+</div></code></pre>
+
+<p>假设在 testDB.db 中已经存在唯一的 COMPANY 表，则将产生以下结果：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs asciidoc"><div class="hljs-line"><span class="hljs-section">tbl_name</span>
+</div><div class="hljs-line"><span class="hljs-section">----------</span>
+</div><div class="hljs-line">COMPANY
+</div></code></pre>
+
+<p>您可以列出关于 COMPANY 表的完整信息，如下所示：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs oxygene"><div class="hljs-line">sqlite&gt; <span class="hljs-keyword">SELECT</span> sql <span class="hljs-keyword">FROM</span> sqlite_master <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">type</span> = <span class="hljs-string">'table'</span> <span class="hljs-keyword">AND</span> tbl_name = <span class="hljs-string">'COMPANY'</span>;
+</div></code></pre>
+
+<p>假设在 testDB.db 中已经存在唯一的 COMPANY 表，则将产生以下结果：</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs sql"><div class="hljs-line"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> COMPANY(
+</div><div class="hljs-line">   <span class="hljs-keyword">ID</span> <span class="hljs-built_in">INT</span> PRIMARY <span class="hljs-keyword">KEY</span>     <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+</div><div class="hljs-line">   <span class="hljs-keyword">NAME</span>           <span class="hljs-built_in">TEXT</span>    <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+</div><div class="hljs-line">   AGE            <span class="hljs-built_in">INT</span>     <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+</div><div class="hljs-line">   ADDRESS        <span class="hljs-built_in">CHAR</span>(<span class="hljs-number">50</span>),
+</div><div class="hljs-line">   SALARY         <span class="hljs-built_in">REAL</span>
+</div><div class="hljs-line">)
+</div></code></pre>
+
+
+
+<h1 id="总结">总结</h1>
+
+<p>2017年9月22日23:44:27 <br>
+到目前为止，没有遇到账户，权限等问题 <br>
+以mediawiki为例，创建数据库时</p>
+
+
+
+<p><img longdesc="./1506095464542.png" alt="Alt text" title="" type="image/png" class="" src="data:image/png;base64,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EEYC5aQyBBBAAAEEEPAqQBjxKkZ5BBBAAAEEEAhUgDASKCeVIYAAAggggIBXAcKIVzHKI4AAAggggECgAoSRQDmpDAEEEEAAAQS8ChBGvIpRHgEEEEAAAQQCFSCMBMpJZQgggAACCCDgVYAw4lWM8ggggAACCCAQqABhJFBOKkMAAQQQQAABrwKEEa9ilEcAAQQQQACBQAUII4FyWlf21ltvSdeuXeXwww8v9dEKCgpk/fr1nvevW7eulCtXzvN+7IAAAggggMDBEiCMJFn6008/lYsuukiOPvpo+eSTT6R+/frGEceNGyd333238XVRUZHxn25ly5aVzz///Det2rp1qzRo0MBza1etWiWHHnqo5/3YAQEEEEAAgYMlEKow8sMPP8jUqVNlw4YNcsghh0j79u3llFNOsbXIz8+XKVOmyJdffimVK1eWxo0by5lnnvmb8suXL5dvvvnGuJg3atTItr758+fLunXr5PTTT5cTTjghkDHYtGmT/OEPf5AlS5ZIs2bNZMKECVKhQgX54IMP5LrrrjPCyTHHHGMca9GiRVK+fHn58ccff3NsnRmpXbu2nHTSSUaIWbx4sQwfPtwIOj169JBXXnlFZs+eLY8++qjobMiTTz5phBo9PjMjgQwllSCAAAIIJEkgNGHkoYcekmHDholedGO3yy67TJ5++unfXFD1QnvFFVfId999V6J8y5Yt5Y033pA6deoUv37XXXfJyy+/LNdcc408/vjjtpR6LA0LQ4YMkZtvvrk4IPzrX/+SM844Q/74xz+Wahi2b98unTt3lq+//lqee+456d+/v4wePVquvfZaufXWW+Wvf/2rUe9pp50mu3btktWrV//mOBq8srOzjX5pXRrcZsyYIU2bNpWGDRvKvHnzjMB1/vnny+9+9zuZNm2a5OXlGcFOww8bAggggAACYRUIRRj56KOP5Oqrr5aKFSsa/+qFXy/c+pv/nj17jGCgAcHc9Ld9nQHRf3WmoFevXrJ792557733ZMuWLdKiRQsZP368Mcugm9swouX0Aq8BQQODbi+99JL85S9/kauuukqeeuqpUo/jihUrZOnSpXLllVcadWhguv322+Wee+6RgQMHFocRDWM60xO/bdu2zZgBid806Gjo0JBSs2bN37w/adIkqV69eqnbzY4IIIAAAggkWyAUYeRPf/qTvP/++8ZFWS/O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"></p>
+
+<p>仅仅设置目录，数据库名称</p>
+
+
+
+<p><img longdesc="./1506095568442.png" alt="Alt text" title="" type="image/png" class="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtUAAAG+CAYAAABcaPhvAAAgAElEQVR4XuydB7gdRfmH596bkJBQQgdBShIBQVGEYEVRiiAoUYyiiBIRG2BDFAuKHQs2UGwIdlDRxAL4R1HEgoCgotiIgEQ6SSAk5Kbc+39+G+YydzLlmz17zuzZ/e3z5Elyz+yUd+bsvvvdb3cH7rrrrtGpU6eqwcFBxY0ESIAESIAESIAESIAESCCdwAClOh0a9yABEiABEiABEiABEiABkwClmuuBBEiABEiABEiABEiABDokMHDnnXcy/aNDiNydBEiABEiABEiABEig3QTWker5twy1mwhHTwIkQAINILDllEF11/KRBoyEQyABEiCB/iDglOojd12vP3rPXpIACZAACZAACZAACZBADQhQqmswCewCCZAACZAACZAACZBAfxOgVPf3/LH3JEACJEACJEACJEACNSBAqa7BJLALJEACJEACJEACJEAC/U2AUt3f88fekwAJkAAJkAAJkAAJ1IAApboGk8AukAAJkAAJkAAJkAAJ9DcBSnV/zx97TwIkQAIkQAIkQAIkUAMClOoaTAK7QAIkQAIkQAIkQAIk0N8EKNX9PX/sPQmQAAmQAAmQAAmQQA0IUKprMAnsAgmQAAmQAAmQAAmQQH8ToFT39/yx9yRAAiRAAiRAAiRAAjUgQKmuwSSwCyRAAiRAAiRAAiRAAv1NgFLd3/PH3pMACZAACZAACZAACdSAAKW6BpPALpAACZAACZAACZAACfQ3AUp1f88fe08CJEACJEACJEACJFADApTqGkwCu0ACJEACJEACJEACJNDfBCjV/T1/7D0JkAAJkAAJkAAJkEANCFCqazAJ7AIJkAAJkAAJkAAJkEB/E6BU9/f8sfckQAIkQAIkQAIkQAI1IECprsEksAskQAIkQAIkQAIkQAL9TYBS3d/zx96TAAmQAAmQAAmQAAnUgAClugaTwC6QAAmQAAmQAAmQAAn0NwFKdX/PH3tPAiRAAiRAAiRAAiRQAwKU6hpMArtAAiRAAiRAAiRAAiTQ3wQo1f09f+w9CZAACZAACZAACZBADQhQqmswCewCCZAACZAACZAACZBAfxOgVPf3/LH3JEACJEACJEACJEACNSBAqa7BJLALJEACJEACJEACJEAC/U1g4K677hqdMmWKGhwcLEYy/5YhdeSu6/X3qNh7EiABEiABEiABEiABEughgYG77757dP3116dU9xA6myIBEiABEiABEiABEmgWgYFFixaNTpo0SQ0MDDBS3ay55WhIgARIgARIgARIgAR6RGDg/vvvH50wYcJYc0z/6BF5NkMCJEACJEACJEACJNAYAgPLli0b1VFqjIpS3Zi55UBIgARIgARIgARIgAR6RGBg+fLlo2ZblOoekWczJEACJEACJEACJEACjSFAqW7MVHIgJEACJEACJEACJEACuQhQqnORZ7skQAIkQAIkQAIkQAKNIUCpbsxUciAkQAIkQAIkQAIkQAK5CFCqc5FnuyRAAiRAAiRAAiRAAo0hQKluzFRyICRAAiRAAiRAAiRAArkIUKpzkWe7JEACJEACJEACJEACjSFAqW7MVHIgJEACJEACJEACJEACuQhQqnORZ7skQAIkQAIkQAIkQAKNIUCpbsxUciAkQAIkQAIkQAIkQAK5CFCqc5FnuyRAAiRAAiRAAiRAAo0hQKluzFRyICRAAiRAAiRAAiRAArkIUKpzkWe7JEACJEACJEACJEACjSFAqW7MVHIgvSbw6U9/Wq1YsUJNmDAh2PSqVavUVlttpV75yleqq6++Wv3+979XEydOVAMDA+vst+mmm6oXvehF435+1113qZe+9KWVDO9rX/ua2nbbbSupi5WQAAmQAAmQAAk8TIBSzdVAAiUJPOc5z1H33ntvIciLFi1Sf//739Uuu+xS/Oyee+5RT3nKU4qaIdW77babOu+889SXvvQl9dnPflatv/76amhoaFzLf/nLX9T06dPVX//613E/X7x4sYJsH3744Wr27Nljn5199tnq2muvVV/+8pfHfnbzzTer973vferlL3+5euYznzn285/+9Kfq+9//vrr77rvV5ptvXnLE3I0ESIAESIAESMBHgFLNtUECFRCYN2+eev7zn6++853vKPz7ggsuUA8++KCaPHmyuPbHPOYxRVlbqkdGRgoBf+9736tOO+20sfqOPPLIoi1Ey/V2zTXXqFmzZikI92tf+9qxn3/wgx9Up556qlq9evU6Mi/uIAuSAAmQAAmQAAl4CXRFqq+88spCKhAZW7hwYdE4omwQAMn2lre8RX3qU58qiiLy97znPU+97W1vqzTC9o9//EP94Ac/UMcff7zaeOONx7o1OjpaRPh233139bnPfU7S3XXK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5lgVYgg16tS/DaqqXtZDAiRAAiRAAm0mQKlu8+xz7B0RQMoLUk6QVoNnQbs2+0ZFlMH9AMi7R64zhNrekPaB/HBuJEACJEACJEAC/UOAUt0/c8We1owA3vqIGx9x4yrST1zbn//8Z7Vo0aLSz9yu2ZDZHRIgARIgARIgAQ8BSjWXBgmQAAmQAAmQAAmQAAl0SIBS3SFA7k4CJEACJEACJEACJEAClGquARIgARIgARIgARIgARLokAClukOA3J0ESIAESIAESIAESIAEuiLV3/juj0iWBEiABEggI4Gtt9xc3XHXPRl7wKZJgARIoF0EuiLV7ULI0ZIACZAACZAACZAACbSdAKW67SuA4ycBEiABEiABEiABEuiYAKW6Y4SsgARIgARIgARIgARIoO0EKNVtXwEcPwmQAAmQAAmQAAmQQMcEKNUdI2QFJEACJEACJEACJEACbSdAqW77CuD4SYAESIAESIAESIAEOiZAqe4YISsgARIgARIgARIgARJoOwFKddtXAMdPAiRAAiRAAiRAAiTQMQFKdccIWQEJkAAJkAAJkAAJkEDbCVCq274COH4SIAESIAESIAESIIGOCVCqO0bICkiABEiABEiABEiABNpOgFLd9hXA8ZMACZAACZAACZAACXRMgFLdMUJWQAIkQAIkQAIkQAIk0HYClOq2rwCOnwRIgARIgARIgARIoGMClOqOEbICEiABEiABEiABEiCBthOgVLd9BXD8JEACJEACJEACJEACHROgVHeMkBWQAAmQAAmQAAmQAAm0nQCluu0rgOMnARIgARIgARIgARLomAClumOErIAESIAESIAESIAESKDtBCjVbV8BHD8JkAAJkAAJkAAJkEDHBGol1YsXL+54QKyABEiABEiABEiABEiABKoksMkmm0Sro1RHEbEACZAACZAACZAACZBAmwlQqts8+xw7CZAACZAACZAACZBAJQQo1ZVgZCUkQAIkQAIkQAIkQAJtJkCpbvPsc+wkQAIkQAIkQAIkQAKVEKBUV4KRlZAACZAACZAACZAACbSZAKW6zbPPsZMACZAACZAACZAACVRCgFJdCUZWQgIkQAIkQAIkQAIk0GYClOo2zz7HTgIkQAIkQAIkQAIkUAkBSnUlGFkJCZAACZAACZAACZBAmwlQqts8+xw7CZAACZAACZAACZBAJQQo1ZVgZCUkQAIkQAIkQAIkQAJtJkCpbvPsc+wkQAIkQAIkQAIkQAKVEKBUV4KRlZAACZAACZAACZAACbSZAKW6zbPPsZMACZAACZBACQI///nPS+zFXUigPwgccMABpTpKqS6FjTuRAAmQAAmQQHsJQKrnzJnTXgAceWMJfO9731OU6sZOLwdGAiRAAiRAAvUiQKmu13ywN9URoFRXx5I1kQAJkAAJkAAJRAhQqrlEmkqAUt3UmeW4SIAESIAESKCGBCjVNZwUdqkSApTqSjCyEhIgARIgARIgAQkBSrWEEsv0IwFKdT/OGvtMAiRAAiRAAn1KgFLdpxPHbkcJUKqjiFiABEiABEiABEigKgKU6qpIsp66EaBU121G2B8SIAESIAESaDABSnWDJ7flQ6NUt3wBcPgkQAIkQAIk0EsClOpe0mZbvSRAqe4lbbZFAiRAAiRAAi0nQKlu+QJo8PAp1Q2eXA6NBEiABEiABOpGgFJdtxlhf6oiQKmuiiTrIQESIAESIAESiBKgVEcRsUCfEqBU9+nEsdskQAIkQAIk0I8EKNX9OGvss4QApVpCiWVIgARIgARIgAQqIUCprgQjK6khAUp1DSeFXSIBEiABEiCBphKgVDd1ZjkuSjXXAAmQAAmQAAmQQM8I5JTqGTNmqAULFnQ81qrq6bgjrKBWBCjVNZmOkZERNTAwUPypcvv3v/+tHvWoR1VZZevq+utf/6p+//vfq+OOO651Y+eASYAESKBqAjmlGmPRQoy/Y1tIwCnWMXrt+5xS3YM5/+c//6m22WYbtdFGG3lb+9nPfqZOOeUUdcYZZ6hnPetZol79+c9/VieddJL6wAc+oJ785Cevs8/XvvY19da3vlX93//9n9pzzz29dd5///1q6dKlatKkSV6pHx0dVcPDw2qDDTZQG2+88Tp1oY53vOMd6rDDDlOHHHJI8Tn2uffee9Xmm29e/P+DH/ygWrlypXr/+9+v/vjHPypcSMyaNav47E9/+pO666671AEHHKAGBwej4//KV75SjOu73/1utGynBV7xileoH//4x0W/TzjhhE6r4/4kQAIk0GoCdZFqexJ8kiyRb7uuKqLhrV4kfTp4SnWXJ+72229XT3rSkwpRPvfcc72tzZ07V1100UXqqquuUjvssIOoV1dffbV69rOfrb7//e87RRxCi7a33XZb9Ytf/EINDQ056/3yl7+s3v72t4vafOc731mIur3dd999aqeddlLve9/71Iknnlh8/OY3v1n97ne/U5deemlxQfHiF7+4kGr09xnPeIZ68MEH1R/+8Ac1YcIE9ba3va0YP6LCku30009X3/nOdxQuLPT29a9/Xb3nPe+R7K7AbostthhXFhxuu+224mIAm/572WjyuMIAACAASURBVLJlChcokP1XvepVxd/4TH++evXq4oLjda97ndpll11E7bMQCZAACbSVQG6pNrmHhJli3NYVWn7clOry7MR7Qi4hZR/72McKKbO3//73v2qvvfZSiIh+4hOfENcLoXzmM5+pfvKTn6inPOUpxX4//elP1Zo1a8YEGp8hogvZ3WSTTYoyiBCvWrVKPe95zyuEFlKI/+PfSD/50Ic+pD7zmc8U8vv0pz99TDBRDmUmTpy4Th8hyJD3D3/4w+q1r31t8TlSJmbPnl3Ucf755xfjg3yiz+9+97sLKcZFAbbnP//5Rf+++tWvisb/yU9+stgfcqw3SDGiyX//+9+9deDiAhcwKLPVVluNK4cLnyVLlqh99913LBXHTMmBTOv/m3+bUr3rrruK+s9CJEACJNBWArmk2hRoW5jtKLUrai2JWFPE27qq146bUt2D+YdI7r///uqWW25Rv/nNb4oILSKqSLdA9Pimm25S119/vXra056mNt1003V6pKUN0jht2rSxz7EPIr6I8CIije31r399kcpx7bXXjqVW6B0QWYXo7rPPPoVYQ2AnT548rr3//e9/RV2Q4TPPPNNLBxF1RN4RYUaEGn3ccsst1Uc/+tFxuceIHr/pTW8qUlQgwJDZW2+9Vb3kJS8pUl309pjHPKaIcL/mNa8RzcinP/3pQqoR6balGvX7NqTZoG2fVGMs55xzzrjdEalGeg0i0fjDjQRIgARIoDyBXFKte+wTZlOImS9dfn7bvCelukezj5zhgw8+uIgCIzr7rW99q5BqpIdAlo888ki12267OXuDKDLSJo4//ni1aNGiIvcY+954443q2GOPVZ/97GeLtAOkWODvb37zm+oNb3jDOmkhP/jBD4pI+Te+8Q116KGHOttCP3Bg+eUvf1nkTyPCDnH9/Oc/P678vHnz1Ctf+Ur1q1/9Su2xxx7rSPVll11WyP56661X5CNj7Jdffrm65557iouKl770pUXUF+0h3/yxj32sQmqJfVMl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"> <br>
+此处涉及的是权限问题 <br>
+并给出了解决方案</p>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs haskell"><div class="hljs-line"><span class="hljs-title">cd</span> /var/www
+</div><div class="hljs-line"><span class="hljs-title">mkdir</span> <span class="hljs-class"><span class="hljs-keyword">data</span></span>
+</div><div class="hljs-line"><span class="hljs-title">chgrp</span> apache <span class="hljs-class"><span class="hljs-keyword">data</span></span>
+</div><div class="hljs-line"><span class="hljs-title">chmod</span> g+w <span class="hljs-class"><span class="hljs-keyword">data</span></span>
+</div></code></pre>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="hljs tap"><div class="hljs-line">[root@localhost data]<span class="hljs-comment"># ll</span>
+</div><div class="hljs-line">总用量 2772
+</div><div class="hljs-line">drwxr-xr-x<span class="hljs-number"> 2 </span>apache apache      <span class="hljs-number"> 6 </span>9月 <span class="hljs-number"> 22 </span>23:57 locks
+</div><div class="hljs-line">-rw-r--r--<span class="hljs-number"> 1 </span>apache apache<span class="hljs-number"> 2823168 </span>9月 <span class="hljs-number"> 23 </span>00:02 my_wiki.sqlite
+</div><div class="hljs-line">-rw-r--r--<span class="hljs-number"> 1 </span>apache apache   <span class="hljs-number"> 9216 </span>9月 <span class="hljs-number"> 23 </span>00:02 wikicache.sqlite
+</div></code></pre>
+
+<p>MediaWiki支持以下数据库系统：</p>
+
+<pre class="prettyprint hljs-dark"><code class="hljs arduino"><div class="hljs-line">MySQL是MediaWiki的首选数据库，对它的支持最为完备。MediaWiki也可以在MariaDB和Percona <span class="hljs-built_in">Server</span>下工作，它们与MySQL兼容。（如何将对MySQL的支持编译进PHP中）
+</div><div class="hljs-line">PostgreSQL是一种流行的开源数据库系统，可作为MySQL的替代（如何将对PostgreSQL的支持编译进PHP中）
+</div><div class="hljs-line">Oracle是一种商用企业级的数据库。（如何将对OCI8的支持编译进PHP中）
+</div><div class="hljs-line">Microsoft SQL <span class="hljs-built_in">Server</span>是一个适用于Windows的商业性企业数据库。（如何编译带有SQLSRV支持的PHP）
+</div><div class="hljs-line">SQLite是一种轻量级的数据库系统，能被良好地支持。（如何将对SQLite的支持编译进PHP中，须使用PDO）
+</div></code></pre>
+
+<p>如果您在下面列出的数据库系统中没有找到您希望使用的系统，请根据上方链向的指引启用支持。 </p></div></body></html>
