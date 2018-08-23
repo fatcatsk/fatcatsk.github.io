@@ -34,6 +34,7 @@
 <p><a href="https://fatcatsk.github.io/VMware Workstations.html" target="_blank"><strong>Linux 安装 VMware Workstations</strong></a>
 <p><a href="https://fatcatsk.github.io/MySQL%20secure-file-priv.html" target="_blank"><strong>MySQL secure-file-priv 文件导出失败</strong></a>
 <p><a href="https://fatcatsk.github.io/MySQL-root-password-reset.html" target="_blank"><strong>MySQL重置root密码</strong></a>
+<p><a href="https://fatcatsk.github.io/SQLite_practice.html" target="_blank"><strong>SQLite实践</strong></a>
 
 
     
